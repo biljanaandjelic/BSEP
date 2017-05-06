@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html  ng-app= "administrator">
+<head>
+<meta charset="UTF-8">
+<title>Startup</title>
+
+<!--<script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular.min.js"></script>-->
+<script type="text/javascript" src="../js/vendor/jquery-3.1.1.min.js"></script>
+	
+<script type="text/javascript" src="../js/vendor/angular.min.js"></script>
+	<script type="text/javascript" src="../js/vendor/angular-route.min.js"></script>
+
+	<!--  toaster -->
+	<link href="../css/vendor/toastr.min.css" rel="stylesheet"/>
+	<script type="text/javascript" src="../js/vendor/toastr.min.js"></script>
+	
+	<!-- bootstrap -->
+	<link href="../css/vendor/bootstrap.min.css" rel="stylesheet">
+	<script type="text/javascript" src="../js/vendor/bootstrap.min.js"></script>
+
+
+<script type="text/javascript" src="../js/vendor/angular-local-storage.min.js"></script>
+
+<script type = "text/javascript" src="../directives/login/cookieModul.js"></script>
+<script type = "text/javascript" src="AdminScript.js"></script>
+<script type = "text/javascript" src="AdminScript1.js"></script>
+<script type = "text/javascript" src="NMScript.js"></script>
+
+<script type="text/javascript" src="valuta.js"></script>
+<script type="text/javascript" src="activities.js"></script>
+<link rel="stylesheet" href="css/drzave.css" > 
+<!-- 
+<script
+  src="https://code.jquery.com/jquery-1.12.4.min.js"
+  integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+  crossorigin="anonymous"></script>
+  
+
+ 
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+ integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<!-- 
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" 
+integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+ -->
+<!-- Latest compiled and minified JavaScript -->
+<!-- 
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" 
+integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+ -->
+</head>
+ <body ng-controller = "Opsti as opsti" data-ng-init="init()"> 
+<!-- <body> -->
+ <ul class="nav nav-tabs"> 
+    <li ng-class="{active: tab === 0}"><a href="#" ng-click="opsti.tabClick(0)"><h4>Home</h4></a></li>
+    <li ng-class="{active: tab === 1}"><a href="#" ng-click="opsti.tabClick(1)"><h4>Drzave</h4></a></li>
+    <li ng-class="{active: tab === 2}"><a href="#" ng-click="opsti.tabClick(2)"><h4>Naseljena mesta</h4></a></li>
+    <li ng-class="{active: tab === 3}"><a href="#" ng-click="opsti.tabClick(3)"><h4>Valute</h4></a></li>
+	<li ng-class="{active: tab === 4}"><a href="#" ng-click="opsti.tabClick(4)"><h4>Djelatnosti</h4></a></li>
+  </ul>
+ <nav>
+<div >
+    <div id="home" class="tab-pane fade in active" ng-show='tab == 0'>
+      <h3>HOME</h3>
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+    </div>
+    <div id="drzave" class="tab-pane fade in active" ng-show='tab == 1'>
+    
+      <div ng-include="'Drzave.html'"></div>
+    </div>
+    <div id="naseljenaMesta" class="tab-pane fade in active" ng-show='tab == 2'>
+      <h2>Naseljena</h2>
+      <div ng-include="'NaseljenaMesta.html'"></div>
+    </div>
+	<div id="valute" class="tab-pane fade in active" ng-show='tab == 3'>
+      <h2>Valute</h2>
+      <div ng-include="'valuta.html'"></div>
+    </div>
+	<div id="valute" class="tab-pane fade in active" ng-show='tab == 4'>
+      
+      <div ng-include="'activities.html'"></div>
+    </div>
+    
+  </div>
+ </nav>
+</body>
+</html>
