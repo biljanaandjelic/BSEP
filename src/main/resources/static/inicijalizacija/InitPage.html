@@ -22,12 +22,12 @@
 <script type="text/javascript" src="../js/vendor/angular-local-storage.min.js"></script>
 
 <script type = "text/javascript" src="../directives/login/cookieModul.js"></script>
-<script type = "text/javascript" src="AdminScript.js"></script>
-<script type = "text/javascript" src="AdminScript1.js"></script>
-<script type = "text/javascript" src="NMScript.js"></script>
+<script type = "text/javascript" src="geografija/AdminScript.js"></script>
+<script type = "text/javascript" src="geografija/AdminScript1.js"></script>
+<script type = "text/javascript" src="geografija/NMScript.js"></script>
 
-<script type="text/javascript" src="valuta.js"></script>
-<script type="text/javascript" src="activities.js"></script>
+<script type="text/javascript" src="valuteIdelatnosti/valuta.js"></script>
+<script type="text/javascript" src="valuteIdelatnosti/activities.js"></script>
 <link rel="stylesheet" href="css/drzave.css" > 
 <!-- 
 <script
@@ -68,19 +68,19 @@ integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7T
     </div>
     <div id="drzave" class="tab-pane fade in active" ng-show='tab == 1'>
     
-      <div ng-include="'Drzave.html'"></div>
+      <div ng-include="'geografija/Drzave.html'"></div>
     </div>
     <div id="naseljenaMesta" class="tab-pane fade in active" ng-show='tab == 2'>
       <h2>Naseljena</h2>
-      <div ng-include="'NaseljenaMesta.html'"></div>
+      <div ng-include="'geografija/NaseljenaMesta.html'"></div>
     </div>
 	<div id="valute" class="tab-pane fade in active" ng-show='tab == 3'>
       <h2>Valute</h2>
-      <div ng-include="'valuta.html'"></div>
+      <div ng-include="'valuteIdelatnosti/valuta.html'"></div>
     </div>
 	<div id="valute" class="tab-pane fade in active" ng-show='tab == 4'>
       
-      <div ng-include="'activities.html'"></div>
+      <div ng-include="'valuteIdelatnosti/activities.html'"></div>
     </div>
     
   </div>

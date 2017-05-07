@@ -118,7 +118,7 @@ public class NaseljenoMestoController {
 		
 		
 		
-		return new ResponseEntity<Collection<NaseljenoMesto>>( repository.findByOznakaContainingIgnoreCaseOrNazivContainingIgnoreCaseOrPostanskiBrojContainingIgnoreCaseAndDrzava(oznaka, naziv, postanskiBroj, drzava), HttpStatus.OK);
+		return new ResponseEntity<Collection<NaseljenoMesto>>( repository.findByOznakaContainingIgnoreCaseOrNazivContainingIgnoreCaseOrPostanskiBrojContainingIgnoreCaseOrDrzava(oznaka, naziv, postanskiBroj, drzava), HttpStatus.OK);
 	}
 
 }
