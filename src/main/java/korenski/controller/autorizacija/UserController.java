@@ -41,9 +41,16 @@ public class UserController {
 			return new ResponseEntity<User>(new User(new Long(-1), null, null, null, null, null, null, null), HttpStatus.OK);
 		}
 		
+		String pass = userService.generatePassword();
+		
+		System.out.println("============================================Generated pass " + pass +" size : "+pass.length());
+		
+		user.setPassword(pass);
+		
 		User rle;
 		try {
 			rle = repository.save(user);
+			userService.sendPassToUser(pass, user);
 		} catch (Exception e) {
 			rle = new User(new Long(-1), null, null, null, null, null, null, null);
 		}
