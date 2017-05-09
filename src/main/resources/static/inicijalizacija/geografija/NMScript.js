@@ -390,6 +390,17 @@ administrator.controller('RukovanjeNaseljenimMestima', function($scope, $http, $
 		
 	}
 	
+	this.confType = function(){
+		if($scope.tip === "Klijent"){
+			$scope.$parent.$parent.opsti.tabClick5(5, $scope.naseljenoMesto);
+		}else{
+			$scope.$parent.$parent.opsti.tabClick6(6, $scope.naseljenoMesto);
+		}
+	}
+	
+	this.dismisType = function(){
+		
+	}
 });
 
 administrator.directive('ngConfirmClick', [
