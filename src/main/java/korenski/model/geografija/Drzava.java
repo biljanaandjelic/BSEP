@@ -10,6 +10,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -19,14 +23,19 @@ public class Drzava {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id", nullable = true)
+	@Column(name = "id")
 	private Long id;
 
 	
-	@Column(unique = true, nullable = false)
+	@Column(unique = true, nullable = false, length = 3)
+	@Pattern(regexp = "[A-Z]{3}", message = "Oznaka drzave se mora sastojati od tacno 3 velika slova!")
+	@NotEmpty
 	private String oznaka;
 	
-	@Column(unique = true, nullable = false)
+	@Column(unique = true)
+	@Size(max = 80)
+	@Pattern(regexp = "([A-Z][a-zA-Z]*)([\\s\\\'-][a-zA-Z]*)*", message = "Naziv drzave podrazumeva veliko pocetno slovo!")
+	@NotEmpty
 	private String naziv;
 	
 	@Column(name="naseljenaMesta")

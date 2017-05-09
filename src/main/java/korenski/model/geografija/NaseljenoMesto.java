@@ -7,6 +7,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Table(name="naseljeno_mesto")
@@ -14,16 +18,23 @@ public class NaseljenoMesto {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id", nullable = true)
+	@Column(name = "id")
 	private Long id;
 	
-	@Column(unique = true, nullable = false)
+	@Column(unique = true, nullable = false, length=2)
+	@Pattern(regexp = "[A-Z]{2}", message = "Oznaka naseljenog se mora sastojati od tacno 2 velika slova!")
+	@NotEmpty
 	private String oznaka;
 	
 	@Column(unique = true, nullable = false)
+	@Size(max = 80)
+	@Pattern(regexp = "([A-Z][a-zA-Z]*)([\\s\\\'-][A-Z][a-zA-Z]*)*", message = "Naziv naseljenog mesta podrazumeva reci sa pocetnim velikim slovom!")
+	@NotEmpty
 	private String naziv;
 	
-	@Column(unique = true, nullable = false)
+	@Column(unique = true, nullable = false, length=5)
+	@Pattern(regexp = "([0-9]{5})", message = "Postanski broj se sastoji od tacno 5 cifara!")
+	@NotEmpty
 	private String postanskiBroj;
 	
 	

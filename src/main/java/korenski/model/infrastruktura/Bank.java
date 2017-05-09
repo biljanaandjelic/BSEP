@@ -4,6 +4,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 public class Bank {
@@ -13,24 +17,33 @@ public class Bank {
 	private Long id;
 	
 	@Column(nullable=false)
+	@Size(max = 50)
+	@Pattern(regexp = "([A-Z][a-zA-Z]*)([\\s\\\'-][a-zA-Z]*)*", message = "Naziv banke podrazumeva veliko pocetno slovo!")
+	@NotEmpty
 	private String name;
 	
-	@Column(nullable=false)
+	@Column(nullable=false, unique=true)
+	@Pattern(regexp="[0-9]{3}")
+	@NotEmpty
 	private String code;
 	
-	@Column(nullable=false, unique=false)
+	@Column(nullable=false, unique=true, length = 8)
+	@Pattern(regexp="[0-9]{8}")
+	@NotEmpty
 	private String swiftCode;
 	
 	@Column(nullable=false)
-	private String sstatmentAcount;
+	@Size(max = 18)
+	@NotEmpty
+	private String liquidationAcount;
 
-	public Bank(Long id, String name, String code, String swiftCode, String sstatmentAcount) {
+	public Bank(Long id, String name, String code, String swiftCode, String liquidationAcount) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.code = code;
 		this.swiftCode = swiftCode;
-		this.sstatmentAcount = sstatmentAcount;
+		this.liquidationAcount = liquidationAcount;
 	}
 
 	public Bank() {
@@ -61,22 +74,24 @@ public class Bank {
 	public void setCode(String code) {
 		this.code = code;
 	}
-
-	public String getSwiftCode() {
-		return swiftCode;
-	}
+	
 
 	public void setSwiftCode(String swiftCode) {
 		this.swiftCode = swiftCode;
 	}
 
-	public String getSstatmentAcount() {
-		return sstatmentAcount;
+	public String getLiquidationAcount() {
+		return liquidationAcount;
 	}
 
-	public void setSstatmentAcount(String sstatmentAcount) {
-		this.sstatmentAcount = sstatmentAcount;
+	public void setLiquidationAcount(String liquidationAcount) {
+		this.liquidationAcount = liquidationAcount;
 	}
+
+	public String getSwiftCode() {
+		return swiftCode;
+	}
+
 	
 	
 }

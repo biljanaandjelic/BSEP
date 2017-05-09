@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import korenski.controller.autentifikacija.LoginObject;
 import korenski.model.autorizacija.User;
 import korenski.repository.autorizacija.UserRepository;
 import korenski.service.autorizacija.UserService;
@@ -52,6 +53,7 @@ public class UserController {
 			rle = repository.save(user);
 			userService.sendPassToUser(pass, user);
 		} catch (Exception e) {
+			e.printStackTrace();
 			rle = new User(new Long(-1), null, null, null, null, null, null, null);
 		}
 	

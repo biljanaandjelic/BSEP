@@ -1,0 +1,43 @@
+var logovanje = angular.module('logovanje', []);
+
+logovanje.controller('LogovanjeCtrl', function($scope, $http, $compile){
+
+	$scope.user = {};
+	
+	this.submitClick = function(){
+		
+		if(angular.equals($scope.user, {})){
+			toastr.error('Korisnicko ime i lozinka moraju biti uneti!')
+			return;
+		}else if(angular.isUndefined($scope.user.username) || angular.isUndefined($scope.user.password)){
+			toastr.error('I korisnicko ime i lozinka moraju biti uneti!')
+			return;
+		}
+	
+		$http({
+		    method: 'POST',
+		    url: '/login',
+		    data: $scope.user
+		}).
+		then(function mySucces(response) {
+			
+			if(response.data.id == -1){
+				toastr.error('Ne postoji korisnik sa takvim korisnickim imenom i lozinkom!');
+				return;
+			}else if(response.data.id == -2){
+				toastr.error('Neko je vec ulogovan');
+				return;
+			}else if(response.data.id == -3){
+				toastr.error('Autentifikacija nije prosla kako treba!');
+				return;
+			}else{
+				toastr.success('Uspesno logovanje!');
+				return;
+			}
+		
+		});
+
+		
+	}
+	
+});

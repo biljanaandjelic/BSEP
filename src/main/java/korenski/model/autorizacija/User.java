@@ -7,6 +7,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import korenski.model.infrastruktura.Bank;
 
@@ -21,26 +27,40 @@ public class User {
 	private Long id;
 	
 	@Column(unique = true, nullable = false)
+	@Size(min = 6, max = 30)
+	@NotEmpty
+	@Pattern(regexp = "[\\w]{6,30}")
 	private String username;
 	
 	@Column(unique = true, nullable = false)
+	@Email
+	@NotEmpty
 	private String email;
 	
 	
 	@Column(nullable = false)
+	@Size(min=8, max = 25)
+	//@Pattern(regexp = "[\\w]{8,25}")
+	@NotEmpty
 	private String password;
 
 	@Column(nullable = false)
+	@NotEmpty
+	@Size(max = 30)
 	private String name;
 
 	@Column(nullable = false)
+	@NotEmpty
+	@Size(max = 30)
 	private String surname;
 
 	
 	@ManyToOne
+	@Valid
 	private Role role;
 	
 	@ManyToOne
+	@Valid
 	private Bank bank;
 
 	public User() {

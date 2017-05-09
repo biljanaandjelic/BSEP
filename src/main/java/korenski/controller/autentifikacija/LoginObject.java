@@ -1,7 +1,8 @@
-package korenski.controller.autorizacija;
+package korenski.controller.autentifikacija;
 
 public class LoginObject {
 	
+	private int id;
 	private String username;
 	private String password;
 	
@@ -9,10 +10,12 @@ public class LoginObject {
 		super();
 		this.username = username;
 		this.password = password;
+		id = 1;
 	}
 	
 	public LoginObject() {
 		super();
+		id = 1;
 		// TODO Auto-generated constructor stub
 	}
 
@@ -30,6 +33,14 @@ public class LoginObject {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 	
 	
