@@ -1,6 +1,6 @@
 var logovanje = angular.module('logovanje', []);
 
-logovanje.controller('LogovanjeCtrl', function($scope, $http, $compile){
+logovanje.controller('LogovanjeCtrl', ['$window', '$scope', '$http', '$compile',function($window, $scope, $http, $compile){
 
 	$scope.user = {};
 	
@@ -30,6 +30,14 @@ logovanje.controller('LogovanjeCtrl', function($scope, $http, $compile){
 			}else if(response.data.id == -3){
 				toastr.error('Autentifikacija nije prosla kako treba!');
 				return;
+			}else if(response.data.id == -4){
+				toastr.error('Vasa inicijalna lozinka je istekla!Kontaktirajte administratora da biste dobili novu.');
+				return;
+			}else if(response.data.id == -5){
+				
+				$window.location.href=response.data.url;
+				
+				return;
 			}else{
 				toastr.success('Uspesno logovanje!');
 				return;
@@ -40,4 +48,4 @@ logovanje.controller('LogovanjeCtrl', function($scope, $http, $compile){
 		
 	}
 	
-});
+}]);

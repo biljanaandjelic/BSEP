@@ -5,6 +5,7 @@ public class LoginObject {
 	private int id;
 	private String username;
 	private String password;
+	private String url;
 	
 	public LoginObject(String username, String password) {
 		super();
@@ -41,6 +42,14 @@ public class LoginObject {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
 	}
 	
 	

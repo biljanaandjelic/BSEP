@@ -7,12 +7,19 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.deser.std.DateDeserializers.DateDeserializer;
+import com.fasterxml.jackson.databind.ser.std.DateSerializer;
 
 import korenski.model.infrastruktura.Bank;
 
@@ -39,10 +46,11 @@ public class User {
 	
 	
 	@Column(nullable = false)
-	@Size(min=8, max = 25)
+	//@Size(min=8, max = 25)
 	//@Pattern(regexp = "[\\w]{8,25}")
-	@NotEmpty
-	private String password;
+	//@NotEmpty
+	//private String password;
+	private byte[] password;
 
 	@Column(nullable = false)
 	@NotEmpty
@@ -54,6 +62,17 @@ public class User {
 	@Size(max = 30)
 	private String surname;
 
+	@Column(nullable = false, length=64)
+	private byte[] salt;
+	
+	@Column(name = "creationTime", columnDefinition = "DATETIME")
+	@Temporal(TemporalType.TIMESTAMP)
+	@JsonSerialize(using = DateSerializer.class)
+	@JsonDeserialize(using = DateDeserializer.class)
+	private java.util.Date creationTime;
+	
+	@Column(name = "changedFirstPassword")
+	private boolean changedFirstPassword = false;
 	
 	@ManyToOne
 	@Valid
@@ -65,10 +84,11 @@ public class User {
 
 	public User() {
 		super();
-		// TODO Auto-generated constructor stub
+
+		this.changedFirstPassword = false;
 	}
 
-	public User(Long id, String username, String email, String password, String name, String surname, Role role,
+	public User(Long id, String username, String email, byte[] password, String name, String surname, Role role,
 			Bank bank) {
 		super();
 		this.id = id;
@@ -79,9 +99,10 @@ public class User {
 		this.surname = surname;
 		this.role = role;
 		this.bank = bank;
+		this.changedFirstPassword = false;
 	}
 
-	public User(String username, String email, String password, String name, String surname, Role role, Bank bank) {
+	public User(String username, String email, byte[] password, String name, String surname, Role role, Bank bank) {
 		super();
 		this.username = username;
 		this.email = email;
@@ -90,6 +111,7 @@ public class User {
 		this.surname = surname;
 		this.role = role;
 		this.bank = bank;
+		this.changedFirstPassword = false;
 	}
 
 	public Long getId() {
@@ -116,11 +138,11 @@ public class User {
 		this.email = email;
 	}
 
-	public String getPassword() {
+	public byte[] getPassword() {
 		return password;
 	}
 
-	public void setPassword(String password) {
+	public void setPassword(byte[] password) {
 		this.password = password;
 	}
 
@@ -154,6 +176,30 @@ public class User {
 
 	public void setBank(Bank bank) {
 		this.bank = bank;
+	}
+
+	public byte[] getSalt() {
+		return salt;
+	}
+
+	public void setSalt(byte[] salt) {
+		this.salt = salt;
+	}
+
+	public java.util.Date getCreationTime() {
+		return creationTime;
+	}
+
+	public void setCreationTime(java.util.Date creationTime) {
+		this.creationTime = creationTime;
+	}
+
+	public boolean isChangedFirstPassword() {
+		return changedFirstPassword;
+	}
+
+	public void setChangedFirstPassword(boolean changedFirstPassword) {
+		this.changedFirstPassword = changedFirstPassword;
 	}
 
 	
