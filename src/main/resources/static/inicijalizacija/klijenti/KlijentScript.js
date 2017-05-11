@@ -342,14 +342,16 @@ administrator.controller('RukovanjeKlijentima', function($scope, $http, $compile
 	};
 	
 	this.aktivirajRacun = function(klijent){
-		$http({
-		    method: 'POST',
-		    url: 'http://localhost:8080/noviRacun',
-		    data: klijent
-		}).
-		then(function mySucces(response) {
-			toastr.success("Racun uspesno aktiviran!");
-		});
+		if(confirm("Da li ste sigurni da zelite da otvorite racun?")){
+			$http({
+			    method: 'POST',
+			    url: 'http://localhost:8080/noviRacun',
+			    data: klijent
+			}).
+			then(function mySucces(response) {
+				toastr.success("Racun uspesno otvoren!");
+			});
+		}
 	}
 	
 	this.setSelected = function(nm){

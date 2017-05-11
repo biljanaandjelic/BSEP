@@ -28,6 +28,7 @@ import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x500.style.IETFUtils;
+import org.bouncycastle.asn1.x509.AuthorityKeyIdentifier;
 import org.bouncycastle.asn1.x509.BasicConstraints;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.cert.X509CertificateHolder;
@@ -59,12 +60,16 @@ public class CertificatesController {
 	public ResponseEntity<String> genCertificate(@RequestBody CertificateDTO dto)
 			throws KeyStoreException, NoSuchAlgorithmException, CertificateException, FileNotFoundException,
 			IOException, NoSuchProviderException, OperatorCreationException, ParseException {
-
+		
+		
+		
 		if (ks == null) {
-			ks = KeyStore.getInstance("JCEKS", "SunJCE");
+			//ks = KeyStore.getInstance("JCEKS", "SunJCE");
+			ks = KeyStore.getInstance("BKS", "BC");
 		}
 
-		ks.load(new FileInputStream("./files/keystore.jks"), "test".toCharArray());
+		ks.load(new FileInputStream("./files/gagi.jks"), "test".toCharArray());
+		//ks.load(null, "gagi".toCharArray());
 
 		X500NameBuilder b = new X500NameBuilder(BCStyle.INSTANCE);
 		b.addRDN(BCStyle.CN, dto.cn);
@@ -74,7 +79,7 @@ public class CertificatesController {
 		b.addRDN(BCStyle.OU, dto.organizationUnit);
 		b.addRDN(BCStyle.C, dto.country);
 		b.addRDN(BCStyle.E, dto.email);
-		b.addRDN(BCStyle.UID, dto.uid);
+		b.addRDN(BCStyle.UID, "");
 
 		X500Name name = b.build();
 
@@ -93,17 +98,20 @@ public class CertificatesController {
 		// SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date startDate = dto.validFrom;
 		Date endDate = dto.validTo;
-
+		BigInteger serial = new BigInteger(20, new SecureRandom());
+		
+		System.out.println(serial);
+		
 		X509v3CertificateBuilder certGen;
 		if (dto.selfSigned) {
-			certGen = new JcaX509v3CertificateBuilder(name, new BigInteger("1"), startDate, endDate, name,
+			certGen = new JcaX509v3CertificateBuilder(name, serial, startDate, endDate, name,
 					pair.getPublic());
 		} else {
 			Certificate issuerCertificate = ks.getCertificate(dto.issuerAlias);
 
 			if (((X509Certificate) issuerCertificate).getNotAfter().before(new Date())) {
 				return new ResponseEntity<String>("Issuer certificate is no longer valid", HttpStatus.OK);
-			} else if (((X509Certificate) issuerCertificate).getBasicConstraints() != -1) {
+			} else if (((X509Certificate) issuerCertificate).getBasicConstraints() == -1) {
 				return new ResponseEntity<String>("Issuer certificate is not CA!", HttpStatus.OK);
 			}
 
@@ -111,21 +119,27 @@ public class CertificatesController {
 
 			certGen = new JcaX509v3CertificateBuilder(issuerName, new BigInteger("1"), startDate, endDate, name,
 					pair.getPublic());
+			
+			certGen.addExtension(Extension.authorityKeyIdentifier, true, new AuthorityKeyIdentifier(issuerCertificate.getEncoded()));
 		}
 
 		certGen.addExtension(Extension.basicConstraints, true, new BasicConstraints(dto.ca));
-
+		
 		X509CertificateHolder certHolder = certGen.build(contentSigner);
 
 		JcaX509CertificateConverter certConverter = new JcaX509CertificateConverter();
 		certConverter = certConverter.setProvider("BC");
-
+		
+		System.out.println(certConverter.getCertificate(certHolder));
+		
 		ks.setCertificateEntry(dto.alias, certConverter.getCertificate(certHolder));
 		ks.setKeyEntry(dto.keyAlias, pair.getPrivate().getEncoded(),
 				new Certificate[] { (Certificate) certConverter.getCertificate(certHolder) });
-
-		ks.store(new FileOutputStream("./files/keystore.jks"), "test".toCharArray());
-
+		
+		System.out.println(ks.getCertificate("ewq"));
+		
+		ks.store(new FileOutputStream("./files/gagi.jks"), "test".toCharArray());
+		
 		return new ResponseEntity<String>("ok", HttpStatus.OK);
 	}
 
