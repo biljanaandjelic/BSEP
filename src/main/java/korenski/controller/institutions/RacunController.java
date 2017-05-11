@@ -21,8 +21,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import korenski.DTOs.RacunSearchDTO;
 import korenski.model.autorizacija.User;
 import korenski.model.geografija.NaseljenoMesto;
+import korenski.model.infrastruktura.Bank;
 import korenski.model.infrastruktura.Racun;
 import korenski.model.klijenti.Klijent;
+import korenski.repository.institutions.BankRepository;
 import korenski.repository.institutions.RacunRepository;
 import korenski.repository.klijenti.KlijentRepository;
 
@@ -35,6 +37,9 @@ public class RacunController {
 	@Autowired
 	KlijentRepository klijentRepository;
 	
+	@Autowired
+	BankRepository bankRepository;
+	
 	@RequestMapping(
 			value = "/noviRacun",
 			method = RequestMethod.POST,
@@ -44,13 +49,15 @@ public class RacunController {
 		Racun racun = new Racun();
 		
 		User u = (User)request.getSession().getAttribute("user");
-				
+		Bank bank = bankRepository.findOne(u.getBank().getId());
+		
 		String brojRacuna = generateBrojRacuna(u.getBank().getCode(), getRacunBase());
 		
 		racun.setBrojRacuna(brojRacuna);
 		racun.setKlijent(klijent);
 		racun.setDatumOtvaranja(new Date());
 		racun.setStatus(true);
+		racun.setBank(bank);
 	
 		return new ResponseEntity<Racun>(repository.save(racun), HttpStatus.OK);
 	}
@@ -61,29 +68,36 @@ public class RacunController {
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Collection<Racun>> filtrirajRacune(@RequestBody RacunSearchDTO dto, @Context HttpServletRequest request) throws Exception {
-	
-		return new ResponseEntity<Collection<Racun>>(repository.findBySearch(dto.status, dto.datumOtvaranjaOd, dto.datumOtvaranjaDo, dto.ime, dto.prezime), HttpStatus.OK);
+		
+		User u = (User)request.getSession().getAttribute("user");
+		Bank bank = bankRepository.findOne(u.getBank().getId());
+		
+		return new ResponseEntity<Collection<Racun>>(repository.findBySearch(dto.status, dto.datumOtvaranjaOd, dto.datumOtvaranjaDo, dto.ime, dto.prezime, bank.getId()), HttpStatus.OK);
 	}
 	
 	@RequestMapping(
 			value = "/sviRacuni",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Collection<Racun>> sviRacuni() throws Exception {
-
+	public ResponseEntity<Collection<Racun>> sviRacuni(@Context HttpServletRequest request) throws Exception {
+		User u = (User)request.getSession().getAttribute("user");
+		Bank bank = bankRepository.findOne(u.getBank().getId());
 		
-		return new ResponseEntity<Collection<Racun>>( repository.findAll(), HttpStatus.OK);
+		return new ResponseEntity<Collection<Racun>>( repository.findByBank(bank), HttpStatus.OK);
 	}
 	
 	@RequestMapping(
 			value = "/nadjiRacune/{id}",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Collection<Racun>> nadjiRacune(@PathVariable("id") Long id) throws Exception {
+	public ResponseEntity<Collection<Racun>> nadjiRacune(@PathVariable("id") Long id, @Context HttpServletRequest request) throws Exception {
 		
 		Klijent klijent = klijentRepository.findOne(id);
 		
-		return new ResponseEntity<Collection<Racun>>( repository.findByKlijent(klijent), HttpStatus.OK);
+		User u = (User)request.getSession().getAttribute("user");
+		Bank bank = bankRepository.findOne(u.getBank().getId());
+		
+		return new ResponseEntity<Collection<Racun>>( repository.findByKlijentAndBank(klijent, bank), HttpStatus.OK);
 	}
 	
 	private String getRacunBase() {
