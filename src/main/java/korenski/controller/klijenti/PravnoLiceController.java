@@ -2,6 +2,7 @@ package korenski.controller.klijenti;
 
 import java.util.Collection;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Context;
 
@@ -15,11 +16,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import korenski.model.autorizacija.User;
 import korenski.model.geografija.NaseljenoMesto;
+import korenski.model.infrastruktura.Bank;
 import korenski.model.klijenti.Klijent;
 import korenski.model.klijenti.PravnoLice;
+import korenski.model.sifrarnici.Activity;
 import korenski.repository.geografija.NaseljenoMestoRepository;
+import korenski.repository.institutions.BankRepository;
 import korenski.repository.klijenti.PravnoLiceRepository;
+import korenski.repository.sifrarnici.ActivityRepository;
 
 @Controller
 public class PravnoLiceController {
@@ -28,6 +34,10 @@ public class PravnoLiceController {
 	PravnoLiceRepository repository;
 	@Autowired
 	NaseljenoMestoRepository repNM;
+	@Autowired
+	ActivityRepository repA;
+	@Autowired
+	BankRepository bankRepository;
 	
 	@RequestMapping(
 			value = "/novoPravnoLice",
@@ -36,6 +46,10 @@ public class PravnoLiceController {
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<PravnoLice> novoPravnoLice(@RequestBody PravnoLice pravnoLice, @Context HttpServletRequest request) throws Exception {
 		pravnoLice.setFizickoLice(false);
+		
+		User u = (User)request.getSession().getAttribute("user");
+		Bank bank = bankRepository.findOne(u.getBank().getId());
+		pravnoLice.setBank(bank);
 		
 		PravnoLice pl;
 		try {
@@ -73,11 +87,13 @@ public class PravnoLiceController {
 		
 		PravnoLice pravnoLiceToModify = null;
 		NaseljenoMesto naseljenoMesto = null;
+		Activity activity = null;
 		
 		try {
 			pravnoLiceToModify = repository.findOne(pravnoLice.getId());
 	
 			naseljenoMesto = repNM.findOne(pravnoLice.getNaseljenoMesto().getId());
+			activity = repA.findOne(pravnoLice.getActivity().getId());
 		} catch (Exception e){
 			return new ResponseEntity<PravnoLice>(new PravnoLice(new Long(-1), null, null, null, null, null, null, null), HttpStatus.OK);
 		}
@@ -92,6 +108,7 @@ public class PravnoLiceController {
 		pravnoLiceToModify.setFax(pravnoLice.getFax());
 		pravnoLiceToModify.setOdobrio(pravnoLice.getOdobrio());
 		pravnoLiceToModify.setNaseljenoMesto(naseljenoMesto);
+		pravnoLiceToModify.setActivity(activity);
 		
 		try {
 			repository.save(pravnoLiceToModify);
@@ -106,10 +123,11 @@ public class PravnoLiceController {
 			value = "/svaPravnaLica",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Collection<PravnoLice>> svaPravnaLica() throws Exception {
-
+	public ResponseEntity<Collection<PravnoLice>> svaPravnaLica(@Context HttpServletRequest request) throws Exception {
+		User u = (User)request.getSession().getAttribute("user");
+		Bank bank = bankRepository.findOne(u.getBank().getId());
 		
-		return new ResponseEntity<Collection<PravnoLice>>( repository.findAll(), HttpStatus.OK);
+		return new ResponseEntity<Collection<PravnoLice>>( repository.findByBank(bank), HttpStatus.OK);
 	}
 	
 	
@@ -117,11 +135,14 @@ public class PravnoLiceController {
 			value = "/nadjiPravnaLica/{id}",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Collection<PravnoLice>> nadjiPravnaLica(@PathVariable("id") Long id) throws Exception {
+	public ResponseEntity<Collection<PravnoLice>> nadjiPravnaLica(@PathVariable("id") Long id, @Context HttpServletRequest request) throws Exception {
 
 		NaseljenoMesto nm = repNM.findOne(id);
 		
-		return new ResponseEntity<Collection<PravnoLice>>( repository.findByNaseljenoMesto(nm), HttpStatus.OK);
+		User u = (User)request.getSession().getAttribute("user");
+		Bank bank = bankRepository.findOne(u.getBank().getId());
+		
+		return new ResponseEntity<Collection<PravnoLice>>( repository.findByNaseljenoMestoAndBank(nm, bank), HttpStatus.OK);
 	}
 	
 	@RequestMapping(
@@ -135,14 +156,18 @@ public class PravnoLiceController {
 	}
 	
 	@RequestMapping(
-			value = "/filtrirajPravnaLicaZaNaseljenoMesto/{jmbg}/{ime}/{prezime}/{adresa}/{telefon}/{email}/{pib}/{fax}/{odobrio}/{id}",
+			value = "/filtrirajPravnaLicaZaNaseljenoMesto/{jmbg}/{ime}/{prezime}/{adresa}/{telefon}/{email}/{pib}/{fax}/{odobrio}/{id}/{idA}",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Collection<PravnoLice>> filtrirajPravnaLicaZaNaseljenoMesto(@PathVariable("jmbg") String jmbg,
-			@PathVariable("ime") String ime, @PathVariable("prezime") String prezime, @PathVariable("adresa") String adresa, @PathVariable("telefon") String telefon, @PathVariable("email") String email, @PathVariable("pib") String pib, @PathVariable("fax") String fax, @PathVariable("odobrio") String odobrio, @PathVariable("id") Long id) throws Exception {
+			@PathVariable("ime") String ime, @PathVariable("prezime") String prezime, @PathVariable("adresa") String adresa, @PathVariable("telefon") String telefon, @PathVariable("email") String email, @PathVariable("pib") String pib, @PathVariable("fax") String fax, @PathVariable("odobrio") String odobrio, @PathVariable("id") Long id, @PathVariable("idA") Long idA, @Context HttpServletRequest request) throws Exception {
 		
 		NaseljenoMesto naseljenoMesto = repNM.findOne(id);
+		Activity activity = repA.findOne(idA);
 		
-		return new ResponseEntity<Collection<PravnoLice>>( repository.findByJmbgContainingIgnoreCaseOrImeContainingIgnoreCaseOrPrezimeContainingIgnoreCaseOrAdresaContainingIgnoreCaseOrTelefonContainingIgnoreCaseOrEmailContainingIgnoreCaseOrPibContainingIgnoreCaseOrFaxContainingIgnoreCaseOrOdobrioContainingIgnoreCaseOrNaseljenoMesto(jmbg, ime, prezime, adresa, telefon, email, pib, fax, odobrio, naseljenoMesto), HttpStatus.OK);
+		User u = (User)request.getSession().getAttribute("user");
+		Bank bank = bankRepository.findOne(u.getBank().getId());
+		
+		return new ResponseEntity<Collection<PravnoLice>>( repository.findByJmbgContainingIgnoreCaseOrImeContainingIgnoreCaseOrPrezimeContainingIgnoreCaseOrAdresaContainingIgnoreCaseOrTelefonContainingIgnoreCaseOrEmailContainingIgnoreCaseOrPibContainingIgnoreCaseOrFaxContainingIgnoreCaseOrOdobrioContainingIgnoreCaseOrNaseljenoMestoOrActivityAndBank(jmbg, ime, prezime, adresa, telefon, email, pib, fax, odobrio, naseljenoMesto, activity, bank), HttpStatus.OK);
 	}
 }

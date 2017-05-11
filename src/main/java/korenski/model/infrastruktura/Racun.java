@@ -34,6 +34,17 @@ public class Racun {
 	
 	@ManyToOne
 	private Klijent klijent;
+	
+	@ManyToOne
+	private Bank bank;
+	
+	public Bank getBank() {
+		return bank;
+	}
+
+	public void setBank(Bank bank) {
+		this.bank = bank;
+	}
 
 	public Racun() {
 		super();

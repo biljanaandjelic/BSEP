@@ -16,9 +16,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import korenski.model.klijenti.Klijent;
+import korenski.model.autorizacija.User;
 import korenski.model.geografija.NaseljenoMesto;
+import korenski.model.infrastruktura.Bank;
 import korenski.repository.klijenti.KlijentRepository;
 import korenski.repository.geografija.NaseljenoMestoRepository;
+import korenski.repository.institutions.BankRepository;
 
 @Controller
 public class KlijentController {
@@ -27,6 +30,8 @@ public class KlijentController {
 	KlijentRepository repository;
 	@Autowired
 	NaseljenoMestoRepository repNM;
+	@Autowired
+	BankRepository bankRepository;
 	
 	@RequestMapping(
 			value = "/noviKlijent",
@@ -35,6 +40,10 @@ public class KlijentController {
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Klijent> noviKlijent(@RequestBody Klijent klijent, @Context HttpServletRequest request) throws Exception {
 		klijent.setFizickoLice(true);
+		
+		User u = (User)request.getSession().getAttribute("user");
+		Bank bank = bankRepository.findOne(u.getBank().getId());
+		klijent.setBank(bank);
 		
 		Klijent k;
 		try {
@@ -104,10 +113,11 @@ public class KlijentController {
 			value = "/sviKlijenti",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Collection<Klijent>> sviKlijenti() throws Exception {
-
+	public ResponseEntity<Collection<Klijent>> sviKlijenti(@Context HttpServletRequest request) throws Exception {
+		User u = (User)request.getSession().getAttribute("user");
+		Bank bank = bankRepository.findOne(u.getBank().getId());
 		
-		return new ResponseEntity<Collection<Klijent>>( repository.findByFizickoLice(true), HttpStatus.OK);
+		return new ResponseEntity<Collection<Klijent>>( repository.findByFizickoLiceAndBank(true, bank), HttpStatus.OK);
 	}
 	
 	
@@ -115,11 +125,14 @@ public class KlijentController {
 			value = "/nadjiKlijente/{id}",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Collection<Klijent>> nadjiKlijente(@PathVariable("id") Long id) throws Exception {
+	public ResponseEntity<Collection<Klijent>> nadjiKlijente(@PathVariable("id") Long id, @Context HttpServletRequest request) throws Exception {
 		
 		NaseljenoMesto nm = repNM.findOne(id);
 		
-		return new ResponseEntity<Collection<Klijent>>( repository.findByNaseljenoMestoAndFizickoLice(nm, true), HttpStatus.OK);
+		User u = (User)request.getSession().getAttribute("user");
+		Bank bank = bankRepository.findOne(u.getBank().getId());
+		
+		return new ResponseEntity<Collection<Klijent>>( repository.findByNaseljenoMestoAndFizickoLiceAndBank(nm, true, bank), HttpStatus.OK);
 	}
 	
 	@RequestMapping(
@@ -138,13 +151,14 @@ public class KlijentController {
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Collection<Klijent>> filtrirajKlijenteZaNaseljenoMesto(@PathVariable("jmbg") String jmbg,
-			@PathVariable("ime") String ime, @PathVariable("prezime") String prezime, @PathVariable("adresa") String adresa, @PathVariable("telefon") String telefon, @PathVariable("email") String email,  @PathVariable("id") Long id) throws Exception {
+			@PathVariable("ime") String ime, @PathVariable("prezime") String prezime, @PathVariable("adresa") String adresa, @PathVariable("telefon") String telefon, @PathVariable("email") String email,  @PathVariable("id") Long id, @Context HttpServletRequest request) throws Exception {
 		
 		NaseljenoMesto naseljenoMesto = repNM.findOne(id);
 		
+		User u = (User)request.getSession().getAttribute("user");
+		Bank bank = bankRepository.findOne(u.getBank().getId());
 		
-		
-		return new ResponseEntity<Collection<Klijent>>( repository.findByJmbgContainingIgnoreCaseOrImeContainingIgnoreCaseOrPrezimeContainingIgnoreCaseOrAdresaContainingIgnoreCaseOrTelefonContainingIgnoreCaseOrEmailContainingIgnoreCaseOrNaseljenoMestoAndFizickoLice(jmbg, ime, prezime, adresa, telefon, email, naseljenoMesto, true), HttpStatus.OK);
+		return new ResponseEntity<Collection<Klijent>>( repository.findByJmbgContainingIgnoreCaseOrImeContainingIgnoreCaseOrPrezimeContainingIgnoreCaseOrAdresaContainingIgnoreCaseOrTelefonContainingIgnoreCaseOrEmailContainingIgnoreCaseOrNaseljenoMestoAndFizickoLiceAndBank(jmbg, ime, prezime, adresa, telefon, email, naseljenoMesto, true, bank), HttpStatus.OK);
 	}
 	
 	

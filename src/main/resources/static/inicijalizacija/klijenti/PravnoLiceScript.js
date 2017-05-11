@@ -6,6 +6,7 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
 	$scope.pravnoLice = {};
 	$scope.pravnaLica = {};
 	$scope.svaNaseljenaMesta = {};
+	$scope.sveRadneDelatnosti = {};
 
 	
 	$scope.sakrijBrowse = false;
@@ -17,6 +18,7 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
         then(function(response) {
         	$scope.pravnaLica = response.data;
         	$scope.selektovanoNaseljenoMesto = angular.copy($scope.pravnaLica[0].naseljenoMesto);
+        	$scope.selektovanaRadnaDelatnost = angular.copy($scope.pravnaLica[0].activity);
         	$scope.sakrijBrowse = true;
         });
 	    
@@ -25,6 +27,8 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
 	$scope.idSelektovanogPravnogLica = null;
 	
 	$scope.selektovanoNaseljenoMesto = {};
+	
+	$scope.selektovanaRadnaDelatnost = {};
 	
 	$scope.init = function(){
 		
@@ -40,7 +44,11 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
         	
         });
 		
-		
+		$http.get('http://localhost:8080/activities').
+        then(function(response) {
+        	$scope.sveRadneDelatnosti = response.data;
+        	
+        });
 	};
 	
 	
@@ -60,6 +68,7 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
 		$scope.rezim =1;
 		$scope.pravnoLice = {};
 		$scope.selektovanoNaseljenoMesto = {};
+		$scope.selektovanaRadnaDelatnost = {};
 	};
 	
 	this.searchClick = function(){
@@ -67,6 +76,7 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
 		$scope.pravnoLice = {};
 		//if(!sakrijBrowse){
 			$scope.selektovanoNaseljenoMesto = {};
+			$scope.selektovanaRadnaDelatnost = {};
 		//}
 	};
 	
@@ -113,9 +123,13 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
 			}else if(angular.equals($scope.selektovanoNaseljenoMesto, {})){
 				toastr.error('Naseljeno mesto mora biti zadato!');
 				return;
+			}else if(angular.equals($scope.selektovanaRadnaDelatnost, {})){
+				toastr.error('Radna delatnost mora biti zadata!');
+				return;
 			}
 			
 			$scope.pravnoLice.naseljenoMesto = angular.copy($scope.selektovanoNaseljenoMesto);
+			$scope.pravnoLice.activity = angular.copy($scope.selektovanaRadnaDelatnost);
 			
 			$http({
     		    method: 'POST',
@@ -132,6 +146,7 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
     				$scope.pravnaLica.push(response.data);
     				$scope.pravnoLice = {};
     				$scope.selektovanoNaseljenoMesto = {};
+    				$scope.selektovanaRadnaDelatnost = {};
     		});
       
 		}else if(angular.equals($scope.rezim, 0) & !angular.equals($scope.pravnoLice, {}) & !angular.equals($scope.idSelektovanogPravnogLica, null)){
@@ -175,9 +190,13 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
 			}else if(angular.equals($scope.selektovanoNaseljenoMesto, {})){
 				toastr.error('Naseljeno mesto mora biti zadato!');
 				return;
+			}else if(angular.equals($scope.selektovanaRadnaDelatnost, {})){
+				toastr.error('Radna delatnost mora biti zadata!');
+				return;
 			}
 			
 			$scope.pravnoLice.naseljenoMesto = angular.copy($scope.selektovanoNaseljenoMesto);
+			$scope.pravnoLice.activity = angular.copy($scope.selektovanaRadnaDelatnost);
 			
 			$http({
     		    method: 'POST',
@@ -205,13 +224,14 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
     				
     				$scope.pravnoLice = {};
     				$scope.selektovanoNaseljenoMesto = {};
+    				$scope.selektovanaRadnaDelatnost = {};
     		});
 			
 		}else if(angular.equals($scope.rezim, 2)){// & !angular.equals($scope.pravnoLice, {})){
 			
 			
 			//if($scope.sakrijBrowse){
-				$http.get('http://localhost:8080/filtrirajPravnaLicaZaNaseljenoMesto/'+$scope.pravnoLice.jmbg+'/'+$scope.pravnoLice.ime+'/'+$scope.pravnoLice.prezime+'/'+$scope.pravnoLice.adresa+'/'+$scope.pravnoLice.telefon+'/'+$scope.pravnoLice.email+'/'+$scope.pravnoLice.pib+'/'+$scope.pravnoLice.fax+'/'+$scope.pravnoLice.odobrio+'/'+$scope.selektovanoNaseljenoMesto.id).
+				$http.get('http://localhost:8080/filtrirajPravnaLicaZaNaseljenoMesto/'+$scope.pravnoLice.jmbg+'/'+$scope.pravnoLice.ime+'/'+$scope.pravnoLice.prezime+'/'+$scope.pravnoLice.adresa+'/'+$scope.pravnoLice.telefon+'/'+$scope.pravnoLice.email+'/'+$scope.pravnoLice.pib+'/'+$scope.pravnoLice.fax+'/'+$scope.pravnoLice.odobrio+'/'+$scope.selektovanoNaseljenoMesto.id+'/'+$scope.selektovanaRadnaDelatnost.id).
 		        then(function(response) {
 		        	
 		        	$scope.pravnaLica = response.data;
@@ -240,11 +260,13 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
 			$scope.rezim = 0;
 			$scope.pravnoLice = {};
 			$scope.selektovanoNaseljenoMesto = {};
+			$scope.selektovanaRadnaDelatnost = {};
 		}else{
 			$scope.rezim = 0;
 			
 			$scope.pravnoLice = {};
 			$scope.selektovanoNaseljenoMesto = {};
+			$scope.selektovanaRadnaDelatnost = {};
 		}
 	};
 	
@@ -279,6 +301,7 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
     		
     		$scope.pravnoLice = {};
     		$scope.selektovanoNaseljenoMesto = {};
+    		$scope.selektovanaRadnaDelatnost = {};
         });
 		
 		
@@ -301,6 +324,7 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
 		$scope.pravnoLice = angular.copy($scope.pravnaLica[0]);
 		$scope.idSelektovanogPravnogLica = $scope.pravnaLica[0].id;
 		$scope.selektovanoNaseljenoMesto = angular.copy($scope.pravnaLica[0].naseljenoMesto);
+		$scope.selektovanaRadnaDelatnost = angular.copy($scope.pravnaLica[0].activity);
 	};
 
 	this.prevClick = function(){
@@ -324,6 +348,7 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
 		$scope.pravnoLice = angular.copy($scope.pravnaLica[temp-1]);
 		$scope.idSelektovanogPravnogLica = $scope.pravnaLica[temp-1].id;
 		$scope.selektovanoNaseljenoMesto = angular.copy($scope.pravnaLica[temp-1].naseljenoMesto);
+		$scope.selektovanaRadnaDelatnost = angular.copy($scope.pravnaLica[temp-1].activity);
 	};
 	
 
@@ -347,6 +372,7 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
 		$scope.pravnoLice = angular.copy($scope.pravnaLica[temp+1]);
 		$scope.idSelektovanogPravnogLica = $scope.pravnaLica[temp+1].id;
 		$scope.selektovanoNaseljenoMesto = angular.copy($scope.pravnaLica[temp+1].naseljenoMesto);
+		$scope.selektovanaRadnaDelatnost = angular.copy($scope.pravnaLica[temp+1].activity);
 	};
 	
 
@@ -357,6 +383,7 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
 		$scope.pravnoLice = angular.copy($scope.pravnaLica[$scope.pravnaLica.length-1]);
 		$scope.idSelektovanogPravnogLica = $scope.pravnaLica[$scope.pravnaLica.length-1].id;
 		$scope.selektovanoNaseljenoMesto = angular.copy($scope.pravnaLica[$scope.pravnaLica.length-1].naseljenoMesto);
+		$scope.selektovanaRadnaDelatnost = angular.copy($scope.pravnaLica[$scope.pravnaLica.length-1].activity);
 	};
 	
 	this.aktivirajRacun = function(pravnoLice){
@@ -387,6 +414,7 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
 			$scope.idSelektovanogPravnogLica = nm.id;
 			$scope.pravnoLice = angular.copy(nm);
 			$scope.selektovanoNaseljenoMesto = angular.copy(nm.naseljenoMesto);
+			$scope.selektovanaRadnaDelatnost = angular.copy(nm.activity);
 		}
 	};
 	
@@ -397,6 +425,12 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
 		//}
 	};
 	
+	this.setSelectedActivity = function(rd){
+		//if(angular.equals($scope.rezim, 0) || angular.equals($scope.rezim, 1)){
+			
+			$scope.selektovanaRadnaDelatnost = angular.copy(rd);
+		//}
+	};
 	
 	this.conf = function(){
 		if(angular.equals($scope.rezim, 0)){
@@ -429,6 +463,40 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
 		}
 		
 		$scope.selektovanoNaseljenoMesto = {};
+		
+	}
+	
+	this.confActivity = function(){
+		if(angular.equals($scope.rezim, 0)){
+					
+			if(angular.equals($scope.pravnoLice, {})){
+				
+				$scope.selektovanaRadnaDelatnost = {};
+			}
+			
+			
+			
+		}else if(angular.equals($scope.rezim, 1)){
+			
+			
+			
+		}else if(angular.equals($scope.rezim, 2)){
+			//$scope.selektovanoNaseljenoMesto = {};
+		}
+	}
+	
+	this.dismisActivity = function(){
+		 
+		if(angular.equals($scope.rezim, 0)){
+			
+			if(!angular.equals($scope.pravnoLice, {})){
+				
+				$scope.selektovanaRadnaDelatnost = angular.copy($scope.pravnoLice.activity);
+			}
+			
+		}
+		
+		$scope.selektovanaRadnaDelatnost = {};
 		
 	}
 	
