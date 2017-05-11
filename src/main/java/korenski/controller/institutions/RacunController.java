@@ -1,7 +1,9 @@
 package korenski.controller.institutions;
 
+import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Context;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import korenski.DTOs.RacunSearchDTO;
+import korenski.model.autorizacija.User;
 import korenski.model.geografija.NaseljenoMesto;
 import korenski.model.infrastruktura.Racun;
 import korenski.model.klijenti.Klijent;
@@ -40,7 +43,11 @@ public class RacunController {
 	public ResponseEntity<Racun> noviRacun(@RequestBody Klijent klijent, @Context HttpServletRequest request) throws Exception {
 		Racun racun = new Racun();
 		
-		racun.setBrojRacuna("000-0000000000001-00");
+		User u = (User)request.getSession().getAttribute("user");
+				
+		String brojRacuna = generateBrojRacuna(u.getBank().getCode(), getRacunBase());
+		
+		racun.setBrojRacuna(brojRacuna);
 		racun.setKlijent(klijent);
 		racun.setDatumOtvaranja(new Date());
 		racun.setStatus(true);
@@ -78,4 +85,26 @@ public class RacunController {
 		
 		return new ResponseEntity<Collection<Racun>>( repository.findByKlijent(klijent), HttpStatus.OK);
 	}
+	
+	private String getRacunBase() {
+        String SALTCHARS = "1234567890";
+        StringBuilder salt = new StringBuilder();
+        Random rnd = new Random();
+        while (salt.length() < 13) { // length of the random string.
+            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
+            salt.append(SALTCHARS.charAt(index));
+        }
+        String saltStr = salt.toString();
+        return saltStr;
+    }
+	
+	private String generateBrojRacuna(String bankCode, String racunBase){
+		
+		BigInteger bigInt = new BigInteger(bankCode + racunBase);
+		
+		BigInteger checksum = new BigInteger("98").subtract(bigInt.multiply(new BigInteger("100")).remainder(new BigInteger("97")));
+		
+		return bankCode + "-" + racunBase + "-" + checksum;
+	}
+	
 }

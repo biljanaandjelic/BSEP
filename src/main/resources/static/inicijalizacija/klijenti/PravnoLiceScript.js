@@ -359,6 +359,28 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
 		$scope.selektovanoNaseljenoMesto = angular.copy($scope.pravnaLica[$scope.pravnaLica.length-1].naseljenoMesto);
 	};
 	
+	this.aktivirajRacun = function(pravnoLice){
+		if(confirm("Da li ste sigurni da zelite da otvorite racun?")){
+			var klijent = {};
+			klijent.id = pravnoLice.id;
+			klijent.jmbg = pravnoLice.jmbg;
+			klijent.ime = pravnoLice.ime;
+			klijent.prezime = pravnoLice.prezime;
+			klijent.adresa = pravnoLice.adresa;
+			klijent.telefon = pravnoLice.telefon;
+			klijent.email = pravnoLice.email;
+			klijent.naseljenoMesto = pravnoLice.naseljenoMesto;
+			
+			$http({
+			    method: 'POST',
+			    url: 'http://localhost:8080/noviRacun',
+			    data: klijent
+			}).
+			then(function mySucces(response) {
+				toastr.success("Racun uspesno aktiviran!");
+			});
+		}
+	}
 	
 	this.setSelected = function(nm){
 		if(angular.equals($scope.rezim, 0)){

@@ -13,6 +13,8 @@ import javax.persistence.Inheritance;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 import korenski.model.geografija.NaseljenoMesto;
 import korenski.model.infrastruktura.Racun;
@@ -27,25 +29,40 @@ public class Klijent {
 	@Column(name="id", nullable = true)
 	private Long id;
 	
-	@Column(nullable = false)
+	@Column(nullable = false, length = 13)
+	@Pattern(regexp = "[0-9]{13}", message = "Oznaka JMBG-a mora imati 13 cifara.")
 	private String jmbg;
 	
 	@Column(nullable = false)
+	@Size(max = 60)
+	@Pattern(regexp = "[A-Z][a-z]*")
 	private String ime;
 	
 	@Column(nullable = false)
+	@Size(max = 60)
+	@Pattern(regexp = "[A-Z][a-z]*")
 	private String prezime;
 	
 	@Column(nullable = false)
+	@Size(max = 60)
+	@Pattern(regexp = "[0-9a-zA-Z]+")
 	private String adresa;
 	
 	@Column(nullable = false)
+	@Size(max = 20)
+	//@Pattern(regexp = "\\(?([0-9]{3})\\)?([ .-]?)([0-9]{3})\2([0-9]{4})")
+	@Pattern(regexp = "[0-9]{9,15}")
 	private String telefon;
 	
 	@Column(unique = true, nullable = false)
+	@Size(max = 254)
+	@Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$")
 	private String email;
 	
 	//sta da radim sa delom tip klijenta?
+	
+	@Column(nullable = false)
+	private boolean fizickoLice;
 	
 	@ManyToOne
 	private NaseljenoMesto naseljenoMesto;
@@ -54,6 +71,14 @@ public class Klijent {
 	@OneToMany()
 	private Collection<Racun> racuni;
 	
+	public boolean isFizickoLice() {
+		return fizickoLice;
+	}
+
+	public void setFizickoLice(boolean fizickoLice) {
+		this.fizickoLice = fizickoLice;
+	}
+
 	public Collection<Racun> getRacuni() {
 		return racuni;
 	}

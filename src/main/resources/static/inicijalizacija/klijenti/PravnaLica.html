@@ -17,7 +17,7 @@
 		                <th><span >FAX</span></th>
 		                <th><span >ODOBRIO</span></th>
 		                <th><span >MESTO</span></th>
-		               
+		                <th>OTVORI RACUN</th>
 		            </tr>
 		        </thead>
 		        <tbody>
@@ -33,6 +33,7 @@
 						<td>{{pravnoLice.fax}}</td>
 						<td>{{pravnoLice.odobrio}}</td>
 			        	<td>{{pravnoLice.naseljenoMesto.naziv}}</td>
+			        	<td><button type="button" class="btn btn-primary" ng-click="rpl.aktivirajRacun(pravnoLice)">Otvori racun</button></td>
 			        </tr>
 		         
 		        </tbody>
@@ -77,7 +78,7 @@
 		   			<p>Adresa pravnog lica : <input type="text" ng-model="pravnoLice.adresa" maxlength="40" required></p>
 		   			<p>Telefon pravnog lica : <input type="text" ng-model="pravnoLice.telefon" maxlength="40" required></p>
 		   			<p>Email pravnog lica : <input type="email" ng-model="pravnoLice.email" maxlength="40" required></p>
-		   			<p>Pib pravnog lica : <input type="number" ng-model="pravnoLice.pib" required></p>
+		   			<p>Pib pravnog lica : <input type="text" ng-model="pravnoLice.pib" required></p>
 		   			<p>Fax pravnog lica : <input type="text" ng-model="pravnoLice.fax" maxlength="40" required></p>
 		   			<p>Pravno lice odobrilo : <input type="text" ng-model="pravnoLice.odobrio" maxlength="40" required></p>
 		   			<p>Mesto : {{selektovanoNaseljenoMesto.naziv}}<button class = "btn btn-primary btn-sm" data-toggle="modal" data-target="#prikaziNaseljenaMestaPL" ng-show='!sakrijBrowse'>...</button></p>
@@ -131,4 +132,5 @@
 </div>
 	
 	
+</div>
 </div>

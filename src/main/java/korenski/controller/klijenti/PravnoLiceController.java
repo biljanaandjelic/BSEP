@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import korenski.model.geografija.NaseljenoMesto;
+import korenski.model.klijenti.Klijent;
 import korenski.model.klijenti.PravnoLice;
 import korenski.repository.geografija.NaseljenoMestoRepository;
 import korenski.repository.klijenti.PravnoLiceRepository;
@@ -34,9 +35,15 @@ public class PravnoLiceController {
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<PravnoLice> novoPravnoLice(@RequestBody PravnoLice pravnoLice, @Context HttpServletRequest request) throws Exception {
-
-	
-		return new ResponseEntity<PravnoLice>(repository.save(pravnoLice), HttpStatus.OK);
+		pravnoLice.setFizickoLice(false);
+		
+		PravnoLice pl;
+		try {
+			pl = repository.save(pravnoLice);
+		} catch (Exception e){
+			return new ResponseEntity<PravnoLice>(new PravnoLice(new Long(-1), null, null, null, null, null, null, null), HttpStatus.OK);
+		}
+		return new ResponseEntity<PravnoLice>(pl, HttpStatus.OK);
 	}
 	
 	@RequestMapping(
@@ -44,10 +51,14 @@ public class PravnoLiceController {
 			method = RequestMethod.DELETE,
 			produces = MediaType.APPLICATION_JSON_VALUE) //String id_string
 	public ResponseEntity<PravnoLice> obrisiPravnoLice(@PathVariable("id") Long id , @Context HttpServletRequest request) throws Exception {
-
-		PravnoLice pravnoLice = repository.findOne(id);
-		repository.delete(pravnoLice);
-		return new ResponseEntity<PravnoLice>(pravnoLice, HttpStatus.OK);
+		
+		try {
+			PravnoLice pravnoLice = repository.findOne(id);
+			repository.delete(pravnoLice);
+		} catch (Exception e){
+			return new ResponseEntity<PravnoLice>(new PravnoLice(new Long(-1), null, null, null, null, null, null, null), HttpStatus.OK);
+		}
+		return new ResponseEntity<PravnoLice>(new PravnoLice(), HttpStatus.OK);
 	}
 
 	
@@ -60,9 +71,16 @@ public class PravnoLiceController {
 	public ResponseEntity<PravnoLice> azurirajPravnoLice(@RequestBody PravnoLice pravnoLice, @Context HttpServletRequest request) throws Exception {
 		//zar se ne koristi metoda update?
 		
-		PravnoLice pravnoLiceToModify = repository.findOne(pravnoLice.getId());
-		//ovde ima greska kod tee
-		NaseljenoMesto naseljenoMesto = repNM.findOne(pravnoLice.getNaseljenoMesto().getId());
+		PravnoLice pravnoLiceToModify = null;
+		NaseljenoMesto naseljenoMesto = null;
+		
+		try {
+			pravnoLiceToModify = repository.findOne(pravnoLice.getId());
+	
+			naseljenoMesto = repNM.findOne(pravnoLice.getNaseljenoMesto().getId());
+		} catch (Exception e){
+			return new ResponseEntity<PravnoLice>(new PravnoLice(new Long(-1), null, null, null, null, null, null, null), HttpStatus.OK);
+		}
 		
 		pravnoLiceToModify.setJmbg(pravnoLice.getJmbg());
 		pravnoLiceToModify.setIme(pravnoLice.getIme());
@@ -75,7 +93,12 @@ public class PravnoLiceController {
 		pravnoLiceToModify.setOdobrio(pravnoLice.getOdobrio());
 		pravnoLiceToModify.setNaseljenoMesto(naseljenoMesto);
 		
-		return new ResponseEntity<PravnoLice>(repository.save(pravnoLiceToModify), HttpStatus.OK);
+		try {
+			repository.save(pravnoLiceToModify);
+		} catch (Exception e) {
+			return new ResponseEntity<PravnoLice>(new PravnoLice(new Long(-1), null, null, null, null, null, null, null), HttpStatus.OK);
+		}
+		return new ResponseEntity<PravnoLice>(pravnoLiceToModify, HttpStatus.OK);
 	}
 	
 	
