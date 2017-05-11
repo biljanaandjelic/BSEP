@@ -1,9 +1,9 @@
 package korenski.controller.autorizacija;
 
 import java.util.Collection;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Context;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,12 +46,17 @@ public class UserController {
 		
 		System.out.println("============================================Generated pass " + pass +" size : "+pass.length());
 		
-		user.setPassword(pass);
+		
 		
 		User rle;
 		try {
+			
+			//userService.sendPassToUser(pass, user);
+			user = userService.handleThePassword(user, pass);
+			Date current = new Date();
+			
+			user.setCreationTime(new java.sql.Date(current.getTime()));
 			rle = repository.save(user);
-			userService.sendPassToUser(pass, user);
 		} catch (Exception e) {
 			e.printStackTrace();
 			rle = new User(new Long(-1), null, null, null, null, null, null, null);
@@ -140,13 +145,21 @@ public class UserController {
 		
 		try {
 			user = repository.findByUsername(loginObject.getUsername());
+			//boolean valid = userService.authenticate(loginObject.getPassword(), user.getPassword().getBytes(), user.getSalt());
+			
+//			if(!valid){
+//				return new ResponseEntity<String>("Neispravni kredencijali!", HttpStatus.OK);
+//			}else{
+//				return new ResponseEntity<String>("Ulogovan!", HttpStatus.OK);
+//			}
+			
 		} catch (Exception e) {
 			return new ResponseEntity<String>("Ne postoji takav korisnik!", HttpStatus.OK);
 		}
 		
-		
-		
 		return new ResponseEntity<String>("Ulogovan!", HttpStatus.OK);
+		
+		
 	}
 	
 }

@@ -14,12 +14,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import korenski.model.autorizacija.User;
 import korenski.repository.autorizacija.UserRepository;
+import korenski.service.autorizacija.UserService;
 
 @Controller
 public class AuthenticationController {
 	
 	@Autowired
 	UserRepository repository;
+	
+	@Autowired
+	UserService userService;
 	
 	@RequestMapping(
 			value = "/login",
@@ -38,9 +42,29 @@ public class AuthenticationController {
 		User user = null;
 		try {
 			user = repository.findByUsername(loginObject.getUsername());
+			
+			boolean expired = userService.checkPasswordExpiration(user);
+			
+			if(expired){
+				loginObject.setId(-4);
+				return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
+			}
+			
 			if(user != null){
-				if(user.getPassword().equals(loginObject.getPassword())){
+			
+				boolean valid = userService.authenticate(loginObject.getPassword(), user.getPassword(), user.getSalt());
+				
+				if(!valid){
+					loginObject.setId(-1);
+					return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
+				}else{
 					request.getSession().setAttribute("user", user);
+					
+					if(!user.isChangedFirstPassword()){
+						loginObject.setId(-5);
+						loginObject.setUrl("http://localhost:8080/authentification/change.html");
+					}
+					
 					return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
 				}
 			}else{
@@ -52,7 +76,7 @@ public class AuthenticationController {
 			return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
 		}
 	
-		return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
+		//return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
 	}
 
 }

@@ -1,8 +1,13 @@
 package korenski.service.autorizacija;
 
 import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Properties;
+
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -67,4 +72,74 @@ public class UserService {
 		
 	}
 	
+	public User handleThePassword(User user, String generatedPass){
+		
+		byte[] salt = generateSalt();
+		
+		byte[] hashedPass = hashPassword(generatedPass, salt);
+		
+		//String hashedPassString =hashedPass.toString();
+		
+		user.setSalt(salt);
+		user.setPassword(hashedPass);
+		
+		return user;
+	}
+
+	private byte[] hashPassword(String password, byte[] salt) {
+		
+		PBEKeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 1000, 256);
+	    try {
+	      SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+	      return skf.generateSecret(spec).getEncoded();
+	    } catch (NoSuchAlgorithmException e) {
+	    	e.printStackTrace();
+	    } catch (InvalidKeySpecException e) {
+	    	e.printStackTrace();
+	    }
+	    return null;
+	}
+	
+	private byte[] generateSalt() {
+		return new SecureRandom().generateSeed(64);
+	}
+	
+	
+	public boolean authenticate(String attemptedPassword, byte[] storedPassword, byte[] salt) {
+		
+		byte[] tmpHash = hashPassword(attemptedPassword, salt);
+		
+		if (tmpHash.length != storedPassword.length)
+			return false;
+		
+	    for (int i = 0; i < tmpHash.length; i++) {
+	      if (tmpHash[i] != storedPassword[i])
+	    	  return false;
+	    }
+
+	    return true;
+	}
+
+	public boolean checkPasswordExpiration(User user) {
+		
+		if(user.isChangedFirstPassword()){
+			//ukoliko je lozinka vec menjana onda nije istekla
+			return false;
+		}
+		
+		long tempTime = System.currentTimeMillis();
+		
+		long creationDate = user.getCreationTime().getTime();
+		
+		long difference = tempTime - creationDate;
+		
+		// ako je proslo vise od 2 sata onda lozinka je istekla
+		if ( difference > 2400000){
+			return true;
+		}else{// u suprotnom je validna
+			return false;
+		}
+		
+		
+	}
 }
