@@ -1,9 +1,12 @@
 package korenski.controller.geografija;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.ValidatorFactory;
 import javax.ws.rs.core.Context;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import korenski.model.geografija.Drzava;
+import korenski.model.infrastruktura.Bank;
 import korenski.repository.geografija.DrzavaRepository;
 
 @Controller
@@ -32,6 +36,23 @@ public class DrzavaController {
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Drzava> novaDrzava(@RequestBody Drzava drzava , @Context HttpServletRequest request) throws Exception {
 
+		
+		ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+		
+		javax.validation.Validator validator = validatorFactory.getValidator();
+		
+		 
+		
+		Set<ConstraintViolation<Drzava>> violations = validator.validate(drzava);
+		
+		for (ConstraintViolation<Drzava> violation : violations) {
+		
+		   String propertyPath = violation.getPropertyPath().toString();
+		
+		    String message = violation.getMessage();
+		
+		    System.out.println("invalid value for: '" + propertyPath + "': " + message);
+		}
 		
 		Drzava drz;
 		try {

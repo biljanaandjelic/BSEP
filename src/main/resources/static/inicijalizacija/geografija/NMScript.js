@@ -53,6 +53,12 @@ administrator.controller('RukovanjeNaseljenimMestima', function($scope, $http, $
         	$scope.naseljenaMesta = response.data;
         	
         });
+		
+		$http.get('/sveDrzave').
+        then(function(response) {
+        	$scope.sveDrzave = response.data;
+        	
+        });
 	}
 	
 	this.addClick = function(){
@@ -65,7 +71,7 @@ administrator.controller('RukovanjeNaseljenimMestima', function($scope, $http, $
 	this.searchClick = function(){
 		$scope.rezim =2;
 		$scope.naseljenoMesto = {};
-		if(!sakrijBrowse){
+		if(!$scope.sakrijBrowse){
 			$scope.selektovanaDrzava = {};
 		}
 	};
@@ -111,6 +117,10 @@ administrator.controller('RukovanjeNaseljenimMestima', function($scope, $http, $
     					return;
     				}
     			
+    				if(!angular.isArray($scope.naseljenaMesta)){
+    					$scope.naseljenaMesta = [];
+    				}
+    				
     				$scope.naseljenaMesta.push(response.data);
     				$scope.naseljenoMesto = {};
     				$scope.selektovanaDrzava = {};
@@ -171,25 +181,25 @@ administrator.controller('RukovanjeNaseljenimMestima', function($scope, $http, $
     				$scope.selektovanaDrzava = {};
     		});
 			
-		}else if(angular.equals($scope.rezim, 2) & !angular.equals($scope.naseljenoMesto, {})){
+		}else if(angular.equals($scope.rezim, 2)){// & !angular.equals($scope.naseljenoMesto, {})){
 			
 			
-			if($scope.sakrijBrowse){
-				$http.get('http://localhost:8080/filtrirajNaseljenaMestaZaDrzavu/'+$scope.naseljenoMesto.oznaka+'/'+$scope.naseljenoMesto.naziv+'/'+$scope.naseljenoMesto.postanskiBroj+'/'+$scope.selektovanaDrzava.id).
+			//if($scope.sakrijBrowse){
+				$http.get('/filtrirajNaseljenaMestaZaDrzavu/'+$scope.naseljenoMesto.oznaka+'/'+$scope.naseljenoMesto.naziv+'/'+$scope.naseljenoMesto.postanskiBroj+'/'+$scope.selektovanaDrzava.id).
 		        then(function(response) {
 		        	
 		        	$scope.naseljenaMesta = response.data;
 		        	
 		        });
 				return;
-			}
+			//}
 			
-			$http.get('http://localhost:8080/filtrirajNaseljenaMesta/'+$scope.naseljenoMesto.oznaka+'/'+$scope.naseljenoMesto.naziv+'/'+$scope.naseljenoMesto.postanskiBroj).
-	        then(function(response) {
-	        	
-	        	$scope.naseljenaMesta = response.data;
-	        	
-	        });
+//			$http.get('http://localhost:8080/filtrirajNaseljenaMesta/'+$scope.naseljenoMesto.oznaka+'/'+$scope.naseljenoMesto.naziv+'/'+$scope.naseljenoMesto.postanskiBroj).
+//	        then(function(response) {
+//	        	
+//	        	$scope.naseljenaMesta = response.data;
+//	        	
+//	        });
 			
 			
 		}
@@ -225,7 +235,7 @@ administrator.controller('RukovanjeNaseljenimMestima', function($scope, $http, $
         then(function(response) {
         	
         	if(response.data.id == -1){
-				toastr.error('Neuspesan unos!');
+        		toastr.error('Neuspesno brisanje! Moguce je da je odabrana stavka povezana sa drugim stavkama te ju je nemoguce obrisati.');
 				return;
 			}
         	
@@ -333,12 +343,17 @@ administrator.controller('RukovanjeNaseljenimMestima', function($scope, $http, $
 	};
 	
 	this.setSelectedState = function(d){
-		if(angular.equals($scope.rezim, 0) || angular.equals($scope.rezim, 1)){
+		//if(angular.equals($scope.rezim, 0) || angular.equals($scope.rezim, 1)){
 			
 			$scope.selektovanaDrzava = angular.copy(d);
-		}
+		//}
 	};
 	
+	this.browse = function(){
+		
+		$scope.sveDrzave = $scope.$parent.$parent.drzaveIzDrzava;
+		
+	};
 	
 	this.conf = function(){
 		if(angular.equals($scope.rezim, 0)){
@@ -355,7 +370,7 @@ administrator.controller('RukovanjeNaseljenimMestima', function($scope, $http, $
 			
 			
 		}else if(angular.equals($scope.rezim, 2)){
-			$scope.selektovanaDrzava = {};
+			//$scope.selektovanaDrzava = {};
 		}
 	}
 	
@@ -366,6 +381,7 @@ administrator.controller('RukovanjeNaseljenimMestima', function($scope, $http, $
 			if(!angular.equals($scope.naseljenoMesto, {})){
 				
 				$scope.selektovanaDrzava = angular.copy($scope.naseljenoMesto.drzava);
+				//return;
 			}
 			
 		}
@@ -374,6 +390,17 @@ administrator.controller('RukovanjeNaseljenimMestima', function($scope, $http, $
 		
 	}
 	
+	this.confType = function(){
+		if($scope.tip === "Klijent"){
+			$scope.$parent.$parent.opsti.tabClick5(5, $scope.naseljenoMesto);
+		}else{
+			$scope.$parent.$parent.opsti.tabClick6(6, $scope.naseljenoMesto);
+		}
+	}
+	
+	this.dismisType = function(){
+		
+	}
 });
 
 administrator.directive('ngConfirmClick', [

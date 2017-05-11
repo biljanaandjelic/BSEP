@@ -17,7 +17,7 @@ administrator.controller('RukovanjeDrzavama', function($scope, $http, $compile){
 		$http.get('http://localhost:8080/sveDrzave').
         then(function(response) {
         	$scope.drzave = response.data;
-        	
+        	$scope.$parent.$parent.drzaveIzDrzava = $scope.drzave;
         });
 		
 	};
@@ -67,7 +67,12 @@ administrator.controller('RukovanjeDrzavama', function($scope, $http, $compile){
     					return;
     				}
     			
+    				if(!angular.isArray($scope.drzave)){
+    					$scope.drzave = [];
+    				}
+    				
     				$scope.drzave.push(response.data);
+    				$scope.$parent.$parent.drzaveIzDrzava = $scope.drzave;
     				$scope.drzava = {};
     		});
       
@@ -114,6 +119,7 @@ administrator.controller('RukovanjeDrzavama', function($scope, $http, $compile){
 					
     				if(!angular.equals(temp, -1)){
     					$scope.drzave[i] = response.data;
+    					$scope.$parent.$parent.drzaveIzDrzava = $scope.drzave;
     				}
     				
     				$scope.drzava = {};
@@ -158,7 +164,7 @@ administrator.controller('RukovanjeDrzavama', function($scope, $http, $compile){
         then(function(response) {
         	
         	if(response.data.id == -1){
-				toastr.error('Neuspesan unos!');
+        		toastr.error('Neuspesno brisanje! Moguce je da je odabrana stavka povezana sa drugim stavkama te ju je nemoguce obrisati.');
 				return;
 			}
         	
@@ -172,6 +178,7 @@ administrator.controller('RukovanjeDrzavama', function($scope, $http, $compile){
     		
     		if(!angular.equals(temp, -1)){
     			$scope.drzave.splice(temp, 1);
+    			$scope.$parent.$parent.drzaveIzDrzava = $scope.drzave;
     		}
     		
     		$scope.drzava = {};

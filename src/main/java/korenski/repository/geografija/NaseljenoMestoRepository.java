@@ -24,4 +24,6 @@ public interface NaseljenoMestoRepository extends CrudRepository<NaseljenoMesto,
 			String naziv, String postanskiBroj);
 	public Collection<NaseljenoMesto> findByOznakaContainingIgnoreCaseOrNazivContainingIgnoreCaseOrPostanskiBrojContainingIgnoreCaseAndDrzava(
 			String oznaka, String naziv, String postanskiBroj, Drzava drzava);
+	public Collection<NaseljenoMesto> findByOznakaContainingIgnoreCaseOrNazivContainingIgnoreCaseOrPostanskiBrojContainingIgnoreCaseOrDrzava(
+			String oznaka, String naziv, String postanskiBroj, Drzava drzava);
 }
