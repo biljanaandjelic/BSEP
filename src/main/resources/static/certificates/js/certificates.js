@@ -20,6 +20,8 @@ app.controller("CertificateController", function($http,$scope, $log){
 	$scope.alias="";
 	$scope.certificateDTO={};
 	$scope.found=false;
+	$scope.aliasForRevoke="";
+	$scope.aliasForCheck="";
 	
 	this.generate = function(){
 		if(control.certificate.validFrom < control.certificate.validTo){
@@ -61,6 +63,51 @@ app.controller("CertificateController", function($http,$scope, $log){
 				$scope.found=false;
 			}
 		);
+	}
+	
+	this.revokeCertificate=function(){
+		$log.log("Revoke certificate.");
+		var path='/certificates/revokeCertificate/'+$scope.aliasForRevoke;
+		$log.log("Path "+path);
+		$http({
+			method: 'GET',
+			url: path
+		}).then(
+			function successCallback(response){
+				$log.log("SuccessCallback");
+				$log.log("ResponseStatus: "+response.status);
+				$log.log("ResponseData: "+response.data);
+				if(response.status===200){
+					toastr.success(response.data);
+				}else{
+					toastr.error("Tekst neki");
+				}
+			},
+			function errorCallback(response){
+				$log.log("ËRROR");
+			}
+		);
+	}
+	
+	this.checkCertificateStatus=function(){
+			$log.log("Check sertificate status");
+			var path='/certificates/status/'+ $scope.aliasForCheck;
+			$log.log("path "+ path);
+			$http({
+				method:'GET',
+				url: path
+			}).then(
+			function successCallback(response){
+				$log.log("Success callback");
+				if(response.status===200){
+					toastr.success(response.data);
+				}else{
+					toastr.error(response.data);
+				}
+			}, function errorCallback(response){
+				$log.log("Error");
+			}
+			);
 	}
 });
 
