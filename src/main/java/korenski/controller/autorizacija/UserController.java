@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Context;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import korenski.controller.autentifikacija.LoginObject;
+import korenski.controller.autentifikacija.pomocneKlase.PasswordChanging;
 import korenski.model.autorizacija.User;
 import korenski.repository.autorizacija.UserRepository;
 import korenski.service.autorizacija.UserService;
@@ -133,33 +134,70 @@ public class UserController {
 	}
 	
 	
+
 	@RequestMapping(
-			value = "/loginUser",
+			value = "/passwordChange",
 			method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> loginUser(@RequestBody LoginObject loginObject , @Context HttpServletRequest request) throws Exception {
+	public ResponseEntity<User> passwordChange(@RequestBody PasswordChanging data , @Context HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
+		User userfromsession = (User) request.getSession().getAttribute("user");
+		
+		if(userfromsession == null){
+			//redirektuj na login.html
+		}
+		
+		if(!userfromsession.getUsername().equals(data.getUsername())){
+			//posalji poruku da se ne podudaraju ulogovani korisnik i uneti podaci
+			
+		}
 
 		User user = null;
 		
 		try {
-			user = repository.findByUsername(loginObject.getUsername());
-			//boolean valid = userService.authenticate(loginObject.getPassword(), user.getPassword().getBytes(), user.getSalt());
+			user = repository.findByUsername(data.getUsername());
+			boolean valid = userService.authenticate(data.getPassword(), user.getPassword(), user.getSalt());
 			
-//			if(!valid){
-//				return new ResponseEntity<String>("Neispravni kredencijali!", HttpStatus.OK);
-//			}else{
-//				return new ResponseEntity<String>("Ulogovan!", HttpStatus.OK);
-//			}
-			
+			if(!valid){
+				user.setId(new Long(-1));
+				return new ResponseEntity<User>(user, HttpStatus.OK);
+			}else{
+				
+				
+				user = userService.handleThePassword(user, data.getNewPassword());
+				user.setChangedFirstPassword(true);
+				user = repository.save(user);
+				
+				request.getSession().setAttribute("user", user);
+				
+				return new ResponseEntity<User>(user, HttpStatus.OK);
+			}
 		} catch (Exception e) {
-			return new ResponseEntity<String>("Ne postoji takav korisnik!", HttpStatus.OK);
+			return new ResponseEntity<User>(user, HttpStatus.OK);
 		}
 		
-		return new ResponseEntity<String>("Ulogovan!", HttpStatus.OK);
+		//return new ResponseEntity<String>("Ulogovan!", HttpStatus.OK);
 		
 		
 	}
+	
+	@RequestMapping(
+			value = "/logoff",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<User> logoff(@Context HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		User user = (User) request.getSession().getAttribute("user");
+		
+		request.getSession().setAttribute("user", null);
+		
+		return new ResponseEntity<User>(user, HttpStatus.OK);
+		
+		
+	}
+	
+	
 	
 }

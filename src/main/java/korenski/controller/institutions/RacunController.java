@@ -19,13 +19,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import korenski.DTOs.RacunSearchDTO;
+import korenski.controller.institutions.pomocni.ZatvaranjePomocni;
 import korenski.model.autorizacija.User;
-import korenski.model.geografija.NaseljenoMesto;
 import korenski.model.infrastruktura.Bank;
 import korenski.model.infrastruktura.Racun;
+import korenski.model.infrastruktura.ZatvaranjeRacuna;
 import korenski.model.klijenti.Klijent;
 import korenski.repository.institutions.BankRepository;
 import korenski.repository.institutions.RacunRepository;
+import korenski.repository.institutions.ZatvaranjeRacunaRepository;
 import korenski.repository.klijenti.KlijentRepository;
 
 @Controller
@@ -39,6 +41,9 @@ public class RacunController {
 	
 	@Autowired
 	BankRepository bankRepository;
+	
+	@Autowired
+	ZatvaranjeRacunaRepository zatvaranjeRepository;
 	
 	@RequestMapping(
 			value = "/noviRacun",
@@ -120,5 +125,56 @@ public class RacunController {
 		
 		return bankCode + "-" + racunBase + "-" + checksum;
 	}
+	
+	
+	@RequestMapping(
+			value = "/zatvoriRacun",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Racun> zatvoriRacun(@RequestBody ZatvaranjePomocni pomocni, @Context HttpServletRequest request) throws Exception {
+		
+		Racun racun = repository.findOne(pomocni.getId());
+		
+		racun.setStatus(false);
+		
+		Date current = new Date();
+		
+		racun.setDatumDeaktivacije(new java.sql.Date(current.getTime()));
+		
+		ZatvaranjeRacuna zr = new ZatvaranjeRacuna(pomocni.getRacun(), new java.sql.Date(current.getTime()), racun);
+		
+		zatvaranjeRepository.save(zr);
+		
+		try {
+			racun = repository.save(racun);
+		} catch (Exception e) {
+			return new ResponseEntity<Racun>(new Racun(new Long(-1), null, false, current, current, null), HttpStatus.OK);
+		}
+		
+		return new ResponseEntity<Racun>(racun, HttpStatus.OK);
+	}
+	
+	
+	@RequestMapping(
+			value = "/nadjiRacun/{id}",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Racun> nadjiRacun(@PathVariable("id") Long id , @Context HttpServletRequest request) throws Exception {
+		
+		Racun racun;
+		try {
+			racun = repository.findOne(id);
+		} catch (Exception e) {
+			return new ResponseEntity<Racun>(new Racun(new Long(-1), null, false, null, null, null), HttpStatus.OK);
+		}
+		
+		if(racun == null){
+			return new ResponseEntity<Racun>(new Racun(new Long(-1), null, false, null, null, null), HttpStatus.OK);
+		}
+		
+		return new ResponseEntity<Racun>(racun, HttpStatus.OK);
+	}
+	
 	
 }

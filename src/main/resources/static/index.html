@@ -4,44 +4,18 @@
 <meta charset="UTF-8">
 <title>Startup</title>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular.min.js"></script>
-<script type = "text/javascript" src="app.js"></script>
+<script type = "text/javascript" src="js/vendor/angular-sanitize.min.js"></script>
+<script type = "text/javascript" src="script.js"></script>
+
 </head>
-<body>
+<body ng-controller="ProbaCtrl as ctrl">
 DOBRODOSLI NA POCETNU STRANU.
 
-<form method="post" action="http://localhost:8080/login">
-  
-    <label><b>Korisnicko ime</b></label>
-    <input type="text" placeholder="Unesite korisnicko ime" name="korisnickoIme" required>
 
-    <label><b>Lozinka</b></label>
-    <input type="password" placeholder="Unesite lozinku" name="lozinka" required>
+<button ng-click="ctrl.metoda1()">BUTTON1</button>
+<button ng-click="ctrl.metoda2()">BUTTON2</button>
 
-    <button type="submit">Login</button>
-   
-</form>
-
-<div ng-controller="restPokusaj as rp">
-			<p>The NAME is {{greeting.name}}</p>
-			<p>The SURNAME is {{greeting.surname}}</p>
-			<p>The MAIL is {{greeting.mail}}</p>
-			<p>The ID is {{greeting.id_user}}</p>
-</div>
-
-<div ng-controller="prviKontroler as prvi">
-    
-    	<p>{{prvi.objekat.ime}}</p>
-    	<p>{{prvi.objekat.prezime}}</p>
-    	<p>{{prvi.objekat.email}}</p>
-    
-
-
-<button ng-click="prvi.metoda()">BUTTON</button>
-		<p>{{rez.one}}</p>
-    	<p>{{rez.two}}</p>
-    	<p>{{rez.three}}</p>
-    	
- <button ng-click="prvi.metodaRedirect()">redirect</button>
-</div>
+<input type="text" ng-model = "model1"/><button ng-click="ctrl.funkcija()">Dugme1</button>
+<div>{{model2}}</div>
 </body>
 </html>

@@ -14,7 +14,7 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
 	$scope.$on('filterPoNaseljenomMestuPravnoLice', function (event, id) {
 	    console.log(id); // Index naseljenog mesta
 	    
-	    $http.get('http://localhost:8080/nadjiPravnaLica/'+id).
+	    $http.get('/nadjiPravnaLica/'+id).
         then(function(response) {
         	$scope.pravnaLica = response.data;
         	$scope.selektovanoNaseljenoMesto = angular.copy($scope.pravnaLica[0].naseljenoMesto);
@@ -32,19 +32,19 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
 	
 	$scope.init = function(){
 		
-		$http.get('http://localhost:8080/svaNaseljenaMesta').
+		$http.get('/svaNaseljenaMesta').
         then(function(response) {
         	$scope.svaNaseljenaMesta = response.data;
         	
         });
 		
-		$http.get('http://localhost:8080/svaPravnaLica').
+		$http.get('/svaPravnaLica').
         then(function(response) {
         	$scope.pravnaLica = response.data;
         	
         });
 		
-		$http.get('http://localhost:8080/activities').
+		$http.get('/activities').
         then(function(response) {
         	$scope.sveRadneDelatnosti = response.data;
         	
@@ -56,7 +56,7 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
 		
 		$scope.sakrijBrowse = false;
 		
-		$http.get('http://localhost:8080/svaPravnaLica').
+		$http.get('/svaPravnaLica').
         then(function(response) {
         	$scope.pravnaLica = response.data;
         	
@@ -133,7 +133,7 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
 			
 			$http({
     		    method: 'POST',
-    		    url: 'http://localhost:8080/novoPravnoLice',
+    		    url: '/novoPravnoLice',
     		    data: $scope.pravnoLice
     		}).
     		then(function mySucces(response) {
@@ -200,7 +200,7 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
 			
 			$http({
     		    method: 'POST',
-    		    url: 'http://localhost:8080/azurirajPravnoLice',
+    		    url: '/azurirajPravnoLice',
     		    data: $scope.pravnoLice
     		}).
     		then(function mySucces(response) {
@@ -231,7 +231,7 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
 			
 			
 			//if($scope.sakrijBrowse){
-				$http.get('http://localhost:8080/filtrirajPravnaLicaZaNaseljenoMesto/'+$scope.pravnoLice.jmbg+'/'+$scope.pravnoLice.ime+'/'+$scope.pravnoLice.prezime+'/'+$scope.pravnoLice.adresa+'/'+$scope.pravnoLice.telefon+'/'+$scope.pravnoLice.email+'/'+$scope.pravnoLice.pib+'/'+$scope.pravnoLice.fax+'/'+$scope.pravnoLice.odobrio+'/'+$scope.selektovanoNaseljenoMesto.id+'/'+$scope.selektovanaRadnaDelatnost.id).
+				$http.get('/filtrirajPravnaLicaZaNaseljenoMesto/'+$scope.pravnoLice.jmbg+'/'+$scope.pravnoLice.ime+'/'+$scope.pravnoLice.prezime+'/'+$scope.pravnoLice.adresa+'/'+$scope.pravnoLice.telefon+'/'+$scope.pravnoLice.email+'/'+$scope.pravnoLice.pib+'/'+$scope.pravnoLice.fax+'/'+$scope.pravnoLice.odobrio+'/'+$scope.selektovanoNaseljenoMesto.id+'/'+$scope.selektovanaRadnaDelatnost.id).
 		        then(function(response) {
 		        	
 		        	$scope.pravnaLica = response.data;
@@ -240,7 +240,7 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
 				return;
 			//}
 			
-			//$http.get('http://localhost:8080/filtrirajPravnaLica/'+$scope.pravnoLice.jmbg+'/'+$scope.pravnoLice.ime+'/'+$scope.pravnoLice.prezime+'/'+$scope.pravnoLice.adresa+'/'+$scope.pravnoLice.telefon+'/'+$scope.pravnoLice.email+'/'+$scope.pravnoLice.pib+'/'+$scope.pravnoLice.fax+'/'+$scope.pravnoLice.odobrio).
+			//$http.get('/filtrirajPravnaLica/'+$scope.pravnoLice.jmbg+'/'+$scope.pravnoLice.ime+'/'+$scope.pravnoLice.prezime+'/'+$scope.pravnoLice.adresa+'/'+$scope.pravnoLice.telefon+'/'+$scope.pravnoLice.email+'/'+$scope.pravnoLice.pib+'/'+$scope.pravnoLice.fax+'/'+$scope.pravnoLice.odobrio).
 	        //then(function(response) {
 	        	
 	        //	$scope.pravnaLica = response.data;
@@ -279,7 +279,7 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
 			return;
 		}
 		
-		$http.delete('http://localhost:8080/obrisiPravnoLice/'+$scope.pravnoLice.id).
+		$http.delete('/obrisiPravnoLice/'+$scope.pravnoLice.id).
         then(function(response) {
         	
         	if(response.data.id == -1){
@@ -400,7 +400,7 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
 			
 			$http({
 			    method: 'POST',
-			    url: 'http://localhost:8080/noviRacun',
+			    url: '/noviRacun',
 			    data: klijent
 			}).
 			then(function mySucces(response) {
