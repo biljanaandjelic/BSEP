@@ -151,8 +151,6 @@ public class CertificatesController {
 		ks.setKeyEntry(dto.keyAlias, pair.getPrivate().getEncoded(),
 				new Certificate[] { (Certificate) certConverter.getCertificate(certHolder) });
 		
-		System.out.println(ks.getCertificate("ewq"));
-		
 		ks.store(new FileOutputStream("./files/gagi.jks"), "test".toCharArray());
 		
 		return new ResponseEntity<String>("ok", HttpStatus.OK);
