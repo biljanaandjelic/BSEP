@@ -13,7 +13,7 @@ administrator.controller('RukovanjeNaseljenimMestima', function($scope, $http, $
 	$scope.$on('filterPoDrzavi', function (event, id) {
 	    console.log(id); // Index drzave
 	    
-	    $http.get('http://localhost:8080/nadjiNaseljenaMesta/'+id).
+	    $http.get('/nadjiNaseljenaMesta/'+id).
         then(function(response) {
         	$scope.naseljenaMesta = response.data;
         	$scope.selektovanaDrzava = angular.copy($scope.naseljenaMesta[0].drzava);
@@ -28,13 +28,13 @@ administrator.controller('RukovanjeNaseljenimMestima', function($scope, $http, $
 	
 	$scope.init = function(){
 		
-		$http.get('http://localhost:8080/sveDrzave').
+		$http.get('/sveDrzave').
         then(function(response) {
         	$scope.sveDrzave = response.data;
         	
         });
 		
-		$http.get('http://localhost:8080/svaNaseljenaMesta').
+		$http.get('/svaNaseljenaMesta').
         then(function(response) {
         	$scope.naseljenaMesta = response.data;
         	
@@ -48,7 +48,7 @@ administrator.controller('RukovanjeNaseljenimMestima', function($scope, $http, $
 		
 		$scope.sakrijBrowse = false;
 		
-		$http.get('http://localhost:8080/svaNaseljenaMesta').
+		$http.get('/svaNaseljenaMesta').
         then(function(response) {
         	$scope.naseljenaMesta = response.data;
         	
@@ -107,7 +107,7 @@ administrator.controller('RukovanjeNaseljenimMestima', function($scope, $http, $
 			
 			$http({
     		    method: 'POST',
-    		    url: 'http://localhost:8080/novoNaseljenoMesto',
+    		    url: '/novoNaseljenoMesto',
     		    data: $scope.naseljenoMesto
     		}).
     		then(function mySucces(response) {
@@ -155,7 +155,7 @@ administrator.controller('RukovanjeNaseljenimMestima', function($scope, $http, $
 			
 			$http({
     		    method: 'POST',
-    		    url: 'http://localhost:8080/azurirajNaseljenoMesto',
+    		    url: '/azurirajNaseljenoMesto',
     		    data: $scope.naseljenoMesto
     		}).
     		then(function mySucces(response) {
@@ -194,7 +194,7 @@ administrator.controller('RukovanjeNaseljenimMestima', function($scope, $http, $
 				return;
 			//}
 			
-//			$http.get('http://localhost:8080/filtrirajNaseljenaMesta/'+$scope.naseljenoMesto.oznaka+'/'+$scope.naseljenoMesto.naziv+'/'+$scope.naseljenoMesto.postanskiBroj).
+//			$http.get('/filtrirajNaseljenaMesta/'+$scope.naseljenoMesto.oznaka+'/'+$scope.naseljenoMesto.naziv+'/'+$scope.naseljenoMesto.postanskiBroj).
 //	        then(function(response) {
 //	        	
 //	        	$scope.naseljenaMesta = response.data;
@@ -231,7 +231,7 @@ administrator.controller('RukovanjeNaseljenimMestima', function($scope, $http, $
 			return;
 		}
 		
-		$http.delete('http://localhost:8080/obrisiNaseljenoMesto/'+$scope.naseljenoMesto.id).
+		$http.delete('/obrisiNaseljenoMesto/'+$scope.naseljenoMesto.id).
         then(function(response) {
         	
         	if(response.data.id == -1){

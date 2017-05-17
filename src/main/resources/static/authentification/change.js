@@ -21,7 +21,7 @@ menjanje.controller('IzmenaCtrl', [ '$window', '$scope', '$http', '$compile',
 				}).
 				then(function mySucces(response) {
 					
-						$window.location.href="http://localhost:8080/authentification/login.html";
+						//$window.location.href="http://localhost:8080/authentification/login.html";
 						
 				});
 			};

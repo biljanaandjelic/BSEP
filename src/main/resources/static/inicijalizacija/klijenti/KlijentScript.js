@@ -13,7 +13,7 @@ administrator.controller('RukovanjeKlijentima', function($scope, $http, $compile
 	$scope.$on('filterPoNaseljenomMestuKlijent', function (event, id) {
 	    console.log(id); // Index naseljenog mesta
 	    
-	    $http.get('http://localhost:8080/nadjiKlijente/'+id).
+	    $http.get('/nadjiKlijente/'+id).
         then(function(response) {
         	$scope.klijenti = response.data;
         	$scope.selektovanoNaseljenoMesto = angular.copy($scope.klijenti[0].naseljenoMesto);
@@ -28,13 +28,13 @@ administrator.controller('RukovanjeKlijentima', function($scope, $http, $compile
 	
 	$scope.init = function(){
 		
-		$http.get('http://localhost:8080/svaNaseljenaMesta').
+		$http.get('/svaNaseljenaMesta').
         then(function(response) {
         	$scope.svaNaseljenaMesta = response.data;
         	
         });
 		
-		$http.get('http://localhost:8080/sviKlijenti').
+		$http.get('/sviKlijenti').
         then(function(response) {
         	$scope.klijenti = response.data;
         	
@@ -48,7 +48,7 @@ administrator.controller('RukovanjeKlijentima', function($scope, $http, $compile
 		
 		$scope.sakrijBrowse = false;
 		
-		$http.get('http://localhost:8080/sviKlijenti').
+		$http.get('/sviKlijenti').
         then(function(response) {
         	$scope.klijenti = response.data;
         	
@@ -110,7 +110,7 @@ administrator.controller('RukovanjeKlijentima', function($scope, $http, $compile
 			
 			$http({
     		    method: 'POST',
-    		    url: 'http://localhost:8080/noviKlijent',
+    		    url: '/noviKlijent',
     		    data: $scope.klijent
     		}).
     		then(function mySucces(response) {
@@ -163,7 +163,7 @@ administrator.controller('RukovanjeKlijentima', function($scope, $http, $compile
 			
 			$http({
     		    method: 'POST',
-    		    url: 'http://localhost:8080/azurirajKlijenta',
+    		    url: '/azurirajKlijenta',
     		    data: $scope.klijent
     		}).
     		then(function mySucces(response) {
@@ -193,7 +193,7 @@ administrator.controller('RukovanjeKlijentima', function($scope, $http, $compile
 			
 			
 			//if($scope.sakrijBrowse){
-				$http.get('http://localhost:8080/filtrirajKlijenteZaNaseljenoMesto/'+$scope.klijent.jmbg+'/'+$scope.klijent.ime+'/'+$scope.klijent.prezime+'/'+$scope.klijent.adresa+'/'+$scope.klijent.telefon+'/'+$scope.klijent.email+'/'+$scope.selektovanoNaseljenoMesto.id).
+				$http.get('/filtrirajKlijenteZaNaseljenoMesto/'+$scope.klijent.jmbg+'/'+$scope.klijent.ime+'/'+$scope.klijent.prezime+'/'+$scope.klijent.adresa+'/'+$scope.klijent.telefon+'/'+$scope.klijent.email+'/'+$scope.selektovanoNaseljenoMesto.id).
 		        then(function(response) {
 		        	
 		        	$scope.klijenti = response.data;
@@ -202,7 +202,7 @@ administrator.controller('RukovanjeKlijentima', function($scope, $http, $compile
 				return;
 			//}
 			
-			//$http.get('http://localhost:8080/filtrirajKlijente/'+$scope.klijent.jmbg+'/'+$scope.klijent.ime+'/'+$scope.klijent.prezime+'/'+$scope.klijent.adresa+'/'+$scope.klijent.telefon+'/'+$scope.klijent.email).
+			//$http.get('/filtrirajKlijente/'+$scope.klijent.jmbg+'/'+$scope.klijent.ime+'/'+$scope.klijent.prezime+'/'+$scope.klijent.adresa+'/'+$scope.klijent.telefon+'/'+$scope.klijent.email).
 	        //then(function(response) {
 	        	
 	        //	$scope.klijenti = response.data;
@@ -239,7 +239,7 @@ administrator.controller('RukovanjeKlijentima', function($scope, $http, $compile
 			return;
 		}
 		
-		$http.delete('http://localhost:8080/obrisiKlijenta/'+$scope.klijent.id).
+		$http.delete('/obrisiKlijenta/'+$scope.klijent.id).
         then(function(response) {
         	
         	if(response.data.id == -1){
@@ -345,7 +345,7 @@ administrator.controller('RukovanjeKlijentima', function($scope, $http, $compile
 		if(confirm("Da li ste sigurni da zelite da otvorite racun?")){
 			$http({
 			    method: 'POST',
-			    url: 'http://localhost:8080/noviRacun',
+			    url: '/noviRacun',
 			    data: klijent
 			}).
 			then(function mySucces(response) {
