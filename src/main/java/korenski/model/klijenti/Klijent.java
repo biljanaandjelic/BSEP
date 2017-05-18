@@ -1,7 +1,5 @@
 package korenski.model.klijenti;
 
-import static javax.persistence.InheritanceType.JOINED;
-
 import java.util.Collection;
 
 import javax.persistence.Column;
@@ -9,26 +7,23 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import korenski.controller.autorizacija.Subject;
 import korenski.model.geografija.NaseljenoMesto;
 import korenski.model.infrastruktura.Bank;
 import korenski.model.infrastruktura.Racun;
 
 @Entity
 @Table(name="klijent")
-@Inheritance(strategy = JOINED)
-public class Klijent {
+
+
+public class Klijent extends Subject{
 	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="id", nullable = true)
-	private Long id;
 	
 	@Column(nullable = false, length = 13)
 	@Pattern(regexp = "[0-9]{13}", message = "Oznaka JMBG-a mora imati 13 cifara.")
@@ -102,7 +97,7 @@ public class Klijent {
 	public Klijent(Long id, String jmbg, String ime, String prezime, String adresa, String telefon, String email,
 			NaseljenoMesto naseljenoMesto) {
 		super();
-		this.id = id;
+		//this.id = id;
 		this.jmbg = jmbg;
 		this.ime = ime;
 		this.prezime = prezime;
@@ -117,13 +112,7 @@ public class Klijent {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
+	
 
 	public String getJmbg() {
 		return jmbg;

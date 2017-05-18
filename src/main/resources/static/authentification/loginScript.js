@@ -16,7 +16,7 @@ logovanje.controller('LogovanjeCtrl', ['$window', '$scope', '$http', '$compile',
 	
 		$http({
 		    method: 'POST',
-		    url: '/login',
+		    url: '/loginSubject',
 		    data: $scope.user
 		}).
 		then(function mySucces(response) {
@@ -35,7 +35,7 @@ logovanje.controller('LogovanjeCtrl', ['$window', '$scope', '$http', '$compile',
 				return;
 			}else if(response.data.id == -5){
 				
-				$window.location.href=response.data.url;
+				//$window.location.href=response.data.url;
 				
 				return;
 			}else{

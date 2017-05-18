@@ -99,7 +99,8 @@ administrator.controller('RukovanjeRacunima', function($scope, $http, $compile){
 			
 			$scope.zaZatvaranje = {};
 			$scope.nulaNaRacunu = false;
-			
+			$scope.$parent.$parent.opsti.novoZatvaranje();
+
 			
 		});
 		
@@ -271,6 +272,10 @@ administrator.controller('RukovanjeRacunima', function($scope, $http, $compile){
 		}
 	};
 	
+	this.nextFormClick = function(){
+		$scope.$parent.$parent.opsti.tabClick8(8, $scope.idSelektovanogRacuna);
+
+	};
 	
 	this.conf = function(){
 		if(angular.equals($scope.rezim, 0)){

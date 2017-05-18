@@ -10,14 +10,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import korenski.DTOs.RacunSearchDTO;
 import korenski.model.autorizacija.User;
 import korenski.model.infrastruktura.Bank;
 import korenski.model.infrastruktura.Racun;
 import korenski.model.infrastruktura.ZatvaranjeRacuna;
 import korenski.repository.institutions.BankRepository;
+import korenski.repository.institutions.RacunRepository;
 import korenski.repository.institutions.ZatvaranjeRacunaRepository;
 
 @Controller
@@ -28,6 +32,9 @@ public class ZatvaranjeRacunaController {
 	
 	@Autowired 
 	BankRepository bankRepository;
+	@Autowired
+	RacunRepository racunRepository;
+	
 	
 	@RequestMapping(
 			value = "/svaZatvaranja",
@@ -41,4 +48,17 @@ public class ZatvaranjeRacunaController {
 		
 		return new ResponseEntity<Collection<ZatvaranjeRacuna>>( zatvaranja, HttpStatus.OK);
 	}
+	
+	@RequestMapping(
+			value = "/filtrirajZatvaranjaPoRacunu/{racun}",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ZatvaranjeRacuna> filtrirajRacune(@PathVariable("racun") Long id, @Context HttpServletRequest request) throws Exception {
+		
+		Racun racun = racunRepository.findOne(id);
+		ZatvaranjeRacuna zatvaranje = repository.findByRacun(racun);
+		
+		return new ResponseEntity<ZatvaranjeRacuna>(zatvaranje, HttpStatus.OK);
+	}
+	
 }

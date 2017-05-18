@@ -1,15 +1,19 @@
 package korenski.model.autorizacija;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -21,6 +25,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.deser.std.DateDeserializers.DateDeserializer;
 import com.fasterxml.jackson.databind.ser.std.DateSerializer;
 
+import korenski.controller.autorizacija.Subject;
 import korenski.model.infrastruktura.Bank;
 
 @Entity
@@ -49,20 +54,11 @@ public class User {
 	//@Size(min=8, max = 25)
 	//@Pattern(regexp = "[\\w]{8,25}")
 	//@NotEmpty
-	//private String password;
-	private byte[] password;
+	private String password;
+	//private byte[] password;
 
-	@Column(nullable = false)
-	@NotEmpty
-	@Size(max = 30)
-	private String name;
-
-	@Column(nullable = false)
-	@NotEmpty
-	@Size(max = 30)
-	private String surname;
-
-	@Column(nullable = false, length=64)
+	//@Column(nullable = false, length=64)
+	@Column(nullable = true, length=64)
 	private byte[] salt;
 	
 	@Column(name = "creationTime", columnDefinition = "DATETIME")
@@ -74,50 +70,77 @@ public class User {
 	@Column(name = "changedFirstPassword")
 	private boolean changedFirstPassword = false;
 	
+	@NotNull
 	@ManyToOne
 	@Valid
 	private Role role;
 	
+	@NotNull
 	@ManyToOne
 	@Valid
 	private Bank bank;
 
+	
+	@NotNull
+	@OneToOne
+	@Valid
+	private Subject subject;
+	
 	public User() {
 		super();
 
 		this.changedFirstPassword = false;
 	}
 
-	public User(Long id, String username, String email, byte[] password, String name, String surname, Role role,
-			Bank bank) {
+//	public User(Long id, String username, String email, byte[] password, String name, String surname, Role role,
+//			Bank bank) {
+//		super();
+//		this.id = id;
+//		this.username = username;
+//		this.email = email;
+//		this.password = password;
+//		this.name = name;
+//		this.surname = surname;
+//		this.role = role;
+//		this.bank = bank;
+//		this.changedFirstPassword = false;
+//	}
+//
+//	public User(String username, String email, byte[] password, String name, String surname, Role role, Bank bank) {
+//		super();
+//		this.username = username;
+//		this.email = email;
+//		this.password = password;
+//		this.name = name;
+//		this.surname = surname;
+//		this.role = role;
+//		this.bank = bank;
+//		this.changedFirstPassword = false;
+//	}
+
+	
+	public User(String username, String email, String password, Date creationTime,
+			Role role, Bank bank, Subject subject) {
 		super();
-		this.id = id;
 		this.username = username;
 		this.email = email;
 		this.password = password;
-		this.name = name;
-		this.surname = surname;
+		this.creationTime = creationTime;
 		this.role = role;
 		this.bank = bank;
+		this.subject = subject;
 		this.changedFirstPassword = false;
 	}
 
-	public User(String username, String email, byte[] password, String name, String surname, Role role, Bank bank) {
-		super();
-		this.username = username;
-		this.email = email;
-		this.password = password;
-		this.name = name;
-		this.surname = surname;
-		this.role = role;
-		this.bank = bank;
-		this.changedFirstPassword = false;
-	}
 
+	
+	
 	public Long getId() {
 		return id;
 	}
 
+		
+	
 	public void setId(Long id) {
 		this.id = id;
 	}
@@ -138,29 +161,32 @@ public class User {
 		this.email = email;
 	}
 
-	public byte[] getPassword() {
+//	public byte[] getPassword() {
+//		return password;
+//	}
+//
+//	public void setPassword(byte[] password) {
+//		this.password = password;
+//	}
+
+	
+
+	public String getPassword() {
 		return password;
 	}
 
-	public void setPassword(byte[] password) {
+	public void setPassword(String password) {
 		this.password = password;
 	}
 
-	public String getName() {
-		return name;
+	public Subject getSubject() {
+		return subject;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setSubject(Subject subject) {
+		this.subject = subject;
 	}
 
-	public String getSurname() {
-		return surname;
-	}
-
-	public void setSurname(String surname) {
-		this.surname = surname;
-	}
 
 	public Role getRole() {
 		return role;
