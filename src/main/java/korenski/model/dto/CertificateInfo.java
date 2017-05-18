@@ -10,22 +10,25 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+
+import korenski.model.infrastruktura.Bank;
 
 
 
 @Entity
-@Table(name="certificateID", uniqueConstraints={@UniqueConstraint(columnNames={"serialNumber","alias"})})
-public class CertificateID {
-	
+@Table(name="certificateID", uniqueConstraints={@UniqueConstraint(columnNames={"serialNumber","bank"})})
+public class CertificateInfo {
+	public enum Type{
+		NationalBank, Bank, Company
+	}
 	public enum Status { OK, UNKNOWN , REVOKED;  };  
 	@Id
 	@GeneratedValue
 	private Long id;
 	
-	@Column(name="serialNumber", nullable=false)
+	@Column(name="serialNumber", unique=true)
 	private BigInteger serialNumber;
 	
 	@Column(nullable=false)
@@ -35,16 +38,19 @@ public class CertificateID {
 	
 	@JoinColumn(name="ca")
 	@ManyToOne(optional=true, fetch=FetchType.LAZY)
-	private CertificateID ca;
-	
-	@Column(unique=true)
+	private CertificateInfo ca;
+	@Column(nullable=false)
+	private Type type;
+	//@Column(unique=true)
 	private String alias;
-	
-	public CertificateID(){
+	@JoinColumn(name="bank")
+	@ManyToOne(optional=false, fetch=FetchType.LAZY)
+	private Bank bank;
+	public CertificateInfo(){
 		
 	}
 
-	public CertificateID( BigInteger serialNumber, Status status, Date dateOfRevocation, CertificateID idOfCA, String alias) {
+	public CertificateInfo( BigInteger serialNumber, Status status, Date dateOfRevocation, CertificateInfo idOfCA, String alias, Type type) {
 		super();
 		
 		this.serialNumber = serialNumber;
@@ -52,6 +58,7 @@ public class CertificateID {
 		this.dateOfRevocation = dateOfRevocation;
 		this.ca = idOfCA;
 		this.alias=alias;
+		this.type=type;
 	}
 
 	public Long getId() {
@@ -86,19 +93,19 @@ public class CertificateID {
 		this.dateOfRevocation = dateOfRevocation2;
 	}
 
-	public CertificateID getIdOfCA() {
+	public CertificateInfo getIdOfCA() {
 		return ca;
 	}
 
-	public void setIdOfCA(CertificateID ca) {
+	public void setIdOfCA(CertificateInfo ca) {
 		this.ca = ca;
 	}
 
-	public CertificateID getCa() {
+	public CertificateInfo getCa() {
 		return ca;
 	}
 
-	public void setCa(CertificateID ca) {
+	public void setCa(CertificateInfo ca) {
 		this.ca = ca;
 	}
 
@@ -108,6 +115,14 @@ public class CertificateID {
 
 	public void setAlias(String alias) {
 		this.alias = alias;
+	}
+
+	public Type getType() {
+		return type;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
 	}
 	
 	

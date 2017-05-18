@@ -14,6 +14,7 @@ app.controller("TabController", function(){
 
 app.controller("CertificateController", function($http,$scope, $log){
 	var control = this;
+	$scope.revokeRequest={};
 	control.certificate = {};
 	control.certificate.validFrom = new Date();
 	control.result = "";
@@ -112,4 +113,52 @@ app.controller("CertificateController", function($http,$scope, $log){
 });
 
 
-
+app.controller("CertificateRevokeAndGetStatus", function($http,$scope, $log){
+	$scope.banks=[];
+	$scope.bank={};
+	$scope.revokeReques={};
+	this.init=function(){
+		
+		
+		var path='/allBanks';
+		
+		$http({
+			method: 'GET',
+			url: path
+		}).then(
+			function successCallback(response){
+				
+				angular.forEach(response.data, function (element, index) {
+			
+					$scope.banks.push(element);
+					
+				});
+			
+				
+			}, function errorCallback(response){
+				$log.log("Error callback");
+			}
+		);
+	};
+	
+	this.sendRevocationRequest=function(){
+		$log.log("Send revoke request ");
+		$log.log("Revoke request alias: "+ $scope.revokeRequest.alias);
+		//$log.log("Selektovana banka je "+ $scope.revokeReques.bank.name);
+		$log.log("Selected bank "+ $scope.bank.name);
+		$scope.revokeRequest.bank=$scope.bank;
+		var path="/certificates/revokeRequest";
+		$http({
+			method: 'PUT',
+			url: path,
+			data: $scope.revokeRequest
+		}).then(
+			function successCallback(response){
+				$log.log(response.data);
+			}, 
+			function errorCallback(response){
+				
+			}
+		);
+	}
+});

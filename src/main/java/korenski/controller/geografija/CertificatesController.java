@@ -20,7 +20,10 @@ import java.security.cert.X509Certificate;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import org.bouncycastle.asn1.x500.RDN;
@@ -50,32 +53,37 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import korenski.DTOs.CertificateDTO;
-import korenski.model.dto.CertificateID;
-import korenski.model.dto.CertificateID.Status;
-import korenski.service.dtos.CertificateIDService;
+import korenski.model.autorizacija.User;
+import korenski.model.dto.CertificateInfo;
+import korenski.model.dto.CertificateInfo.Status;
+import korenski.model.dto.CertificateInfo.Type;
+import korenski.model.dto.RevokeRequest;
+import korenski.model.infrastruktura.Bank;
+import korenski.service.dtos.CertificateInfoService;
+import korenski.service.dtos.RevokeRequestService;
 import util.Base64Utility;
 
 @Controller
 @RequestMapping("/certificates")
 public class CertificatesController {
 	@Autowired
-	CertificateIDService certificateIDService;
+	CertificateInfoService certificateInfoService;
 	private KeyStore ks;
+	@Autowired
+	RevokeRequestService revokeRequestService;
 
 	@RequestMapping(value = "/genCertificate", method = RequestMethod.POST, produces = MediaType.TEXT_PLAIN)
 	public ResponseEntity<String> genCertificate(@RequestBody CertificateDTO dto)
 			throws KeyStoreException, NoSuchAlgorithmException, CertificateException, FileNotFoundException,
 			IOException, NoSuchProviderException, OperatorCreationException, ParseException {
-		
-		
-		
+
 		if (ks == null) {
-			//ks = KeyStore.getInstance("JCEKS", "SunJCE");
+			// ks = KeyStore.getInstance("JCEKS", "SunJCE");
 			ks = KeyStore.getInstance("BKS", "BC");
 		}
 
 		ks.load(new FileInputStream("./files/gagi.jks"), "test".toCharArray());
-		//ks.load(null, "gagi".toCharArray());
+		// ks.load(null, "gagi".toCharArray());
 
 		X500NameBuilder b = new X500NameBuilder(BCStyle.INSTANCE);
 		b.addRDN(BCStyle.CN, dto.cn);
@@ -105,19 +113,16 @@ public class CertificatesController {
 		Date startDate = dto.validFrom;
 		Date endDate = dto.validTo;
 		BigInteger serial = new BigInteger(20, new SecureRandom());
-		
+
 		System.out.println(serial);
-		
+		CertificateInfo certificateInfo;
 		X509v3CertificateBuilder certGen;
 		if (dto.selfSigned) {
-			CertificateID certificateID;
-			
 
-			certificateID = new CertificateID(serial, Status.OK, null, null, dto.alias);
-			
-			certificateIDService.create(certificateID);
-			certGen = new JcaX509v3CertificateBuilder(name, serial, startDate, endDate, name,
-					pair.getPublic());
+			certificateInfo = new CertificateInfo(serial, Status.OK, null, null, dto.alias, Type.NationalBank);
+
+			// certificateInfoService.create(certificateInfo);
+			certGen = new JcaX509v3CertificateBuilder(name, serial, startDate, endDate, name, pair.getPublic());
 		} else {
 			Certificate issuerCertificate = ks.getCertificate(dto.issuerAlias);
 
@@ -126,35 +131,42 @@ public class CertificatesController {
 			} else if (((X509Certificate) issuerCertificate).getBasicConstraints() == -1) {
 				return new ResponseEntity<String>("Issuer certificate is not CA!", HttpStatus.OK);
 			}
-			
-			CertificateID ca = certificateIDService.findByAlias(dto.issuerAlias);
-			CertificateID certificateID = new CertificateID(serial, Status.OK, null, ca, dto.alias);
-			certificateIDService.create(certificateID); 
+
 			X500Name issuerName = new JcaX509CertificateHolder((X509Certificate) issuerCertificate).getIssuer();
 
 			certGen = new JcaX509v3CertificateBuilder(issuerName, new BigInteger("1"), startDate, endDate, name,
 					pair.getPublic());
-			
-			certGen.addExtension(Extension.authorityKeyIdentifier, true, new AuthorityKeyIdentifier(issuerCertificate.getEncoded()));
+
+			certGen.addExtension(Extension.authorityKeyIdentifier, true,
+					new AuthorityKeyIdentifier(issuerCertificate.getEncoded()));
 		}
 
 		certGen.addExtension(Extension.basicConstraints, true, new BasicConstraints(dto.ca));
-		
+		// CertificateInfo certificateID;
+		CertificateInfo ca = certificateInfoService.findByAlias(dto.issuerAlias);
+		if (dto.ca) {
+
+			certificateInfo = new CertificateInfo(serial, Status.OK, null, ca, dto.alias, Type.Bank);
+
+		} else {
+			certificateInfo = new CertificateInfo(serial, Status.OK, null, ca, dto.alias, Type.Company);
+		}
+		certificateInfoService.create(certificateInfo);
 		X509CertificateHolder certHolder = certGen.build(contentSigner);
 
 		JcaX509CertificateConverter certConverter = new JcaX509CertificateConverter();
 		certConverter = certConverter.setProvider("BC");
-		
+
 		System.out.println(certConverter.getCertificate(certHolder));
-		
+
 		ks.setCertificateEntry(dto.alias, certConverter.getCertificate(certHolder));
 		ks.setKeyEntry(dto.keyAlias, pair.getPrivate().getEncoded(),
 				new Certificate[] { (Certificate) certConverter.getCertificate(certHolder) });
-		
+
 		System.out.println(ks.getCertificate("ewq"));
-		
+
 		ks.store(new FileOutputStream("./files/gagi.jks"), "test".toCharArray());
-		
+
 		return new ResponseEntity<String>("ok", HttpStatus.OK);
 	}
 
@@ -163,11 +175,12 @@ public class CertificatesController {
 			throws KeyStoreException, NoSuchProviderException {
 		System.out.println("Pronalazenje sertifikata na osnovu alijasa");
 		if (ks == null) {
-			//ks = KeyStore.getInstance("JCEKS", "SunJCE");
+			// ks = KeyStore.getInstance("JCEKS", "SunJCE");
 			ks = KeyStore.getInstance("BKS", "BC");
 		}
 		try {
-			//ks.load(new FileInputStream("./files/keystore.jks"), "test".toCharArray());
+			// ks.load(new FileInputStream("./files/keystore.jks"),
+			// "test".toCharArray());
 			ks.load(new FileInputStream("./files/gagi.jks"), "test".toCharArray());
 		} catch (NoSuchAlgorithmException | CertificateException | IOException e) {
 			// TODO Auto-generated catch block
@@ -178,7 +191,6 @@ public class CertificatesController {
 
 		if (foundCertificate != null) {
 
-
 			CertificateDTO certificateDTO = getDataFromCertificate(foundCertificate);
 			return new ResponseEntity<CertificateDTO>(certificateDTO, HttpStatus.OK);
 		}
@@ -186,9 +198,27 @@ public class CertificatesController {
 		return new ResponseEntity<CertificateDTO>(HttpStatus.NOT_FOUND);
 	}
 
+	public Certificate findCertInKeyStore(String alias) throws KeyStoreException, NoSuchProviderException{
+		if (ks == null) {
+			// ks = KeyStore.getInstance("JCEKS", "SunJCE");
+			ks = KeyStore.getInstance("BKS", "BC");
+		}
+		try {
+			// ks.load(new FileInputStream("./files/keystore.jks"),
+			// "test".toCharArray());
+			ks.load(new FileInputStream("./files/gagi.jks"), "test".toCharArray());
+		} catch (NoSuchAlgorithmException | CertificateException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		Certificate foundCertificate = ks.getCertificate(alias);
+		return foundCertificate;
+
+	}
 	public CertificateDTO getCertificateBySerialNumber(String serialNumber) {
 		try {
-			
+
 			ks.load(new FileInputStream("./files/gagi.jks"), "test".toCharArray());
 			Enumeration aliases = ks.aliases();
 			String alias;
@@ -198,7 +228,7 @@ public class CertificatesController {
 				Certificate cert = ks.getCertificate(alias);
 
 				if (cert.getType().equals(BCStyle.SERIALNUMBER)) {
-					
+
 					if (((X509Certificate) cert).getSerialNumber().equals(serialNumber)) {
 						CertificateDTO certDTO = getDataFromCertificate(cert);
 						return certDTO;
@@ -228,7 +258,7 @@ public class CertificatesController {
 			RDN givenName = x500name.getRDNs(BCStyle.GIVENNAME)[0];
 			RDN organization = x500name.getRDNs(BCStyle.O)[0];
 			RDN organizationUnit = x500name.getRDNs(BCStyle.OU)[0];
-
+			RDN nesto=x500name.getRDNs(BCStyle.SERIALNUMBER)[0];
 			PublicKey publicKey = certificat.getPublicKey();
 			RDN email = x500name.getRDNs(BCStyle.E)[0];
 			RDN country = x500name.getRDNs(BCStyle.C)[0];
@@ -246,6 +276,7 @@ public class CertificatesController {
 			certificateDTO.setValidTo(validFrom);
 			certificateDTO.setValidFrom(validFrom);
 			certificateDTO.setPublicKey(Base64Utility.encode(publicKey.getEncoded()));
+			certificateDTO.serialNumber=new BigInteger(IETFUtils.valueToString(nesto.getFirst().getValue()));
 			return certificateDTO;
 		} catch (CertificateEncodingException e) {
 			// TODO Auto-generated catch block
@@ -258,30 +289,83 @@ public class CertificatesController {
 		OCSPReq ocspReq;
 
 	}
-	
+
 	/**
 	 * Revoke certificate if private key is lost or for some other reason
 	 * 
 	 * @param serialNumber
 	 */
-	@RequestMapping(value = "/revokeCertificate/{alias}", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN)
-	public ResponseEntity<String> revokeCertificate(@PathVariable("alias") String alias) {
-
-		CertificateID certID = certificateIDService.findByAlias(alias);
-		System.out.println("Povlacenje sertifikata");
-		System.out.println("Alijsa sertifikata koji se povlaci " + alias);
-		if (certID != null) {
-			System.out.println("Certifikat je pronadjen i uspijesno se povlaci");
-			Date dateOfRevocation = new Date();
-			certID.setDateOfRevocation(dateOfRevocation);
-			certID.setStatus(Status.REVOKED);
-			certificateIDService.update(certID);
-			return new ResponseEntity<String>("Sertifikat je uspijesno povucen.", HttpStatus.OK);
-
-		} else {
-			System.out.println("Sertifikat nije povucen.");
-			return new ResponseEntity<String>("Sertifika nije pronadjen.", HttpStatus.NO_CONTENT);
+	// @RequestMapping(value = "/revokeCertificate/{alias}", method =
+	// RequestMethod.GET, produces = MediaType.TEXT_PLAIN)
+	// public ResponseEntity<String> revokeCertificate(@PathVariable("alias")
+	// String alias) {
+	//
+	// CertificateInfo certID = certificateInfoService.findByAlias(alias);
+	// System.out.println("Povlacenje sertifikata");
+	// System.out.println("Alijsa sertifikata koji se povlaci " + alias);
+	// if (certID != null) {
+	// System.out.println("Certifikat je pronadjen i uspijesno se povlaci");
+	// Date dateOfRevocation = new Date();
+	// certID.setDateOfRevocation(dateOfRevocation);
+	// certID.setStatus(Status.REVOKED);
+	// certificateInfoService.update(certID);
+	// return new ResponseEntity<String>("Sertifikat je uspijesno povucen.",
+	// HttpStatus.OK);
+	//
+	// } else {
+	// System.out.println("Sertifikat nije povucen.");
+	// return new ResponseEntity<String>("Sertifika nije pronadjen.",
+	// HttpStatus.NO_CONTENT);
+	// }
+	// }
+	@RequestMapping(value = "/revokeRequest", method = RequestMethod.PUT,
+			// consumes=MediaType.APPLICATION_JSON,
+			produces = MediaType.TEXT_PLAIN)
+	public ResponseEntity<String> saveRevokeRequest(@RequestBody RevokeRequest revokeRequest,
+			@Context HttpServletRequest request) {
+		System.out.println("Sacuvaj zahtjev!!!!");
+		System.out.println("Request alijas " + revokeRequest.getBank().getName());
+		RevokeRequest revokeRequestPersist = revokeRequestService.save(revokeRequest);
+		if (revokeRequestPersist == null) {
+			return new ResponseEntity<String>("Doslo je do geske. Pokusajte ponovo.", HttpStatus.OK);
 		}
+		return new ResponseEntity<String>("Zahtjev za povlacenje sertifikata je zabiljezen.", HttpStatus.OK);
+		// return null;
+
+	}
+
+	@RequestMapping(
+			value="/revokeRequest",
+			method=RequestMethod.GET,
+			produces=MediaType.APPLICATION_JSON
+			)
+	public ResponseEntity<Set<RevokeRequest>> revokeRequest(@Context HttpServletRequest request) {
+		User loginUser = (User) request.getSession().getAttribute("user");
+		if (loginUser != null) {
+			Bank bank = loginUser.getBank();
+			Set<RevokeRequest> revocationRequests = revokeRequestService.findRevokeRequestByBank(bank);
+			return new ResponseEntity<Set<RevokeRequest>>(revocationRequests, HttpStatus.OK);
+		}
+		return null;
+	}
+
+	public ResponseEntity<String> revokeCtatus(@RequestBody RevokeRequest revokeRequest, @Context HttpServletRequest request){
+		//CertificateInfo certificateInfo=certificateInfoService.findCertificateBySerialNumberAndBank(s, bank)
+	
+		//ResponseEntity<CertificateDTO> certDTo=findCertificateDTO(revokeRequest.getAlias());
+		/*
+		 * Ukloniti ovaj dio koda kada Gagi uradi prikaz serijskog broja korisniku
+		 */
+		try {
+			Certificate cert=findCertInKeyStore(revokeRequest.getAlias());
+			CertificateDTO certDTO=getDataFromCertificate(cert);
+			BigInteger serialNumer=certDTO.serialNumber;
+		//	CertificateInfo certInfo=certificateInfoService.findBySe
+		} catch (KeyStoreException | NoSuchProviderException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	/**
@@ -291,25 +375,25 @@ public class CertificatesController {
 	 */
 	@RequestMapping(value = "/status/{alias}", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN)
 	public ResponseEntity<String> checkCertificateStatus(@PathVariable("alias") String alias) {
-		CertificateID certID = certificateIDService.findByAlias(alias);
-		CertificateID tempCertID = certID;
+		CertificateInfo certID = certificateInfoService.findByAlias(alias);
+		CertificateInfo tempCertID = certID;
 		if (certID != null) {
 			while (tempCertID.getIdOfCA() != null) {
-				if (tempCertID.getStatus() == Status.REVOKED ) {
+				if (tempCertID.getStatus() == Status.REVOKED) {
 					if (tempCertID != certID) {
 						certID.setStatus(Status.REVOKED);
 						certID.setDateOfRevocation(new Date());
-						
+
 					}
 					return new ResponseEntity<String>("Sertifikat je povucen.", HttpStatus.OK);
 
 				}
-				tempCertID=tempCertID.getCa();
+				tempCertID = tempCertID.getCa();
 			}
-			
-			if(certID.getStatus()==Status.OK){
-				return new ResponseEntity<String>("Sertifikat je aktuelan.",HttpStatus.OK);
-			}else if(certID.getStatus()==Status.UNKNOWN){
+
+			if (certID.getStatus() == Status.OK) {
+				return new ResponseEntity<String>("Sertifikat je aktuelan.", HttpStatus.OK);
+			} else if (certID.getStatus() == Status.UNKNOWN) {
 				return new ResponseEntity<String>("Status sertifikata nije poznat", HttpStatus.OK);
 			}
 		}

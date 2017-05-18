@@ -12,8 +12,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import korenski.model.autorizacija.Role;
 import korenski.model.autorizacija.User;
+import korenski.model.infrastruktura.Bank;
+import korenski.repository.autorizacija.RoleRepository;
 import korenski.repository.autorizacija.UserRepository;
+import korenski.repository.institutions.BankRepository;
 import korenski.service.autorizacija.UserService;
 
 @Controller
@@ -24,6 +28,11 @@ public class AuthenticationController {
 	
 	@Autowired
 	UserService userService;
+	@Autowired 
+	BankRepository bankRepository;
+	
+	@Autowired
+	RoleRepository roleRepository;
 	
 	@RequestMapping(
 			value = "/login",
@@ -79,4 +88,23 @@ public class AuthenticationController {
 		//return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
 	}
 
+	@RequestMapping(
+			value = "/loginDummy",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<User> loginDummyUser(@Context HttpServletRequest request) throws Exception {
+		
+		Bank bank = bankRepository.findOne(new Long(1));
+		Role role = roleRepository.findOne(new Long(1));
+		
+		
+		User user = new User();
+		user.setBank(bank);
+		user.setRole(role);
+		
+		request.getSession().setAttribute("user", user);
+		
+		return new ResponseEntity<User>(user, HttpStatus.OK);
+	}
+	
 }
