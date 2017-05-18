@@ -15,6 +15,7 @@ app.controller("TabController", function(){
 app.controller("CertificateController", function($http,$scope, $log){
 	var control = this;
 	control.certificate = {};
+	control.certificateRequest = {};
 	control.certificate.validFrom = new Date();
 	control.result = "";
 	$scope.alias="";
@@ -28,6 +29,7 @@ app.controller("CertificateController", function($http,$scope, $log){
 			$http.post('/certificates/genCertificate', control.certificate).then(function success(response) {
 				if(response.data === 'ok'){
 					toastr.success('Certificate successfully generated!');
+					control.certificate = {};
 				}else{
 					toastr.error(response.data);
 				}
@@ -37,6 +39,20 @@ app.controller("CertificateController", function($http,$scope, $log){
 		}else{
 			toastr.error('Invalid date entries!');
 		}
+	};
+	
+	this.generateRequest = function(){
+		alert('radi');
+		$http.post('/certificates/genCertificateRequest', control.certificateRequest).then(function success(response) {
+			if(response.data === 'ok'){
+				toastr.success('Certificate request successfully generated!');
+				control.certificateRequest = {};
+			}else{
+				toastr.error(response.data);
+			}
+		}, function error(response) {
+			control.result = "Unknown error ocurred."
+		});
 	};
 	
 	this.resetIssuer = function(){

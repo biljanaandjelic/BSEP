@@ -128,5 +128,46 @@ public class AuthenticationController {
 		
 		return new ResponseEntity<User>(user, HttpStatus.OK);
 	}
+<<<<<<< HEAD
 	*/
+
+	
+	@RequestMapping(
+			value = "/loginDummy3",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<User> loginDummyUser3(@Context HttpServletRequest request) throws Exception {
+		
+		Bank bank = bankRepository.findOne(new Long(2));
+		Role role = roleRepository.findOne(new Long(2));
+		
+		
+		User user = new User();
+		user.setBank(bank);
+		user.setRole(role);
+		
+		request.getSession().setAttribute("user", user);
+		
+		return new ResponseEntity<User>(user, HttpStatus.OK);
+	}
+	
+	@RequestMapping(
+			value = "/loginDummy4",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<User> loginDummyUser4(@Context HttpServletRequest request) throws Exception {
+		
+		Bank bank = bankRepository.findOne(new Long(2));
+		Role role = roleRepository.findOne(new Long(3));
+		
+		
+		User user = new User();
+		user.setBank(bank);
+		user.setRole(role);
+		
+		request.getSession().setAttribute("user", user);
+		
+		return new ResponseEntity<User>(user, HttpStatus.OK);
+	}
+
 }
