@@ -1,13 +1,18 @@
 package korenski.model.infrastruktura;
 
+import java.util.Collection;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotEmpty;
+
+import korenski.model.klijenti.Klijent;
 
 @Entity
 public class Bank {
@@ -36,6 +41,30 @@ public class Bank {
 	@Size(max = 18)
 	@NotEmpty
 	private String liquidationAcount;
+	
+	@Column(name="racuni")
+	@OneToMany()
+	private Collection<Racun> racuni;
+	
+	@Column(name="klijenti")
+	@OneToMany()
+	private Collection<Klijent> klijenti;
+	
+	public Collection<Racun> getRacuni() {
+		return racuni;
+	}
+
+	public void setRacuni(Collection<Racun> racuni) {
+		this.racuni = racuni;
+	}
+
+	public Collection<Klijent> getKlijenti() {
+		return klijenti;
+	}
+
+	public void setKlijenti(Collection<Klijent> klijenti) {
+		this.klijenti = klijenti;
+	}
 
 	public Bank(Long id, String name, String code, String swiftCode, String liquidationAcount) {
 		super();

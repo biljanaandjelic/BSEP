@@ -8,10 +8,15 @@ administrator.controller('RukovanjeRacunima', function($scope, $http, $compile){
 	
 	$scope.sakrijBrowse = false;
 	
+	$scope.zaZatvaranje = {};
+	$scope.nulaNaStanju = false;
+	$scope.brojRacunaZaPrenos = "";
+	
+	
 	$scope.$on('filterPoKlijentuRacun', function (event, id) {
 	    console.log(id); // Index naseljenog mesta
 	    
-	    $http.get('http://localhost:8080/nadjiRacune/'+id).
+	    $http.get('/nadjiRacune/'+id).
         then(function(response) {
         	$scope.racuni = response.data;
         	$scope.sakrijBrowse = true;
@@ -23,7 +28,7 @@ administrator.controller('RukovanjeRacunima', function($scope, $http, $compile){
 	
 	$scope.init = function(){
 		
-		$http.get('http://localhost:8080/sviRacuni').
+		$http.get('/sviRacuni').
         then(function(response) {
         	$scope.racuni = response.data;
         	
@@ -35,6 +40,77 @@ administrator.controller('RukovanjeRacunima', function($scope, $http, $compile){
 		
 		
 	};
+	
+		this.nadjiRacun = function(rac){
+		
+			$scope.zaZatvaranje = rac;
+	
+		$http.get('/nadjiRacun/'+rac.id).
+        then(function(response) {
+        	
+        	if(angular.equals(response.data.id, -1)){
+        		return;
+        	}
+        	
+        	if(angular.equals(response.data.stanje, 0)){
+        		$scope.nulaNaStanju = true;
+        		$scope.zaZatvaranje = response.data;
+        	}
+        	
+        });
+		
+	};
+	
+	this.closeClick = function(){
+		
+		var objekat = {};
+		objekat.id = $scope.zaZatvaranje.id;
+		objekat.racun = $scope.brojRacunaZaPrenos;
+		
+		$http({
+		    method: 'POST',
+		    url: '/zatvoriRacun',
+		    data: objekat
+		}).
+		then(function mySucces(response) {
+			
+			if(angular.equals(response.data.id, -1)){
+				toastr.error('Neuspesno zatvaranje racuna!')
+				return;
+			}else{
+				toastr.success('Uspesno zatvaranje racuna!');
+			}
+			
+			
+			var temp = -1;
+			for (var i = 0; i < $scope.racuni.length; i++) { 
+			    if(angular.equals($scope.racuni[i].id, response.data.id)){
+			    	temp = i;
+			    	break;
+			    }
+			}
+			
+
+    		if(!angular.equals(temp, -1)){
+    			$scope.racuni[temp] = response.data;
+    			
+    			
+    		}
+			
+			$scope.zaZatvaranje = {};
+			$scope.nulaNaRacunu = false;
+			
+			
+		});
+		
+	};
+	
+	this.dismisClick = function(){
+		$scope.zaZatvaranje = {};
+		$scope.nulaNaRacunu = false;
+		
+	};
+	
 	
 	this.checkRezim = function(){
 		if($scope.rezim === 0){
@@ -48,7 +124,7 @@ administrator.controller('RukovanjeRacunima', function($scope, $http, $compile){
 		
 		$scope.sakrijBrowse = false;
 		
-		$http.get('http://localhost:8080/sviRacuni').
+		$http.get('/sviRacuni').
         then(function(response) {
         	$scope.racuni = response.data;
         	
@@ -73,7 +149,7 @@ administrator.controller('RukovanjeRacunima', function($scope, $http, $compile){
 			
 		}else if(angular.equals($scope.rezim, 2)){
 			
-			$http.get('http://localhost:8080/filtrirajRacune/'+$scope.racun.brojRacuna+'/'+$scope.racun.status+'/'+$scope.racun.datumOtvaranja+'/'+$scope.racun.datumDeaktivacije+'/'+$scope.racun.klijent.ime+'/'+$scope.racun.klijent.prezime).
+			$http.get('/filtrirajRacune/'+$scope.racun.brojRacuna+'/'+$scope.racun.status+'/'+$scope.racun.datumOtvaranja+'/'+$scope.racun.datumDeaktivacije+'/'+$scope.racun.klijent.ime+'/'+$scope.racun.klijent.prezime).
 	        then(function(response) {
 	        	
 	        	$scope.racuni = response.data;
@@ -89,7 +165,7 @@ administrator.controller('RukovanjeRacunima', function($scope, $http, $compile){
 		
 		$http({
 		    method: 'POST',
-		    url: 'http://localhost:8080/filtrirajRacune',
+		    url: '/filtrirajRacune',
 		    data: $scope.racunSearch
 		}).
 		then(function mySucces(response) {

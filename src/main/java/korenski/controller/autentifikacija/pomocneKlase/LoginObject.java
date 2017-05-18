@@ -1,4 +1,4 @@
-package korenski.controller.autentifikacija;
+package korenski.controller.autentifikacija.pomocneKlase;
 
 public class LoginObject {
 	

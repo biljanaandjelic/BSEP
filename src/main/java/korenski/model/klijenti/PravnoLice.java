@@ -2,11 +2,14 @@ package korenski.model.klijenti;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import korenski.model.geografija.Drzava;
 import korenski.model.geografija.NaseljenoMesto;
+import korenski.model.sifrarnici.Activity;
 
 @Entity
 @Table(name="pravno_lice")
@@ -25,6 +28,17 @@ public class PravnoLice extends Klijent {
 	@Size(max = 60)
 	@Pattern(regexp = "[A-Z][a-z]*")
 	private String odobrio;
+	
+	@ManyToOne
+	private Activity activity;
+	
+	public Activity getActivity() {
+		return activity;
+	}
+
+	public void setActivity(Activity activity) {
+		this.activity = activity;
+	}
 
 	public PravnoLice(Long id, String jmbg, String ime, String prezime, String adresa, String telefon, String email,
 			NaseljenoMesto naseljenoMesto, String pib, String fax, String odobrio) {

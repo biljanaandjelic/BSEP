@@ -14,7 +14,7 @@ administrator.controller('RukovanjeDrzavama', function($scope, $http, $compile){
 	
 	$scope.init = function(){
 		
-		$http.get('http://localhost:8080/sveDrzave').
+		$http.get('/sveDrzave').
         then(function(response) {
         	$scope.drzave = response.data;
         	$scope.$parent.$parent.drzaveIzDrzava = $scope.drzave;
@@ -57,7 +57,7 @@ administrator.controller('RukovanjeDrzavama', function($scope, $http, $compile){
 			
 			$http({
     		    method: 'POST',
-    		    url: 'http://localhost:8080/novaDrzava',
+    		    url: '/novaDrzava',
     		    data: $scope.drzava
     		}).
     		then(function mySucces(response) {
@@ -99,7 +99,7 @@ administrator.controller('RukovanjeDrzavama', function($scope, $http, $compile){
 			
 			$http({
     		    method: 'POST',
-    		    url: 'http://localhost:8080/azurirajDrzavu',
+    		    url: '/azurirajDrzavu',
     		    data: $scope.drzava
     		}).
     		then(function mySucces(response) {
@@ -127,7 +127,7 @@ administrator.controller('RukovanjeDrzavama', function($scope, $http, $compile){
 			
 		}else if(angular.equals($scope.rezim, 2) & !angular.equals($scope.drzava, {})){
 			
-			$http.get('http://localhost:8080/filtrirajDrzave/'+$scope.drzava.oznaka+'/'+$scope.drzava.naziv).
+			$http.get('/filtrirajDrzave/'+$scope.drzava.oznaka+'/'+$scope.drzava.naziv).
 	        then(function(response) {
 	        	
 	        	$scope.drzave = response.data;
@@ -160,7 +160,7 @@ administrator.controller('RukovanjeDrzavama', function($scope, $http, $compile){
 			return;
 		}
 		
-		$http.delete('http://localhost:8080/obrisiDrzavu/'+$scope.drzava.id).
+		$http.delete('/obrisiDrzavu/'+$scope.drzava.id).
         then(function(response) {
         	
         	if(response.data.id == -1){

@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import korenski.model.klijenti.Klijent;
 
@@ -29,15 +30,32 @@ public class Racun {
 	@Column(nullable = false)
 	private Date datumOtvaranja;
 	
+	@Column(nullable = false)
+	private double stanje;
+	
 	@Column(nullable = true)
 	private Date datumDeaktivacije;
 	
+	@NotNull
 	@ManyToOne
 	private Klijent klijent;
+	
+	@NotNull
+	@ManyToOne
+	private Bank bank;
+	
+	public Bank getBank() {
+		return bank;
+	}
+
+	public void setBank(Bank bank) {
+		this.bank = bank;
+	}
 
 	public Racun() {
 		super();
 		// TODO Auto-generated constructor stub
+		this.stanje = 0;
 	}
 
 	public Racun(Long id, String brojRacuna, boolean status, Date datumOtvaranja, Date datumDeaktivacije,
@@ -49,6 +67,7 @@ public class Racun {
 		this.datumOtvaranja = datumOtvaranja;
 		this.datumDeaktivacije = datumDeaktivacije;
 		this.klijent = klijent;
+		this.stanje = 0;
 	}
 
 	public Long getId() {
@@ -98,4 +117,15 @@ public class Racun {
 	public void setKlijent(Klijent klijent) {
 		this.klijent = klijent;
 	}
+
+	public double getStanje() {
+		return stanje;
+	}
+
+	public void setStanje(double stanje) {
+		this.stanje = stanje;
+	}
+	
+	
+	
 }

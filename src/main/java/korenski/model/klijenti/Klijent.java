@@ -17,6 +17,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import korenski.model.geografija.NaseljenoMesto;
+import korenski.model.infrastruktura.Bank;
 import korenski.model.infrastruktura.Racun;
 
 @Entity
@@ -67,6 +68,17 @@ public class Klijent {
 	@ManyToOne
 	private NaseljenoMesto naseljenoMesto;
 	
+	@ManyToOne
+	private Bank bank;
+	
+	public Bank getBank() {
+		return bank;
+	}
+
+	public void setBank(Bank bank) {
+		this.bank = bank;
+	}
+
 	@Column(name="racuni")
 	@OneToMany()
 	private Collection<Racun> racuni;

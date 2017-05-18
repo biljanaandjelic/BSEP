@@ -1,9 +1,15 @@
 package korenski.model.sifrarnici;
 
+import java.util.Collection;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
+import korenski.model.geografija.NaseljenoMesto;
+import korenski.model.klijenti.PravnoLice;
 
 @Entity
 public class Activity {
@@ -17,7 +23,20 @@ public class Activity {
 	@Column(unique=true, nullable=false)
 	private String name;
 	
+	@Column(name="pravnaLica")
+	@OneToMany()
+	private Collection<PravnoLice> pravnaLica;
 	
+	public Collection<PravnoLice> getPravnaLica() {
+		return pravnaLica;
+	}
+
+
+	public void setPravnaLica(Collection<PravnoLice> pravnaLica) {
+		this.pravnaLica = pravnaLica;
+	}
+
+
 	public Activity() {
 		super();
 		// TODO Auto-generated constructor stub

@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+
+import korenski.controller.autentifikacija.pomocneKlase.LoginObject;
+
 import korenski.model.autorizacija.Role;
 import korenski.model.autorizacija.User;
 import korenski.model.infrastruktura.Bank;
@@ -28,9 +31,11 @@ public class AuthenticationController {
 	
 	@Autowired
 	UserService userService;
+
+	
+	
 	@Autowired 
 	BankRepository bankRepository;
-	
 	@Autowired
 	RoleRepository roleRepository;
 	
@@ -41,7 +46,7 @@ public class AuthenticationController {
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<LoginObject> loginUser(@RequestBody LoginObject loginObject , @Context HttpServletRequest request) throws Exception {
 		
-		User userFromSession  = (User) request.getSession().getAttribute("korisnik");
+		User userFromSession  = (User) request.getSession().getAttribute("user");
 		
 		if(userFromSession != null){
 			loginObject.setId(-2);
@@ -88,6 +93,7 @@ public class AuthenticationController {
 		//return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
 	}
 
+
 	@RequestMapping(
 			value = "/loginDummy",
 			method = RequestMethod.GET,
@@ -107,4 +113,62 @@ public class AuthenticationController {
 		return new ResponseEntity<User>(user, HttpStatus.OK);
 	}
 	
+
+	@RequestMapping(
+			value = "/loginDummy2",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<User> loginDummyUser2(@Context HttpServletRequest request) throws Exception {
+		
+		Bank bank = bankRepository.findOne(new Long(2));
+		Role role = roleRepository.findOne(new Long(2));
+		
+		
+		User user = new User();
+		user.setBank(bank);
+		user.setRole(role);
+		
+		request.getSession().setAttribute("user", user);
+		
+		return new ResponseEntity<User>(user, HttpStatus.OK);
+	}
+	
+	@RequestMapping(
+			value = "/loginDummy3",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<User> loginDummyUser3(@Context HttpServletRequest request) throws Exception {
+		
+		Bank bank = bankRepository.findOne(new Long(2));
+		Role role = roleRepository.findOne(new Long(2));
+		
+		
+		User user = new User();
+		user.setBank(bank);
+		user.setRole(role);
+		
+		request.getSession().setAttribute("user", user);
+		
+		return new ResponseEntity<User>(user, HttpStatus.OK);
+	}
+	
+	@RequestMapping(
+			value = "/loginDummy4",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<User> loginDummyUser4(@Context HttpServletRequest request) throws Exception {
+		
+		Bank bank = bankRepository.findOne(new Long(2));
+		Role role = roleRepository.findOne(new Long(3));
+		
+		
+		User user = new User();
+		user.setBank(bank);
+		user.setRole(role);
+		
+		request.getSession().setAttribute("user", user);
+		
+		return new ResponseEntity<User>(user, HttpStatus.OK);
+	}
+
 }
