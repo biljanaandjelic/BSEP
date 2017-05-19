@@ -34,10 +34,12 @@
 		    			<li ng-class="{active:tab.isSet(1)}"><a class="navbar-brand" href ng-click="tab.setTab(1)">Generate certificate</a></li>
 		    			<li ng-class="{active:tab.isSet(2)}"><a class="navbar-brand" href ng-click="tab.setTab(2)">View certificate</a></li>
 
-						<li ng-class="{active:tab.isSet(4)}"><a class="navbar-brand" href ng-click="tab.setTab(3)">Revoke certificate</a></li>
+						
 
 		    			<li ng-class="{active:tab.isSet(3)}"><a class="navbar-brand" href ng-click="tab.setTab(3)">Generate CSR</a></li>
-
+						<li ng-class="{active:tab.isSet(4)}"><a class="navbar-brand" href ng-click="tab.setTab(4)">Generate revoke certificate</a></li>
+						<li ng-class="{active:tab.isSet(5)}"><a class="navbar-brand" href ng-click="tab.setTab(5)">Revoke certificate</a></li>
+						<li ng-class="{active:tab.isSet(6)}"><a class="navbar-brand" href ng-click="tab.setTab(6)">Status</a></li>
 		    		</ul>
 	    		</section>
 	    		<ul class="nav navbar-nav navbar-right">
@@ -165,5 +167,11 @@
 		</div>
 		<div ng-show="tab.isSet(4)">
 			<div ng-include="'revokeCertificateAndGetStatatus.html'"></div>
+		</div>
+		<div ng-show="tab.isSet(5)">
+			<div ng-include="'admin.html'"></div>
+		</div>
+		<div ng-show="tab.isSet(6)">
+			<div ng-include="'status.html'"></div>
 		</div>
 </html>

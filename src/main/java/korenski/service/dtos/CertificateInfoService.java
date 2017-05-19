@@ -7,7 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import korenski.model.dto.CertificateInfo;
-import korenski.model.dto.CertificateInfo.Status;
+import korenski.model.dto.CertificateInfo.CertStatus;
+
 import korenski.model.infrastruktura.Bank;
 import korenski.repository.dtos.CertificateInfoRepository;
 
@@ -41,7 +42,7 @@ public class CertificateInfoService {
 		return certificateIDRepository.findByCa(ca);
 	}
 	
-	public Set<CertificateInfo> findByStatus(Status status){
+	public Set<CertificateInfo> findByStatus(CertStatus status){
 		return certificateIDRepository.findByStatus(status);
 	}
 	

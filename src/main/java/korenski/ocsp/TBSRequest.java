@@ -3,7 +3,7 @@ package korenski.ocsp;
 import java.util.ArrayList;
 
 public class TBSRequest {
-	enum Version{
+	public enum Version{
 		V1, V2;
 	}
 	
@@ -42,6 +42,9 @@ public class TBSRequest {
 		this.requestList = requestList;
 	}
 	
+	public void add(Request request){
+		requestList.add(request);
+	}
 	
 	
 

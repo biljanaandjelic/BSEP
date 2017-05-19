@@ -23,7 +23,7 @@ public class CertificateInfo {
 	public enum Type{
 		NationalBank, Bank, Company
 	}
-	public enum Status { OK, UNKNOWN , REVOKED;  };  
+	public enum CertStatus { GOOD,REVOKED, UNKNOWN };  
 	@Id
 	@GeneratedValue
 	private Long id;
@@ -32,7 +32,7 @@ public class CertificateInfo {
 	private BigInteger serialNumber;
 	
 	@Column(nullable=false)
-	private Status status;
+	private CertStatus status;
 	
 	private Date dateOfRevocation;
 	
@@ -50,7 +50,7 @@ public class CertificateInfo {
 		
 	}
 
-	public CertificateInfo( BigInteger serialNumber, Status status, Date dateOfRevocation, CertificateInfo idOfCA, String alias, Type type) {
+	public CertificateInfo( BigInteger serialNumber, CertStatus status, Date dateOfRevocation, CertificateInfo idOfCA, String alias, Type type) {
 		super();
 		
 		this.serialNumber = serialNumber;
@@ -77,11 +77,11 @@ public class CertificateInfo {
 		this.serialNumber = serialNumber;
 	}
 
-	public Status getStatus() {
+	public CertStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(Status status) {
+	public void setStatus(CertStatus status) {
 		this.status = status;
 	}
 

@@ -2,11 +2,13 @@ package korenski.ocsp;
 
 import java.util.Date;
 
+import korenski.model.dto.CertificateInfo.CertStatus;
+
 public class SingleResponse {
 
-	enum CertStatus{
-		GOOD,REVOKED,UNKNOWN
-	}
+//	public enum CertStatus{
+//		GOOD,REVOKED,UNKNOWN
+//	}
 	
 	private CertStatus certStatus;
 	private CertID certID;

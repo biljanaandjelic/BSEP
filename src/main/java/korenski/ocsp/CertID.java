@@ -1,19 +1,21 @@
 package korenski.ocsp;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 public class CertID {
-	enum HashAlgorithm {
+	public enum HashAlgorithm {
 		SHA256WithRSAEncryption, SHA1withRSAencryption
 	}
 
-	private static HashAlgorithm hashAlgorithm;
+	private  HashAlgorithm hashAlgorithm;
 	private String issuerNameHash;
 	private String issuerPublicKeyHash;
-	private BigDecimal seriaNumber;
+	private BigInteger seriaNumber;
 	
-	public CertID(String issuerNameHash, String issuerPublicKeyHash, BigDecimal seriaNumber) {
+	public CertID(HashAlgorithm hashAlgorithm,String issuerNameHash, String issuerPublicKeyHash, BigInteger seriaNumber) {
 		super();
+		this.hashAlgorithm=hashAlgorithm;
 		this.issuerNameHash = issuerNameHash;
 		this.issuerPublicKeyHash = issuerPublicKeyHash;
 		this.seriaNumber = seriaNumber;
@@ -34,17 +36,17 @@ public class CertID {
 	public void setIssuerPublicKeyHash(String issuerPublicKeyHash) {
 		this.issuerPublicKeyHash = issuerPublicKeyHash;
 	}
-	public BigDecimal getSeriaNumber() {
+	public BigInteger getSeriaNumber() {
 		return seriaNumber;
 	}
-	public void setSeriaNumber(BigDecimal seriaNumber) {
+	public void setSeriaNumber(BigInteger seriaNumber) {
 		this.seriaNumber = seriaNumber;
 	}
-	public static HashAlgorithm getHashAlgorithm() {
+	public  HashAlgorithm getHashAlgorithm() {
 		return hashAlgorithm;
 	}
-	public static void setHashAlgorithm(HashAlgorithm hashAlgorithm) {
-		CertID.hashAlgorithm = hashAlgorithm;
+	public  void setHashAlgorithm(HashAlgorithm hashAlgorithm) {
+		this.hashAlgorithm = hashAlgorithm;
 	}
 	
 	
