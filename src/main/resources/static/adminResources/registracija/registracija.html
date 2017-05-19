@@ -8,8 +8,7 @@
 		        <thead>
 		            <tr class="text">
 		                
-		                <th><span >IME</span></th>
-		                <th><span >PREZIME</span></th>
+		               
 		                <th><span >EMAIL</span></th>
 		                <th><span >USERNAME</span></th>
 		                <th><span >BANKA</span></th>
@@ -22,8 +21,7 @@
 			        <tr ng-repeat="korisnik in korisnici track by korisnik.id" ng-click="rk.setSelected(korisnik)"
 			         ng-class="{selected: korisnik.id === idSelektovanogKorisnika}" >
 			        	
-			        	<td>{{korisnik.name}}</td>
-			        	<td>{{korisnik.surname}}</td>
+			        	
 			        	<td>{{korisnik.email}}</td>
 			        	<td>{{korisnik.username}}</td>
 			        	<td>{{korisnik.bank.name}}</td>
@@ -68,8 +66,6 @@
 	   			<div>
 		   			<form name = "userForm"  
 						ng-submit = "userForm.$valid && rk.commitClick()"   >
-				   			<p>Ime : <input type="text" ng-model="korisnik.name" maxlength="40" required ng-readonly="rezim==0 && rk.prazanKorisnik()"></p>
-				   			<p>Prezime : <input type="text" ng-model="korisnik.surname" maxlength="40" required ng-readonly="rezim==0 && rk.prazanKorisnik()"></p>
 				   			<p>Email : <input type="email" ng-model="korisnik.email" maxlength="40" required ng-readonly="rezim==0 && rk.prazanKorisnik()"></p>
 				   			<p>Korisnicko ime : <input type="text" ng-model="korisnik.username" maxlength="40" required ng-readonly="rezim==0 && rk.prazanKorisnik()"></p>
 				   			
@@ -84,7 +80,7 @@
       							<div class="panel-body">Lozinka i ponovljena lozinka se ne poklapaju!</div>
         					</div> -->
         					
-				   			<p>Banka : {{banka.name}} <input ng-show="rezim==1 || !rk.prazanKorisnik()" type="button" class = "btn btn-primary btn-sm" ng-click="rk.nadjiBanke()" data-toggle="modal" data-target="#prikaziBanke">Odaberi</button></p>
+				   			<p>Zaposleni : {{zaposleni.name}} <input ng-show="rezim==1 || !rk.prazanKorisnik()" type="button" class = "btn btn-primary btn-sm" ng-click="rk.nadjiZaposlene()" data-toggle="modal" data-target="#prikaziZaposlene">Odaberi</button></p>
 				   			<p>Rola : {{rola.name}} <input ng-show="rezim==1 || !rk.prazanKorisnik()" type="button" class = "btn btn-primary btn-sm" ng-click="rk.nadjiRole()" data-toggle="modal" data-target="#prikaziRole">Odaberi</button></p> 
 				   			
 				   			<!-- <button class = "btn btn-primary btn-sm" data-toggle="modal" data-target="#prikaziPermisije" ng-show='!sakrijBrowse' ng-click="rk.browse()">Dodaj permisiju</button>
@@ -106,14 +102,14 @@
 	  
 	</div>
 	
-	<div class="modal fade" id="prikaziBanke" role="dialog">
+	<div class="modal fade" id="prikaziZaposlene" role="dialog">
 	    <div class="modal-dialog">
 	    
 	      
 	      <div class="modal-content" >
 	        <div class="modal-header">
 	          <button type="button" class="close" data-dismiss="modal">&times;</button>
-	          <h4 class="modal-title">Banke</h4>
+	          <h4 class="modal-title">Zaposleni</h4>
 	        </div>
 	        <div class="modal-body">
 	       	
@@ -123,8 +119,8 @@
 							    <th>Naziv</th> 
 							    
 							  </tr>
-							  <tr ng-repeat="b in sveBanke track by b.id" ng-click="rk.setSelectedBank(b)"
-				        	 ng-class="{selected: b.id === banka.id}">
+							  <tr ng-repeat="b in sviZaposleni track by b.id" ng-click="rk.setSelectedZaposleni(b)"
+				        	 ng-class="{selected: b.id === zaposleni.id}">
 							  	
 							    <td>{{b.name}}</td>
 								

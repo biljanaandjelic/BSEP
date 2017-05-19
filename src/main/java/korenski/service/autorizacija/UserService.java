@@ -56,7 +56,7 @@ public class UserService {
 		
 		msg.setTo("teauvranju@gmail.com");
         msg.setSubject("Registration");
-        msg.setText("Mr(s) " +user.getName() +" "+ user.getSurname()+ ",\n You have a registered account under the following username : "+user.getUsername()+".\n Your password is "+password);
+        msg.setText("Mr(s) " + ",\n You have a registered account under the following username : "+user.getUsername()+".\n Your password is "+password);
         
 		try{
 			mailSender.send(msg);
@@ -71,7 +71,7 @@ public class UserService {
 		}
 		
 	}
-	
+	/*
 	public User handleThePassword(User user, String generatedPass){
 		
 		byte[] salt = generateSalt();
@@ -85,7 +85,7 @@ public class UserService {
 		
 		return user;
 	}
-
+*/
 	private byte[] hashPassword(String password, byte[] salt) {
 		
 		PBEKeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 1000, 256);

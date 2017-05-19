@@ -15,11 +15,24 @@ administrator.controller('Opsti', function($scope, $http, $compile, $timeout, $r
 		
 	};
 	
+	this.logoff = function(){
+		
+		$http.get('/logoff').
+		then(function mySucces(response) {
+			
+				//$window.location.href="http://localhost:8080/authentification/login.html";
+				toastr.success("IZLOGOVAN");
+		});
+	};
 
 	this.tabClick = function(num){
 		
 		$scope.tab = num;
 		
+	};
+	
+	this.novoZatvaranje = function(){
+		$scope.$broadcast('novoZatvaranje'); // going down!
 	};
 	
 	this.tabClick2 = function(num, drzava){
@@ -72,5 +85,10 @@ administrator.controller('Opsti', function($scope, $http, $compile, $timeout, $r
 		$scope.kl = klijent.id;
 		
 		$scope.$broadcast('filterPoKlijentuRacun', klijent.id); // going down!
+	};
+	
+	this.tabClick8 = function(num, idSelektovanogRacuna){
+		$scope.tab = num;
+		$scope.$broadcast('filterZatvaranja', idSelektovanogRacuna); // going down!
 	};
 });

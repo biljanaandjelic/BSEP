@@ -1,6 +1,8 @@
-var proba = angular.module('proba', [ngSanitize]);
+//var proba = angular.module('proba', ['ngSanitize']);
 
-proba.controller('ProbaCtrl', function($scope, $http, $compile, $sanitize) {
+var proba = angular.module('proba', []);
+
+proba.controller('ProbaCtrl', function($scope, $http, $compile){//, $sanitize) {
 
 	$scope.model1 = "";
 	$scope.model2 = "";
@@ -23,8 +25,15 @@ proba.controller('ProbaCtrl', function($scope, $http, $compile, $sanitize) {
 	
 	
 	this.funkcija = function(){
-		$sanitize($scope.model1);
+		//$sanitize($scope.model1);
 		$scope.model2 = $scope.model1;
+	}
+	
+	this.getRedirect = function(){
+		$http.get('/redirektGetMetodom').
+	    then(function(response) {
+	    	
+	    });
 	}
 	
 });
