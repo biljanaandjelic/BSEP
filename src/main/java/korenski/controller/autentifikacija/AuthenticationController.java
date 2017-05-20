@@ -130,7 +130,25 @@ public class AuthenticationController {
 	}
 <<<<<<< HEAD
 	*/
-
+	
+	@RequestMapping(
+			value = "/loginDummy2",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<User> loginDummyUser2(@Context HttpServletRequest request) throws Exception {
+		
+		Bank bank = bankRepository.findOne(new Long(1));
+		Role role = roleRepository.findOne(new Long(1));
+		
+		
+		User user = new User();
+		user.setBank(bank);
+		user.setRole(role);
+		
+		request.getSession().setAttribute("user", user);
+		
+		return new ResponseEntity<User>(user, HttpStatus.OK);
+	}
 	
 	@RequestMapping(
 			value = "/loginDummy3",

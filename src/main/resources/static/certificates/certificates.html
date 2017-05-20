@@ -32,6 +32,7 @@
 		    			<li ng-class="{active:tab.isSet(1)}"><a class="navbar-brand" href ng-click="tab.setTab(1)">Generate certificate</a></li>
 		    			<li ng-class="{active:tab.isSet(2)}"><a class="navbar-brand" href ng-click="tab.setTab(2)">View certificate</a></li>
 		    			<li ng-class="{active:tab.isSet(3)}"><a class="navbar-brand" href ng-click="tab.setTab(3)">Generate CSR</a></li>
+		    			<li ng-class="{active:tab.isSet(4)}"><a class="navbar-brand" href ng-click="tab.setTab(4)">Approve certificates</a></li>
 		    		</ul>
 	    		</section>
 	    		<ul class="nav navbar-nav navbar-right">
@@ -48,12 +49,14 @@
 								<div class="panel-body">
 									<form name="genCertificateForm" ng-submit="genCertificateForm.$valid && certCtrl.generate()" class="form-signin" novalidate >
 										<h3>Generate certificate: </h3>
+										<!--  
 										<fieldset class="form-group">
 											<input ng-model="certCtrl.certificate.alias" type="text" class="form-control" placeholder="Certificate alias:" required></input>
 										</fieldset>
 										<fieldset class="form-group">
 											<input ng-model="certCtrl.certificate.keyAlias" type="text" class="form-control" placeholder="Private key alias:" required></input>
 										</fieldset>
+										-->
 										<!--  
 										<fieldset class="form-group">
 								  			<label class="control-label">Self-signed?<input ng-model="certCtrl.certificate.selfSigned" type="checkbox" class="form-control" ng-change="certCtrl.resetIssuer()"></input></label>
@@ -82,6 +85,9 @@
 										</fieldset>
 										<fieldset class="form-group">
 											<input ng-model="certCtrl.certificate.email" type="email" class="form-control" placeholder="Email:" required></input>
+										</fieldset>
+										<fieldset class="form-group">
+											<input ng-model="certCtrl.certificate.uid" type="text" class="form-control" placeholder="UID:" required></input>
 										</fieldset>
 										<!--  
 										<fieldset class="form-group">
@@ -135,6 +141,9 @@
 										<fieldset class="form-group">
 											<input ng-model="certCtrl.certificateRequest.email" type="email" class="form-control" placeholder="Email:" required></input>
 										</fieldset>
+										<fieldset class="form-group">
+											<input ng-model="certCtrl.certificateRequest.uid" type="text" class="form-control" placeholder="UID:" required></input>
+										</fieldset>
 										<!--  
 										<fieldset class="form-group">
 								  			<label class="control-label">Certificate authority?<input ng-model="certCtrl.certificateRequest.ca" type="checkbox" class="form-control"></input></label>
@@ -151,6 +160,38 @@
 				  		</div>
 				  		<div class="col-sm-4"></div>
 				  	</div>
+			</div>
+			<div ng-show="tab.isSet(4)">
+				<div class="row">
+			  		<div class="col-sm-2"></div>
+			  		<div class="col-sm-8">
+			  			<h3>Approve certificates</h3>
+				  		<table class="table table-hover">
+							<thead>
+								<tr>
+									<th>CN</th>
+									<th>Surname</th>
+									<th>Given name</th>
+									<th>Country</th>
+									<th>Email</th>
+									<th>UID</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="certReq in certCtrl.certReqs">
+									<td>{{certReq.cn}}</td>
+									<td>{{certReq.surname}}</td>
+									<td>{{certReq.givenName}}</td>
+									<td>{{certReq.country}}</td>
+									<td>{{certReq.email}}</td>
+									<td>{{certReq.uid}}</td>
+									<td><input  type="button" class="btn btn-primary" value="Approve" ng-click="certCtrl.approveCert(certReq)"/></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="col-sm-2"></div>
+			  	</div>
 			</div>
 			<div ng-show="tab.isSet(2)">
 				<!--To be implemented.-->
