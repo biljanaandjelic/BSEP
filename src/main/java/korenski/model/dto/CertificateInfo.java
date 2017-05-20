@@ -124,6 +124,14 @@ public class CertificateInfo {
 	public void setType(Type type) {
 		this.type = type;
 	}
+
+	public Bank getBank() {
+		return bank;
+	}
+
+	public void setBank(Bank bank) {
+		this.bank = bank;
+	}
 	
 	
 

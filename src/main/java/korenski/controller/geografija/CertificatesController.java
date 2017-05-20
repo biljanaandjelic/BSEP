@@ -176,12 +176,12 @@ public class CertificatesController {
 		
 		//ovo je tvoj deo biljo, samo zakaci na certificateinfo banku
 		Bank bank = ((User)request.getSession().getAttribute("user")).getBank();
-		
+		certificateInfo.setBank(bank);
 //		certificateIDService.create(certificateID);
 		certGen = new JcaX509v3CertificateBuilder(name, serial, startDate, endDate, name,
 				pair.getPublic());
 		
-		certGen.addExtension(Extension.basicConstraints, true, new BasicConstraints(dto.ca));
+	//	certGen.addExtension(Extension.basicConstraints, true, new BasicConstraints(dto.ca));
 		// CertificateInfo certificateID;
 		CertificateInfo ca = certificateInfoService.findByAlias(dto.issuerAlias);
 	
@@ -756,7 +756,7 @@ public class CertificatesController {
 		if(f.exists() && !f.isDirectory()) { 
 			ks.load(new FileInputStream(filePathString), "test".toCharArray());
 		}else{
-		//	ks.load(null, "test".toCharArray());
+			ks.load(null, "test".toCharArray());
 		}
 		
 	}
