@@ -325,6 +325,9 @@ public class AuthenticationController {
 		
 		return new ResponseEntity<User>(user, HttpStatus.OK);
 	}
+//=======
+
+//>>>>>>> bilja_develop
 	
 	@RequestMapping(
 			value = "/loginDummy3",
