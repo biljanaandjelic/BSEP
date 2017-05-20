@@ -1,7 +1,7 @@
 package korenski.DTOs;
 
 public class CertificateRequestDTO {
-	private String id;
+	private int id;
 	private String cn;
 	private String surname;
 	private String givenName;
@@ -9,17 +9,26 @@ public class CertificateRequestDTO {
 	private String organizationUnit;
 	private String country;
 	private String email;
+	private String uid;
 	
+	public String getUid() {
+		return uid;
+	}
+
+	public void setUid(String uid) {
+		this.uid = uid;
+	}
+
 	public CertificateRequestDTO() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public String getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 

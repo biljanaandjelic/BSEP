@@ -3,17 +3,19 @@ package korenski.model.klijenti;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
+import korenski.controller.autorizacija.Subject;
 import korenski.model.infrastruktura.Bank;
 
 @Entity
-public class Employed {
-	@Id
-	@GeneratedValue
-	private Long id;
-
+@Table(name="employee")
+public class Employee extends Subject{
+	
+	
 	@Column(nullable=false)
 	private String name;
 	
@@ -24,12 +26,26 @@ public class Employed {
 	private Bank bank;
 
 	
-	public Long getId() {
-		return id;
+	
+	
+	public Employee() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public Employee(String name, String surname, Bank bank) {
+		super();
+		this.name = name;
+		this.surname = surname;
+		this.bank = bank;
+	}
+
+	public Employee(Long id, String name, String surname, Bank bank) {
+		super();
+		
+		this.name = name;
+		this.surname = surname;
+		this.bank = bank;
 	}
 
 	public String getName() {
@@ -55,7 +71,6 @@ public class Employed {
 	public void setBank(Bank bank) {
 		this.bank = bank;
 	}
-	
-	
 
+		
 }

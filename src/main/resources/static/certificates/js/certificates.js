@@ -17,6 +17,7 @@ app.controller("CertificateController", function($http,$scope, $log){
 	$scope.revokeRequest={};
 	control.certificate = {};
 	control.certificateRequest = {};
+	control.certReqs = [];
 	control.certificate.validFrom = new Date();
 	control.result = "";
 	$scope.alias="";
@@ -43,7 +44,6 @@ app.controller("CertificateController", function($http,$scope, $log){
 	};
 	
 	this.generateRequest = function(){
-		alert('radi');
 		$http.post('/certificates/genCertificateRequest', control.certificateRequest).then(function success(response) {
 			if(response.data === 'ok'){
 				toastr.success('Certificate request successfully generated!');
@@ -126,6 +126,44 @@ app.controller("CertificateController", function($http,$scope, $log){
 			}
 			);
 	}
+	
+	this.loadRequests = function() {
+		
+		$http({
+			method: 'GET',
+			url: '/certificates/getCertificateRequests'
+		}).then(function success(response) {
+			control.certReqs = response.data;
+		});
+	}
+			
+	this.loadRequests();
+	
+	this.approveCert = function(certReq){
+		$http.get('/certificates/makeCertificate/' + certReq.id).then(function success(response) {
+			if(response.data === 'ok'){
+				toastr.success('Certificate successfully generated!');
+				
+				var index = -1;		
+				var certReqArr = eval( control.certReqs );
+				for( var i = 0; i < certReqArr.length; i++ ) {
+					if( certReqArr[i].id === certReq.id ) {
+						index = i;
+						break;
+					}
+				}
+				if( index === -1 ) {
+					toastr["error"]('Something gone wrong.');
+				}
+				control.certReqs.splice( index, 1 );
+			}else{
+				toastr.error(response.data);
+			}
+		}, function error(response) {
+			control.result = "Unknown error ocurred."
+		});
+	}
+	
 });
 
 

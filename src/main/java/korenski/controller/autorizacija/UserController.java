@@ -30,7 +30,7 @@ public class UserController {
 	UserRepository repository;
 	@Autowired
 	UserService userService;
-	
+	/*
 	@RequestMapping(
 			value = "/newUser",
 			method = RequestMethod.POST,
@@ -198,6 +198,6 @@ public class UserController {
 		
 	}
 	
-	
+	*/
 	
 }

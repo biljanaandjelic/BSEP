@@ -4,6 +4,7 @@ administrator.controller('RukovanjeZatvaranjima', function($scope, $http, $compi
 	//0 za pregled, 1 za dodavanje, 2 za pretragu
 	
 	$scope.zatvaranje = {};
+	$scope.zatvaranjeSearch = {};
 	$scope.zatvaranja = {};
 	
 	$scope.sakrijBrowse = false;
@@ -12,16 +13,27 @@ administrator.controller('RukovanjeZatvaranjima', function($scope, $http, $compi
 	$scope.nulaNaStanju = false;
 	$scope.brojRacunaZaPrenos = "";
 	
-	
-	$scope.$on('filterPoKlijentuRacun', function (event, id) {
-	    console.log(id); // Index naseljenog mesta
-	    
-	    $http.get('/nadjiRacune/'+id).
+	$scope.$on('novoZatvaranje', function (event) {
+		$http.get('/svaZatvaranja').
         then(function(response) {
         	$scope.zatvaranja = response.data;
+        	
+    		
+        });
+        
+	  });
+	
+	$scope.$on('filterZatvaranja', function (event, obj) {
+	     $http.get('/filtrirajZatvaranjaPoRacunu/'+obj).
+        then(function(response) {
+        	$scope.racunSearch = {};
+			$scope.zatvaranja = response.data;
         	$scope.sakrijBrowse = true;
+			$scope.rezim = 0;
         });
 	    
+	   
+        
 	  });
 	
 	$scope.idSelektovanogZatvaranja = null;
@@ -63,7 +75,7 @@ administrator.controller('RukovanjeZatvaranjima', function($scope, $http, $compi
 	
 	this.searchClick = function(){
 		$scope.rezim =2;
-		$scope.zatvaranje = {};
+		$scope.zatvaranjeSearch = {};
 	};
 	
 	this.commitClick = function(){
@@ -91,7 +103,7 @@ administrator.controller('RukovanjeZatvaranjima', function($scope, $http, $compi
 		
 		$http({
 		    method: 'POST',
-		    url: '/filtrirajRacune',
+		    url: '/filtrirajZatvaranja',
 		    data: $scope.racunSearch
 		}).
 		then(function mySucces(response) {
