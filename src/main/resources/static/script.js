@@ -36,4 +36,12 @@ proba.controller('ProbaCtrl', function($scope, $http, $compile){//, $sanitize) {
 	    });
 	}
 	
+	this.vidiDaLiPuca = function(){
+		
+		$http.get('/vidiDaLiPuca').
+	    then(function(response) {
+	    	var k = response.data;
+	    });
+	}
+	
 });
