@@ -1,4 +1,4 @@
-package korenski.controller.autorizacija;
+package korenski.model.autorizacija;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

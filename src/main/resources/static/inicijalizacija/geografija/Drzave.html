@@ -29,7 +29,7 @@
 	 <div class="container" id="dugmici">
 	  	<div class="btn-group">
 		  <button type="button" class="btn btn-default" ng-click ="rd.searchClick()"><img src="ikonice/search.gif" width="20" /></button>
-		  <button type="button" class="btn btn-default"><img src="ikonice/refresh.gif" width="20" /></button>
+		  <button type="button" class="btn btn-default" ng-click ="rd.refreshClick()"><img src="ikonice/refresh.gif" width="20" /></button>
 		  <button type="button" class="btn btn-default"><img src="ikonice/zoom-pickup.gif" width="20" /></button>
 		  <button type="button" class="btn btn-default"><img src="ikonice/help.gif" width="20" /></button>
 		</div>
@@ -55,8 +55,8 @@
 	   <div class="panel panel-default">
 	   		<div class="panel-body">
 	   			<div>
-		   			<p>Oznaka drzave : <input type="text" ng-model="drzava.oznaka" required autofocus></p>
-		   			<p>Naziv drzave : <input type="text" ng-model="drzava.naziv" maxlength="40" required></p>
+		   			<p>Oznaka drzave : <input type="text" ng-model="drzava.oznaka" required autofocus ng-readonly="rezim==0 && rd.praznaDrzava()"></p>
+		   			<p>Naziv drzave : <input type="text" ng-model="drzava.naziv" maxlength="40" required ng-readonly="rezim==0 && rd.praznaDrzava()"></p>
 	   			</div>
 	   			<div class="container" id="dugmici">
 	  				<div class="btn-group">

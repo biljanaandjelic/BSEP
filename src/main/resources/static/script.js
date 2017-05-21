@@ -30,9 +30,9 @@ proba.controller('ProbaCtrl', function($scope, $http, $compile){//, $sanitize) {
 	}
 	
 	this.getRedirect = function(){
-		$http.get('/redirektGetMetodom').
+		$http.get('/dajRedirekt').
 	    then(function(response) {
-	    	
+	    	var k = response.headers();
 	    });
 	}
 	
