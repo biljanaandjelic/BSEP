@@ -52,14 +52,16 @@
 	     <div class="panel panel-default" ng-show="rezim == 2">
 	   		<div class="panel-body">
 	   			<div>
-		   			<p>Broj zatvorenog racuna : <input type="text" ng-model="zatvaranjeSearch.brojRacuna" maxlength="20" minlength="20" required autofocus></p>
-		   			<p>Datum deaktivacije : <input type="text" ng-model="zatvaranjeSearch.datumDeaktivacije" maxlength="40" required></p>
-		   			<p>Broj racuna na koji su prebacena sredstva : <input type="text" ng-model="zatvaranjeSearch.racunPrebacenihSredstava" maxlength="40" required></p>
+		   			<p>Broj zatvorenog racuna : <input type="text" ng-model="zatvaranjeSearch.racunZatvaranja" maxlength="18" autofocus></p>
+		   			<p>Pretraga po datumu deaktivacije </p> </br> 
+		   			<p>od: <input type="date" ng-model="zatvaranjeSearch.pocetak" maxlength="40" required></p>
+		   			<p>do: <input type="date" ng-model="zatvaranjeSearch.kraj" maxlength="40" required></p>
+		   			<p>Broj racuna na koji su prebacena sredstva : <input type="text" ng-model="zatvaranjeSearch.racunPrenosa" maxlength="40" ></p>
 		   			
 	   			</div>
 	   			<div class="container" id="dugmici">
 	  				<div class="btn-group">
-		  				<button type="button" class="btn btn-default" ng-click ="rz.commitClick()"><img src="ikonice/commit.gif" width="20" /></button>
+		  				<button type="button" class="btn btn-default" ng-click ="rz.commitClickSearch()"><img src="ikonice/commit.gif" width="20" /></button>
 		  				<button type="button" class="btn btn-default" ng-click ="rz.rollbackClick()"><img src="ikonice/remove.gif" width="20" /></button>
 		  			</div>
 		  		</div>

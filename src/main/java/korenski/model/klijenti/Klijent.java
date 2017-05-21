@@ -13,7 +13,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import korenski.controller.autorizacija.Subject;
+import korenski.model.autorizacija.Subject;
 import korenski.model.geografija.NaseljenoMesto;
 import korenski.model.infrastruktura.Bank;
 import korenski.model.infrastruktura.Racun;

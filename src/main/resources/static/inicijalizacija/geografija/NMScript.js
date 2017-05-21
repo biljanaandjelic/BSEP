@@ -8,7 +8,6 @@ administrator.controller('RukovanjeNaseljenimMestima', function($scope, $http, $
 	$scope.sveDrzave = {};
 
 	
-	$scope.sakrijBrowse = false;
 	
 	$scope.$on('filterPoDrzavi', function (event, id) {
 	    console.log(id); // Index drzave
@@ -17,7 +16,8 @@ administrator.controller('RukovanjeNaseljenimMestima', function($scope, $http, $
         then(function(response) {
         	$scope.naseljenaMesta = response.data;
         	$scope.selektovanaDrzava = angular.copy($scope.naseljenaMesta[0].drzava);
-        	$scope.sakrijBrowse = true;
+        	
+        	$scope.naseljenoMesto = {};
         });
 	    
 	  });
@@ -46,7 +46,7 @@ administrator.controller('RukovanjeNaseljenimMestima', function($scope, $http, $
 	
 	this.refresh = function(){
 		
-		$scope.sakrijBrowse = false;
+		
 		
 		$http.get('/svaNaseljenaMesta').
         then(function(response) {
@@ -59,6 +59,7 @@ administrator.controller('RukovanjeNaseljenimMestima', function($scope, $http, $
         	$scope.sveDrzave = response.data;
         	
         });
+		$scope.selektovanaDrzava = {};
 	}
 	
 	this.addClick = function(){
@@ -66,15 +67,25 @@ administrator.controller('RukovanjeNaseljenimMestima', function($scope, $http, $
 		$scope.rezim =1;
 		$scope.naseljenoMesto = {};
 		$scope.selektovanaDrzava = {};
+		$scope.idSelektovanogNaseljenogMesta = null;
+		
 	};
 	
 	this.searchClick = function(){
 		$scope.rezim =2;
 		$scope.naseljenoMesto = {};
-		if(!$scope.sakrijBrowse){
-			$scope.selektovanaDrzava = {};
-		}
+		$scope.selektovanaDrzava = {};
+		$scope.idSelektovanogNaseljenogMesta = null;
+		
 	};
+	
+	this.praznoNM = function(){
+		if(angular.equals($scope.naseljenoMesto, {})){
+			return true;
+		}else{
+			return false;
+		}
+	}
 	
 	this.commitClick = function(){
 		
@@ -183,9 +194,43 @@ administrator.controller('RukovanjeNaseljenimMestima', function($scope, $http, $
 			
 		}else if(angular.equals($scope.rezim, 2)){// & !angular.equals($scope.naseljenoMesto, {})){
 			
+			var filter = {};
 			
-			//if($scope.sakrijBrowse){
-				$http.get('/filtrirajNaseljenaMestaZaDrzavu/'+$scope.naseljenoMesto.oznaka+'/'+$scope.naseljenoMesto.naziv+'/'+$scope.naseljenoMesto.postanskiBroj+'/'+$scope.selektovanaDrzava.id).
+			if(angular.equals($scope.selektovanaDrzava, {})){
+				filter.drzava = 0;
+			}else{
+				filter.drzava = $scope.selektovanaDrzava.id;
+			}
+			
+			
+			if(angular.isUndefined($scope.naseljenoMesto.oznaka)){
+				filter.oznaka = "";
+			}else{
+				filter.oznaka = $scope.naseljenoMesto.oznaka;
+			}
+			
+				
+			if(angular.isUndefined($scope.naseljenoMesto.naziv)){
+				filter.naziv = "";
+			}else{
+				filter.naziv = $scope.naseljenoMesto.naziv;
+			}
+			
+			
+
+			if(angular.isUndefined($scope.naseljenoMesto.postanskiBroj)){
+				filter.postanskiBroj ="";
+			}else{
+				filter.postanskiBroj = $scope.naseljenoMesto.postanskiBroj;
+			}
+
+				
+				
+				$http({
+	    		    method: 'POST',
+	    		    url: '/filtrirajNaseljenaMestaZaDrzavu',
+	    		    data: filter
+	    		}).
 		        then(function(response) {
 		        	
 		        	$scope.naseljenaMesta = response.data;
@@ -214,11 +259,13 @@ administrator.controller('RukovanjeNaseljenimMestima', function($scope, $http, $
 			$scope.rezim = 0;
 			$scope.naseljenoMesto = {};
 			$scope.selektovanaDrzava = {};
+			$scope.idSelektovanogNaseljenogMesta = null;
 		}else{
 			$scope.rezim = 0;
 			
 			$scope.naseljenoMesto = {};
 			$scope.selektovanaDrzava = {};
+			$scope.idSelektovanogNaseljenogMesta = null;
 		}
 	};
 	

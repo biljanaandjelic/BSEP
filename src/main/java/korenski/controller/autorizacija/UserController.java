@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Context;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +16,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import korenski.controller.autentifikacija.pomocneKlase.PasswordChanging;
 import korenski.model.autorizacija.User;
+import korenski.model.infrastruktura.Bank;
+import korenski.model.klijenti.Employee;
 import korenski.repository.autorizacija.UserRepository;
+import korenski.repository.institutions.BankRepository;
+import korenski.repository.klijenti.EmployeeRepository;
 import korenski.service.autorizacija.UserService;
 
 @Controller
@@ -30,6 +32,10 @@ public class UserController {
 	UserRepository repository;
 	@Autowired
 	UserService userService;
+	@Autowired
+	BankRepository bankRepository;
+	@Autowired
+	EmployeeRepository employeeRepository;
 	/*
 	@RequestMapping(
 			value = "/newUser",
@@ -65,6 +71,39 @@ public class UserController {
 	
 		return new ResponseEntity<User>(rle, HttpStatus.OK);
 	}
+	*/
+	
+	@RequestMapping(
+			value = "/newUser",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<User> newUser(@RequestBody User user , @Context HttpServletRequest request) throws Exception {
+		
+
+		if(!userService.checkInput(user)){
+			return new ResponseEntity<User>(new User(null, null, null, null, null, null, null), HttpStatus.OK);
+		}
+		
+		User sessionUser = (User) request.getSession().getAttribute("user");
+		Bank bank = bankRepository.findOne(sessionUser.getBank().getId());
+		
+		User rle;
+		try {
+			user.setBank(bank);
+			Employee employee = employeeRepository.findOne(user.getSubject().getId());
+			user.setSubject(employee);
+			Date current = new Date();
+			user.setPassword("password");
+			user.setCreationTime(new java.sql.Date(current.getTime()));
+			rle = repository.save(user);
+		} catch (Exception e) {
+			e.printStackTrace();
+			rle = new User(null, null, null, null, null, null, null);
+		}
+	
+		return new ResponseEntity<User>(rle, HttpStatus.OK);
+	}
 	
 	@RequestMapping(
 			value = "/deleteUser/{id}",
@@ -77,7 +116,7 @@ public class UserController {
 		try {
 			repository.delete(User);
 		} catch (Exception e) {
-			return new ResponseEntity<User>(new User(new Long(-1), null, null, null, null, null, null, null), HttpStatus.OK);
+			return new ResponseEntity<User>(new User(null, null, null, null, null, null, null), HttpStatus.OK);
 		}
 	
 		return new ResponseEntity<User>(new User(), HttpStatus.OK);
@@ -92,8 +131,10 @@ public class UserController {
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<User> updateUser(@RequestBody User user , @Context HttpServletRequest request) throws Exception {
 		
+		User sessionUser = (User) request.getSession().getAttribute("user");
+		
 		if(!userService.checkInput(user)){
-			return new ResponseEntity<User>(new User(new Long(-1), null, null, null, null, null, null, null), HttpStatus.OK);
+			return new ResponseEntity<User>(new User(null, null, null, null, null, null, null), HttpStatus.OK);
 		}
 		
 		User userToModify = null;
@@ -101,22 +142,21 @@ public class UserController {
 		try {
 			userToModify = repository.findOne(user.getId());
 		} catch (Exception e) {
-			return new ResponseEntity<User>(new User(new Long(-1), null, null, null, null, null, null, null), HttpStatus.OK);
+			return new ResponseEntity<User>(new User(null, null, null, null, null, null, null), HttpStatus.OK);
 		}
 		
+		Bank bank = bankRepository.findOne(sessionUser.getBank().getId());
 		
-		userToModify.setName(user.getName());
-		userToModify.setSurname(user.getSurname());
 		userToModify.setUsername(user.getUsername());
 		userToModify.setPassword(user.getPassword());
 		userToModify.setEmail(user.getEmail());
 		userToModify.setRole(user.getRole());
-		userToModify.setBank(user.getBank());
+		userToModify.setBank(bank);
 		
 		try {
 			userToModify = repository.save(userToModify);
 		} catch (Exception e) {
-			return new ResponseEntity<User>(new User(new Long(-1), null, null, null, null, null, null, null), HttpStatus.OK);
+			return new ResponseEntity<User>(new User(null, null, null, null, null, null, null), HttpStatus.OK);
 		}
 
 		return new ResponseEntity<User>(userToModify, HttpStatus.OK);
@@ -134,7 +174,7 @@ public class UserController {
 	}
 	
 	
-
+/*
 	@RequestMapping(
 			value = "/passwordChange",
 			method = RequestMethod.POST,

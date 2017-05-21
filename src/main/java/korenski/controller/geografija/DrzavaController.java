@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import korenski.model.geografija.Drzava;
-import korenski.model.infrastruktura.Bank;
+import korenski.model.geografija.pomocni.DrzavaFilter;
 import korenski.repository.geografija.DrzavaRepository;
 
 @Controller
@@ -126,14 +126,22 @@ public class DrzavaController {
 	
 	
 	@RequestMapping(
-			value = "/filtrirajDrzave/{oznaka}/{naziv}",
-			method = RequestMethod.GET,
+			value = "/filtrirajDrzave",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Collection<Drzava>> filtrirajDrzave(@PathVariable("oznaka") String oznaka,
-			@PathVariable("naziv") String naziv) throws Exception {
+	public ResponseEntity<Collection<Drzava>> filtrirajDrzave(@RequestBody DrzavaFilter drzavaFilter) throws Exception {
 
+		if(drzavaFilter.getOznaka() == null){
+			drzavaFilter.setOznaka("");
+		}
 		
-		return new ResponseEntity<Collection<Drzava>>( repository.findByOznakaContainingIgnoreCaseOrNazivContainingIgnoreCase(oznaka, naziv), HttpStatus.OK);
+		if(drzavaFilter.getNaziv() == null){
+			drzavaFilter.setNaziv("");
+		}
+		
+		
+		return new ResponseEntity<Collection<Drzava>>( repository.filter(drzavaFilter.getOznaka(), drzavaFilter.getNaziv()), HttpStatus.OK);
 	}
 	
 
