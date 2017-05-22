@@ -126,7 +126,7 @@ administratorBanke.controller('RukovanjeKorisnicima', function($scope, $http, $c
     		then(function mySucces(response) {
     				
     				if(response.data.id == -1){
-    					toastr.error('Neuspesan unos!');
+    					toastr.error(response.data.username);
     					return;
     				}
     			
@@ -181,7 +181,7 @@ administratorBanke.controller('RukovanjeKorisnicima', function($scope, $http, $c
     		then(function mySucces(response) {
     			
 	    			if(response.data.id == -1){
-						toastr.error('Neuspesan unos!');
+						toastr.error(response.data.username);
 						return;
 					}
     			

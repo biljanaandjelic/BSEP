@@ -88,6 +88,7 @@ public class ZatvaranjeRacunaController {
 			System.out.println("Pocetak "+pocetak.toString());
 			Date current = new Date();
 			kraj = new java.sql.Date(current.getTime());
+			System.out.println("Kraj "+kraj.toString());
 		}
 		
 		if(zatvaranjeFilter.getPocetak() == null && zatvaranjeFilter.getKraj() != null){
@@ -111,7 +112,11 @@ public class ZatvaranjeRacunaController {
 		User userFromSession = (User) request.getSession().getAttribute("user");
 		Long id = userFromSession.getBank().getId();
 		
-		return new ResponseEntity<Collection<ZatvaranjeRacuna>>( repository.filter(id,  zatvaranjeFilter.getRacunPrenosa(), pocetak, kraj), HttpStatus.OK);
+		System.out.println("Pocetak "+pocetak.toString());
+		System.out.println("Kraj "+kraj.toString());
+		return new ResponseEntity<Collection<ZatvaranjeRacuna>>( repository.filter(id,zatvaranjeFilter.getRacunZatvaranja(), zatvaranjeFilter.getRacunPrenosa(), pocetak, kraj), HttpStatus.OK);
+		//return new ResponseEntity<Collection<ZatvaranjeRacuna>>( repository.filter(id,zatvaranjeFilter.getRacunZatvaranja()), HttpStatus.OK);
+		//return new ResponseEntity<Collection<ZatvaranjeRacuna>>( repository.filter(id,zatvaranjeFilter.getRacunZatvaranja(), zatvaranjeFilter.getRacunPrenosa()), HttpStatus.OK);
 	}
 	
 }

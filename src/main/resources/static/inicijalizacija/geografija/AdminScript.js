@@ -71,7 +71,7 @@ administrator.controller('RukovanjeDrzavama', function($scope, $http, $compile){
     		then(function mySucces(response) {
     				
     				if(response.data.id == -1){
-    					toastr.error('Neuspesan unos!');
+    					toastr.error(response.data.naziv);
     					return;
     				}
     			
@@ -113,7 +113,7 @@ administrator.controller('RukovanjeDrzavama', function($scope, $http, $compile){
     		then(function mySucces(response) {
     			
 	    			if(response.data.id == -1){
-						toastr.error('Neuspesan unos!');
+						toastr.error(response.data.naziv);
 						return;
 					}
     			

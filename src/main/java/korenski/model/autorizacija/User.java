@@ -40,7 +40,7 @@ public class User {
 	@Column(unique = true, nullable = false)
 	@Size(min = 6, max = 30)
 	@NotEmpty
-	@Pattern(regexp = "[\\w]{6,30}")
+	@Pattern(regexp = "[\\w]{6,30}", message = "Korisnicko ime ima najmanje 6 a najvise 30 karaktera!")
 	private String username;
 	
 	@Column(unique = true, nullable = false)
@@ -91,29 +91,39 @@ public class User {
 		this.changedFirstPassword = false;
 	}
 
-//	public User(Long id, String username, String email, byte[] password, String name, String surname, Role role,
-//			Bank bank) {
+	
+	
+	public User(Long id, String username) {
+		super();
+		this.id = id;
+		this.username = username;
+	}
+
+
+
+//	public User(Long id, String username, String email, byte[] password, Role role,
+//			Bank bank, Date creationTime, Subject subject) {
 //		super();
 //		this.id = id;
 //		this.username = username;
 //		this.email = email;
 //		this.password = password;
-//		this.name = name;
-//		this.surname = surname;
 //		this.role = role;
 //		this.bank = bank;
+//		this.subject = subject;
+//		this.creationTime = creationTime;
 //		this.changedFirstPassword = false;
 //	}
 //
-//	public User(String username, String email, byte[] password, String name, String surname, Role role, Bank bank) {
+//	public User(String username, String email, byte[] password, Role role, Bank bank, Date creationTime, Subject subject) {
 //		super();
 //		this.username = username;
 //		this.email = email;
 //		this.password = password;
-//		this.name = name;
-//		this.surname = surname;
+//		this.subject = subject;
 //		this.role = role;
 //		this.bank = bank;
+//		this.creationTime = creationTime;
 //		this.changedFirstPassword = false;
 //	}
 
