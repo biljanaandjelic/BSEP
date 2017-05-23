@@ -77,38 +77,17 @@ administrator.controller('RukovanjeZatvaranjima', function($scope, $http, $compi
 		$scope.rezim =2;
 		$scope.zatvaranjeSearch = {};
 	};
-	
-	this.commitClick = function(){
-		
-	
-		if(angular.equals($scope.rezim, 1)){
-      
-		}else if(angular.equals($scope.rezim, 0) & !angular.equals($scope.klijent, {}) & !angular.equals($scope.idSelektovanogKlijenta, null)){
-			
-		}else if(angular.equals($scope.rezim, 2)){
-//			
-//			$http.get('/filtrirajRacune/'+$scope.zatvaranje.brojRacuna+'/'+$scope.zatvaranje.status+'/'+$scope.zatvaranje.datumOtvaranja+'/'+$scope.zatvaranje.datumDeaktivacije+'/'+$scope.zatvaranje.klijent.ime+'/'+$scope.zatvaranje.klijent.prezime).
-//	        then(function(response) {
-//	        	
-//	        	$scope.zatvaranja = response.data;
-//	        	
-//	        });
-//			return;
-		}
-		
-		
-	};
-	
+
 	this.commitClickSearch = function(){
 		
 		$http({
 		    method: 'POST',
 		    url: '/filtrirajZatvaranja',
-		    data: $scope.racunSearch
+		    data: $scope.zatvaranjeSearch
 		}).
 		then(function mySucces(response) {
 			$scope.racunSearch = {};
-			$scope.rezim = 0;
+			//$scope.rezim = 0;
 			
 			$scope.zatvaranja = response.data;
 		});

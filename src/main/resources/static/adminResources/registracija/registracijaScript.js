@@ -7,6 +7,8 @@ administratorBanke.controller('RukovanjeKorisnicima', function($scope, $http, $c
 	$scope.banka = {};
 	$scope.rola = {};
 	
+	$scope.sviZaposleni = [];
+	
 	$scope.rezim = 0;
 	//0 za pregled, 1 za dodavanje, 2 za pretragu
 	
@@ -32,18 +34,18 @@ administratorBanke.controller('RukovanjeKorisnicima', function($scope, $http, $c
         	
         });
 		
-		$http.get('/allBanks').
+		$http.get('/sviZaposleni').
         then(function(response) {
-        	$scope.sveBanke = response.data;
+        	$scope.sviZaposleni = response.data;
         	
         });
 		
 	};
 	
-	this.nadjiBanke = function(){
-		$http.get('/allBanks').
+	this.nadjiZaposlene = function(){
+		$http.get('/sviZaposleni').
         then(function(response) {
-        	$scope.sveBanke = response.data;
+        	$scope.sviZaposleni = response.data;
         	
         });
 	};
@@ -78,7 +80,7 @@ administratorBanke.controller('RukovanjeKorisnicima', function($scope, $http, $c
 	this.searchClick = function(){
 		$scope.rezim =2;
 		$scope.korisnik = {};
-		$scope.banka = {};
+		$scope.zaposleni = {};
 		$scope.rola = {};
 	};
 	
@@ -92,12 +94,6 @@ administratorBanke.controller('RukovanjeKorisnicima', function($scope, $http, $c
 			
 			if(angular.equals($scope.korisnik, {})){
 				
-				return;
-			}else if(angular.isUndefined($scope.korisnik.name)){
-				toastr.error('Ime mora biti zadato!');
-				return;
-			}else if(angular.isUndefined($scope.korisnik.surname)){
-				toastr.error('Prezime mora biti zadato!');
 				return;
 			}else if(angular.isUndefined($scope.korisnik.username)){
 				toastr.error('Korisnicko ime mora biti zadato!');
@@ -118,7 +114,7 @@ administratorBanke.controller('RukovanjeKorisnicima', function($scope, $http, $c
 				return;
 			}
 			
-			$scope.korisnik.bank = angular.copy($scope.banka);
+			$scope.korisnik.subject = angular.copy($scope.zaposleni);
 			$scope.korisnik.role = angular.copy($scope.rola);
 			
 			
@@ -130,7 +126,7 @@ administratorBanke.controller('RukovanjeKorisnicima', function($scope, $http, $c
     		then(function mySucces(response) {
     				
     				if(response.data.id == -1){
-    					toastr.error('Neuspesan unos!');
+    					toastr.error(response.data.username);
     					return;
     				}
     			
@@ -141,7 +137,7 @@ administratorBanke.controller('RukovanjeKorisnicima', function($scope, $http, $c
     				$scope.korisnici.push(response.data);
     				
     				$scope.korisnik = {};
-    				$scope.banka = {};
+    				$scope.zaposleni = {};
     				$scope.rola = {};
     				$scope.promenjen = false;
     		});
@@ -153,12 +149,6 @@ administratorBanke.controller('RukovanjeKorisnicima', function($scope, $http, $c
 
 			if(angular.equals($scope.korisnik, {})){
 				
-				return;
-			}else if(angular.isUndefined($scope.korisnik.name)){
-				toastr.error('Ime mora biti zadato!');
-				return;
-			}else if(angular.isUndefined($scope.korisnik.surname)){
-				toastr.error('Prezime mora biti zadato!');
 				return;
 			}else if(angular.isUndefined($scope.korisnik.username)){
 				toastr.error('Korisnicko ime mora biti zadato!');
@@ -179,7 +169,7 @@ administratorBanke.controller('RukovanjeKorisnicima', function($scope, $http, $c
 				return;
 			}
 			
-			$scope.korisnik.bank = angular.copy($scope.banka);
+			$scope.korisnik.subject = angular.copy($scope.zaposleni);
 			$scope.korisnik.role = angular.copy($scope.rola);
 			
 			
@@ -191,7 +181,7 @@ administratorBanke.controller('RukovanjeKorisnicima', function($scope, $http, $c
     		then(function mySucces(response) {
     			
 	    			if(response.data.id == -1){
-						toastr.error('Neuspesan unos!');
+						toastr.error(response.data.username);
 						return;
 					}
     			
@@ -209,7 +199,7 @@ administratorBanke.controller('RukovanjeKorisnicima', function($scope, $http, $c
     				}
     				
     				$scope.korisnik = {};
-    				$scope.banka = {};
+    				$scope.zaposleni = {};
     				$scope.rola = {};
     				$scope.promenjen = false;
     		});
@@ -228,7 +218,7 @@ administratorBanke.controller('RukovanjeKorisnicima', function($scope, $http, $c
 			$scope.rezim = 0;
 			
 			$scope.korisnik = {};
-			$scope.banka = {};
+			$scope.zaposleni = {};
 			$scope.rola = {};
 		}
 		$scope.promenjen = false;
@@ -264,7 +254,7 @@ administratorBanke.controller('RukovanjeKorisnicima', function($scope, $http, $c
     		}
     		
     		$scope.korisnik = {};
-    		$scope.banka = {};
+    		$scope.zaposleni = {};
     		$scope.rola = {};
     		$scope.promenjen = false;
         });
@@ -288,7 +278,7 @@ administratorBanke.controller('RukovanjeKorisnicima', function($scope, $http, $c
 		
 		$scope.korisnik = angular.copy($scope.korisnici[0]);
 		$scope.idSelektovanogKorisnika = $scope.korisnici[0].id;
-		$scope.banka = angular.copy($scope.korisnik.bank);
+		$scope.zaposleni = angular.copy($scope.korisnik.subject);
 		$scope.rola = angular.copy($scope.korisnik.role);
 		$scope.promenjen = false;
 	};
@@ -313,7 +303,7 @@ administratorBanke.controller('RukovanjeKorisnicima', function($scope, $http, $c
 		
 		$scope.korisnik = angular.copy($scope.korisnici[temp-1]);
 		$scope.idSelektovanogKorisnika = $scope.korisnici[temp-1].id;
-		$scope.banka = angular.copy($scope.korisnik.bank);
+		$scope.zaposleni = angular.copy($scope.korisnik.subject);
 		$scope.rola = angular.copy($scope.korisnik.role);
 		$scope.promenjen = false;
 	};
@@ -338,7 +328,7 @@ administratorBanke.controller('RukovanjeKorisnicima', function($scope, $http, $c
 		
 		$scope.korisnik = angular.copy($scope.korisnici[temp+1]);
 		$scope.idSelektovanogKorisnika = $scope.korisnici[temp+1].id;
-		$scope.banka = angular.copy($scope.korisnik.bank);
+		$scope.zaposleni = angular.copy($scope.korisnik.subject);
 		$scope.rola = angular.copy($scope.korisnik.role);
 		$scope.promenjen = false;
 	};
@@ -350,7 +340,7 @@ administratorBanke.controller('RukovanjeKorisnicima', function($scope, $http, $c
 		}
 		$scope.korisnik = angular.copy($scope.korisnici[$scope.korisnici.length-1]);
 		$scope.idSelektovanogKorisnika = $scope.korisnici[$scope.korisnici.length-1].id;
-		$scope.banka = angular.copy($scope.korisnik.bank);
+		$scope.zaposleni = angular.copy($scope.korisnik.subject);
 		$scope.rola = angular.copy($scope.korisnik.role);
 		$scope.promenjen = false;
 	};
@@ -361,7 +351,7 @@ administratorBanke.controller('RukovanjeKorisnicima', function($scope, $http, $c
 			$scope.promenjen = false;
 			$scope.idSelektovanogKorisnika = d.id;
 			$scope.korisnik = angular.copy(d);
-			$scope.banka = angular.copy(d.bank);
+			$scope.zaposleni = angular.copy(d.subject);
 			$scope.rola = angular.copy(d.role);
 		}
 	};
@@ -381,14 +371,14 @@ administratorBanke.controller('RukovanjeKorisnicima', function($scope, $http, $c
 		}
 	}
 	
-	this.setSelectedBank = function(b){
+	this.setSelectedZaposleni = function(b){
 		if(angular.equals($scope.rezim, 0)){
 			if(angular.equals($scope.korisnik, {})){
 				return;
 			}
 		}
 		
-		$scope.banka = b;
+		$scope.zaposleni = b;
 		
 	};
 	
@@ -408,7 +398,7 @@ administratorBanke.controller('RukovanjeKorisnicima', function($scope, $http, $c
 			if(angular.equals($scope.korisnik, {})){
 				return;
 			}else{
-				$scope.banka = angular.copy($scope.korisnik.bank);
+				$scope.zaposleni = angular.copy($scope.korisnik.subject);
 			}
 		}
 	};

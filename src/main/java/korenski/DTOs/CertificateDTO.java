@@ -1,5 +1,6 @@
 package korenski.DTOs;
 
+import java.math.BigInteger;
 import java.util.Date;
 
 public class CertificateDTO {
@@ -21,7 +22,7 @@ public class CertificateDTO {
 	public Date validFrom;
 	public Date validTo; 
 	public String publicKey;
-	
+	public BigInteger serialNumber;
 	public CertificateDTO() {
 		// TODO Auto-generated constructor stub
 	}

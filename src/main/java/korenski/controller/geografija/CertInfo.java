@@ -1,3 +1,4 @@
+package korenski.controller.geografija;
 /*
  * CertID.java
  * PROJECT: JDigiDoc

@@ -41,6 +41,14 @@ administrator.controller('RukovanjeRacunima', function($scope, $http, $compile){
 		
 	};
 	
+	this.checkStatus = function(racun){
+		if(racun.status){
+			return true;
+		}else{
+			return false;
+		}
+	};
+	
 		this.nadjiRacun = function(rac){
 		
 			$scope.zaZatvaranje = rac;

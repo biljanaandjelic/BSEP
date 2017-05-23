@@ -133,8 +133,12 @@ public class RacunController {
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Racun> zatvoriRacun(@RequestBody ZatvaranjePomocni pomocni, @Context HttpServletRequest request) throws Exception {
-		
+	
 		Racun racun = repository.findOne(pomocni.getId());
+		
+		if(!racun.getStatus()){
+			return new ResponseEntity<Racun>(racun, HttpStatus.OK);
+		}
 		
 		racun.setStatus(false);
 		

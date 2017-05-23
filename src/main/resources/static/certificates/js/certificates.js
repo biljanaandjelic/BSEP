@@ -14,6 +14,7 @@ app.controller("TabController", function(){
 
 app.controller("CertificateController", function($http,$scope, $log){
 	var control = this;
+	$scope.revokeRequest={};
 	control.certificate = {};
 	control.certificateRequest = {};
 	control.certReqs = [];
@@ -166,4 +167,185 @@ app.controller("CertificateController", function($http,$scope, $log){
 });
 
 
+app.controller("CertificateRevokeAndGetStatus", function($http,$scope, $log){
+	$scope.banks=[];
+	$scope.bank={};
+	$scope.revokeReques={};
+	$scope.revokeRequests=[];
+	this.nesto="Neki string probe radi.";
+	$scope.nesto1="tako nesto";
+	this.init=function(){
+		
+		
+		var path='/allBanks';
+		
+		$http({
+			method: 'GET',
+			url: path
+		}).then(
+			function successCallback(response){
+				
+				angular.forEach(response.data, function (element, index) {
+			
+					$scope.banks.push(element);
+					
+				});
+			
+				
+			}, function errorCallback(response){
+				$log.log("Error callback");
+			}
+		);
+		/*$log.log("*************************");
+		$log.log("Citanje zahtjeva iz baze");
+		$log.log("*************************"); */
+		var path="/certificates/revokeRequest";
+		$http({
+			method:'GET',
+			url: path
+			
+		}).then(
+			function successCallback(response){
+				angular.forEach(response.data, function (element, index) {
+					$log.log("Komentar "+ element.comment);
+					$scope.revokeRequests.push(element);
+					
+				});
+				//$log.log("Broj zabiljezenih zahtjeva banke "+$scope.revokeRequests.length)
+			}, function errorCallback(response){
+				
+			}
+		);
+	};
+	
+	this.sendRevocationRequest=function(){
+		$log.log("Send revoke request ");
+		$log.log("Revoke request alias: "+ $scope.revokeRequest.alias);
+		//$log.log("Selektovana banka je "+ $scope.revokeReques.bank.name);
+		$log.log("Selected bank "+ $scope.bank.name);
+		$scope.revokeRequest.bank=$scope.bank;
+		var path="/certificates/revokeRequest";
+		$http({
+			method: 'PUT',
+			url: path,
+			data: $scope.revokeRequest
+		}).then(
+			function successCallback(response){
+				$log.log(response.data);
+			}, 
+			function errorCallback(response){
+				
+			}
+		);
+	}
+	
+	this.acceptRequest=function(id){
+		var path="/certificates/revokeRequest/"+id+"/accept";
+		$http({
+			method: 'DELETE',
+			url:path
+		}).then(
+			function successCallback(response){
+				$log.log(response.data);
+				var index=getIndex(id,$scope.revokeRequests);
+				$scope.revokeRequest.splice(index,1);
+			},
+			function errorCallback(response){
+				$log.log(response.data);
+			}
+		);
+	}
+	
+	this.declineRequest=function(id){
+		var path="/certificates/revokeRequest/"+id+"/decline";
+		$http({
+			method: 'DELETE',
+			url: path
+		}).then(
+			function successCallback(response){
+				$log.log(response.data);
+				var index=getIndex(id,$scope.revokeRequests);
+				$scope.revokeRequest.splice(index,1);
+			}, 
+			function errorCallback(response){
+				$log.log(response.data);
+			}
+		);
+	}
+	this.getCertificateStatus=function(bank,id){
+		var path="/ocspRespone/"+id;
+		$log.log("Putanja koja se gadja "+ path);
+		
+	}
+	getIndex=function(id, collection){
+		index=-1;
+		 for( var i = 0; i < collection.length; i++ ) {
+                if( collection[i].id === id ) {
+                    index = i;
+					//return index;
+                    break;
+                 }
+          }
+		  return index;
+	}
+});
 
+app.controller("CertificateStatus", function($http,$scope, $log){
+	this.init=function(){
+		$log.log("CertificateStatus");
+		$scope.banks=[];
+		$scope.bank={};
+		var path='/allBanks';
+		
+		$http({
+			method: 'GET',
+			url: path
+		}).then(
+			function successCallback(response){
+				$log.log("Broj banki "+ response.data.length);
+				angular.forEach(response.data, function (element, index) {
+					
+					$scope.banks.push(element);
+					
+				});
+			
+				
+			}, function errorCallback(response){
+				$log.log("Error callback");
+			}
+		);
+		$log.log("*************************");
+		$log.log("Citanje zahtjeva iz baze");
+		$log.log("*************************");
+	}
+	this.getCertificateStatus=function(bank,alias){
+		$log.log("Bank "+ bank.name);
+		$log.log("Potvrda unosa");
+		var path="/ocspResponse/"+alias;
+		$log.log("Putanja koja se gadja "+ path);
+		$http({
+			method: 'POST',
+			url: path,
+			data: bank
+		}).then(
+		function successCallback(response){
+			$log.log("Response OK");
+			$log.log(response.data.status);
+			if(response.data.status=="MALFORMEDREQUEST"){
+				$log.log("Prepoznaje statuse");
+			}
+			if(response.data.status=="SUCCESSFUL"){
+				angular.forEach(response.data.responseBytes.responseData.responses, function (element, index) {
+					
+					//$scope.banks.push(element);
+					$log.log("Status: "+ element.certStatus);
+					
+				});
+				//response.data.responseBytes.responseData.responses
+			}
+		}, function errorCallback(response){
+			$log.log("fail");
+		}
+		);
+	}
+});
