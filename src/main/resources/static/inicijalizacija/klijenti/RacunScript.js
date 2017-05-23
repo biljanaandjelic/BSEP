@@ -71,6 +71,13 @@ administrator.controller('RukovanjeRacunima', function($scope, $http, $compile){
 	
 	this.closeClick = function(){
 		
+		if(!$scope.nulaNaStanju){
+			if(angular.equals($scope.brojRacunaZaPrenos, "")){
+				toastr.error('Stanje na racunu nije 0!Broj racuna za prenos sredstava mora biti unesen!');
+				return;
+			}
+		}
+		
 		var objekat = {};
 		objekat.id = $scope.zaZatvaranje.id;
 		objekat.racun = $scope.brojRacunaZaPrenos;
@@ -83,7 +90,7 @@ administrator.controller('RukovanjeRacunima', function($scope, $http, $compile){
 		then(function mySucces(response) {
 			
 			if(angular.equals(response.data.id, -1)){
-				toastr.error('Neuspesno zatvaranje racuna!')
+				toastr.error(response.data.brojRacuna);
 				return;
 			}else{
 				toastr.success('Uspesno zatvaranje racuna!');
@@ -107,6 +114,7 @@ administrator.controller('RukovanjeRacunima', function($scope, $http, $compile){
 			
 			$scope.zaZatvaranje = {};
 			$scope.nulaNaRacunu = false;
+			$scope.brojRacunaZaPrenos = "";
 			$scope.$parent.$parent.opsti.novoZatvaranje();
 
 			
