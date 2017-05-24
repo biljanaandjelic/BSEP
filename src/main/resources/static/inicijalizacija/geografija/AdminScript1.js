@@ -87,6 +87,10 @@ administrator.controller('Opsti', function($scope, $http, $compile, $timeout, $r
 		$scope.$broadcast('filterPoKlijentuRacun', klijent.id); // going down!
 	};
 	
+	this.addRacun = function(){
+		$scope.$broadcast('dodavanjeNovogRacuna');
+	}
+	
 	this.tabClick8 = function(num, idSelektovanogRacuna){
 		$scope.tab = num;
 		$scope.$broadcast('filterZatvaranja', idSelektovanogRacuna); // going down!

@@ -24,6 +24,20 @@ administrator.controller('RukovanjeRacunima', function($scope, $http, $compile){
 	    
 	  });
 	
+	$scope.$on('dodavanjeNovogRacuna', function(event){
+		$http.get('/sviRacuni').
+        then(function(response) {
+        	$scope.racuni = response.data;
+        	
+    		for (var i = 0; i < response.data.length; i++) { 
+    			$scope.racuni[i].datumOtvaranja = new Date(response.data[i].datumOtvaranja);
+    			if(new Date(response.data[i].datumOtvaranja) < new Date(response.data[i].datumDeaktivacije)){
+    				$scope.racuni[i].datumDeaktivacije = new Date(response.data[i].datumDeaktivacije);
+    			}
+    		}
+        });
+	});
+	
 	$scope.idSelektovanogRacuna = null;
 	
 	$scope.init = function(){
@@ -34,12 +48,30 @@ administrator.controller('RukovanjeRacunima', function($scope, $http, $compile){
         	
     		for (var i = 0; i < response.data.length; i++) { 
     			$scope.racuni[i].datumOtvaranja = new Date(response.data[i].datumOtvaranja);
-    			$scope.racuni[i].datumDeaktivacije = new Date(response.data[i].datumDeaktivacije);
+    			if(new Date(response.data[i].datumOtvaranja) < new Date(response.data[i].datumDeaktivacije)){
+    				$scope.racuni[i].datumDeaktivacije = new Date(response.data[i].datumDeaktivacije);
+    			}
     		}
         });
 		
 		
 	};
+	
+	this.getStatusRacuna = function(status){
+		if(status){
+			return 'Aktivan';
+		}else{
+			return 'Zatvoren';
+		}
+	};
+	
+	this.prazanR = function(){
+		if(angular.equals($scope.racun, {})){
+			return true;
+		}else{
+			return false;
+		}
+	}
 	
 	this.checkStatus = function(racun){
 		if(racun.status){

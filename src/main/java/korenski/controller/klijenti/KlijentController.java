@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import korenski.model.klijenti.Klijent;
+import korenski.DTOs.KlijentFilter;
 import korenski.model.autorizacija.User;
 import korenski.model.geografija.NaseljenoMesto;
+import korenski.model.geografija.pomocni.NMFilter;
 import korenski.model.infrastruktura.Bank;
 import korenski.repository.klijenti.KlijentRepository;
 import korenski.repository.geografija.NaseljenoMestoRepository;
@@ -145,7 +147,7 @@ public class KlijentController {
 		
 		return new ResponseEntity<Collection<Klijent>>( repository.findByJmbgContainingIgnoreCaseOrImeContainingIgnoreCaseOrPrezimeContainingIgnoreCaseOrAdresaContainingIgnoreCaseOrTelefonContainingIgnoreCaseOrEmailContainingIgnoreCase(jmbg, ime, prezime, adresa, telefon, email), HttpStatus.OK);
 	}
-	
+	/*
 	@RequestMapping(
 			value = "/filtrirajKlijenteZaNaseljenoMesto/{jmbg}/{ime}/{prezime}/{adresa}/{telefon}/{email}/{id}",
 			method = RequestMethod.GET,
@@ -160,6 +162,46 @@ public class KlijentController {
 		
 		return new ResponseEntity<Collection<Klijent>>( repository.findByJmbgContainingIgnoreCaseOrImeContainingIgnoreCaseOrPrezimeContainingIgnoreCaseOrAdresaContainingIgnoreCaseOrTelefonContainingIgnoreCaseOrEmailContainingIgnoreCaseOrNaseljenoMestoAndFizickoLiceAndBank(jmbg, ime, prezime, adresa, telefon, email, naseljenoMesto, true, bank), HttpStatus.OK);
 	}
-	
-	
+	*/
+	@RequestMapping(
+			value = "/filtrirajKlijenteZaNaseljenoMesto",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Collection<Klijent>> filtrirajKlijenteNaseljenaMesta(@RequestBody KlijentFilter klijentFilter) throws Exception {
+		
+		if(klijentFilter.getJmbg() == null){
+			klijentFilter.setJmbg("");
+		}
+		
+		if(klijentFilter.getIme() == null){
+			klijentFilter.setIme("");
+		}
+		
+		if(klijentFilter.getPrezime() == null){
+			klijentFilter.setPrezime("");
+		}
+		
+		if(klijentFilter.getAdresa() == null){
+			klijentFilter.setAdresa("");
+		}
+		
+		if(klijentFilter.getTelefon() == null){
+			klijentFilter.setTelefon("");
+		}
+		
+		if(klijentFilter.getEmail() == null){
+			klijentFilter.setEmail("");
+		}
+		
+		if(klijentFilter.getMesto() == null){
+			klijentFilter.setMesto(new Long(0));
+		}
+		
+		if(klijentFilter.getMesto().equals(new Long(0))){
+			return new ResponseEntity<Collection<Klijent>>( repository.filter(klijentFilter.getJmbg(), klijentFilter.getIme(), klijentFilter.getPrezime(), klijentFilter.getAdresa(), klijentFilter.getTelefon(), klijentFilter.getEmail()), HttpStatus.OK);
+		}
+		//repository.findByOznakaContainingIgnoreCaseOrNazivContainingIgnoreCaseOrPostanskiBrojContainingIgnoreCaseOrDrzava(oznaka, naziv, postanskiBroj, drzava)
+		return new ResponseEntity<Collection<Klijent>>( repository.filterNaseljenoMesto(klijentFilter.getJmbg(), klijentFilter.getIme(), klijentFilter.getPrezime(), klijentFilter.getAdresa(), klijentFilter.getTelefon(), klijentFilter.getEmail(), klijentFilter.getMesto()), HttpStatus.OK);
+	}
 }

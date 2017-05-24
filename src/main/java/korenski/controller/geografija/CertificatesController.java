@@ -108,7 +108,6 @@ public class CertificatesController {
 	@Autowired
 	BankRepository bankRepository;
 	
-//>>>>>>> master
 	private KeyStore ks;
 	@Autowired
 	RevokeRequestService revokeRequestService;
@@ -160,7 +159,6 @@ public class CertificatesController {
 		System.out.println(serial);
 		CertificateInfo certificateInfo;
 		X509v3CertificateBuilder certGen;
-//<<<<<<< HEAD
 //		if (dto.selfSigned) {
 
 			certificateInfo = new CertificateInfo(serial, CertStatus.GOOD, null, null, dto.alias, Type.NationalBank);
@@ -168,7 +166,6 @@ public class CertificatesController {
 			// certificateInfoService.create(certificateInfo);
 			certGen = new JcaX509v3CertificateBuilder(name, serial, startDate, endDate, name, pair.getPublic());
 //		} else {
-//=======
 
 		
 
@@ -189,21 +186,12 @@ public class CertificatesController {
 
 		certGen.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
 		
-//>>>>>>> master
 		X509CertificateHolder certHolder = certGen.build(contentSigner);
 
 		JcaX509CertificateConverter certConverter = new JcaX509CertificateConverter();
 		certConverter = certConverter.setProvider("BC");
 
 		System.out.println(certConverter.getCertificate(certHolder));
-//<<<<<<< HEAD
-
-		
-//<<<<<<< HEAD
-
-		
-
-
 		
 		ks.setCertificateEntry("CERT-" + bank.getSwiftCode(), certConverter.getCertificate(certHolder));
 		ks.setKeyEntry("KEY", pair.getPrivate(), "test".toCharArray(), new Certificate[] { (Certificate) certConverter.getCertificate(certHolder) });
@@ -296,7 +284,6 @@ public class CertificatesController {
 		
 		saveKeyStore("./files/KEYSTORE-" + dto.uid + ".jks");
 		
-//>>>>>>> master
 		return new ResponseEntity<String>("ok", HttpStatus.OK);
 	}
 	

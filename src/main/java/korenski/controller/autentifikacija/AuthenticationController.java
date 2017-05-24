@@ -286,6 +286,7 @@ public class AuthenticationController {
 		return new ResponseEntity<User>(user, HttpStatus.OK);
 	}
 	
+	/*
 	@RequestMapping(
 			value = "/loginDummy2",
 			method = RequestMethod.GET,
@@ -304,8 +305,8 @@ public class AuthenticationController {
 		
 		return new ResponseEntity<User>(user, HttpStatus.OK);
 	}
-
-	/*
+	*/
+	
 	@RequestMapping(
 			value = "/loginDummy2",
 			method = RequestMethod.GET,
@@ -324,9 +325,6 @@ public class AuthenticationController {
 		
 		return new ResponseEntity<User>(user, HttpStatus.OK);
 	}
-//=======
-
-//>>>>>>> bilja_develop
 	
 	@RequestMapping(
 			value = "/loginDummy3",
@@ -365,6 +363,6 @@ public class AuthenticationController {
 		
 		return new ResponseEntity<User>(user, HttpStatus.OK);
 	}
-*/
+
 }
 
