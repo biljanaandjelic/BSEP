@@ -28,7 +28,7 @@
 
 <script type="text/javascript" src="valuteIdelatnosti/valuta.js"></script>
 <script type="text/javascript" src="valuteIdelatnosti/activities.js"></script>
-
+<script type="text/javascript" src="messages/message.js"></script>
 <script type = "text/javascript" src="klijenti/KlijentScript.js"></script>
 <script type = "text/javascript" src="klijenti/PravnoLiceScript.js"></script>
 <script type = "text/javascript" src="klijenti/RacunScript.js"></script>
@@ -71,6 +71,7 @@ integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7T
 	<li ng-class="{active: tab === 6}"><a href="#" ng-click="opsti.tabClick(6)"><h4>Pravna lica</h4></a></li>
 	<li ng-class="{active: tab === 7}"><a href="#" ng-click="opsti.tabClick(7)"><h4>Racuni</h4></a></li>
 	<li ng-class="{active: tab === 8}"><a href="#" ng-click="opsti.tabClick(8)"><h4>Zatvaranja</h4></a></li>
+	<li ng-class="{active: tab === 9}"><a href="#" ng-click="opsti.tabClick(9)"><h4>Poruke</h4></a></li>
   </ul>
  <nav>
 <div >
@@ -109,6 +110,10 @@ integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7T
     <div id="zatvaranja" class="tab-pane fade in active" ng-show='tab == 8'>
       
       <div ng-include="'klijenti/Zatvaranja.html'"></div>
+    </div>
+	<div id="poruke" class="tab-pane fade in active" ng-show='tab == 9'>
+      
+      <div ng-include="'messages/messages.html'"></div>
     </div>
   </div>
  </nav>
