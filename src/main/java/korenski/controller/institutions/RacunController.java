@@ -140,6 +140,10 @@ public class RacunController {
 			return new ResponseEntity<Racun>(racun, HttpStatus.OK);
 		}
 		
+		if(racun.getStanje()!=0 && pomocni.getRacun().equals("")){
+			return new ResponseEntity<Racun>(new Racun(new Long(-1), "Stanje na racunu nije 0!Broj racuna za prenos sredstava mora biti unesen!", false, null, null, null), HttpStatus.OK);
+		}
+		
 		racun.setStatus(false);
 		
 		Date current = new Date();
@@ -153,7 +157,7 @@ public class RacunController {
 		try {
 			racun = repository.save(racun);
 		} catch (Exception e) {
-			return new ResponseEntity<Racun>(new Racun(new Long(-1), null, false, current, current, null), HttpStatus.OK);
+			return new ResponseEntity<Racun>(new Racun(new Long(-1), "Greska pri upisu u bazu!", false, current, current, null), HttpStatus.OK);
 		}
 		
 		return new ResponseEntity<Racun>(racun, HttpStatus.OK);
