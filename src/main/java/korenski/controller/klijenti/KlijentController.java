@@ -137,6 +137,7 @@ public class KlijentController {
 		return new ResponseEntity<Collection<Klijent>>( repository.findByNaseljenoMestoAndFizickoLiceAndBank(nm, true, bank), HttpStatus.OK);
 	}
 	
+	/*
 	@RequestMapping(
 			value = "/filtrirajKlijente/{jmbg}/{ime}/{prezime}/{adresa}/{telefon}/{email}",
 			method = RequestMethod.GET,
@@ -147,7 +148,7 @@ public class KlijentController {
 		
 		return new ResponseEntity<Collection<Klijent>>( repository.findByJmbgContainingIgnoreCaseOrImeContainingIgnoreCaseOrPrezimeContainingIgnoreCaseOrAdresaContainingIgnoreCaseOrTelefonContainingIgnoreCaseOrEmailContainingIgnoreCase(jmbg, ime, prezime, adresa, telefon, email), HttpStatus.OK);
 	}
-	/*
+	
 	@RequestMapping(
 			value = "/filtrirajKlijenteZaNaseljenoMesto/{jmbg}/{ime}/{prezime}/{adresa}/{telefon}/{email}/{id}",
 			method = RequestMethod.GET,

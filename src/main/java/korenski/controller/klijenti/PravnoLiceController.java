@@ -146,7 +146,7 @@ public class PravnoLiceController {
 		
 		return new ResponseEntity<Collection<PravnoLice>>( repository.findByNaseljenoMestoAndBank(nm, bank), HttpStatus.OK);
 	}
-	
+	/*
 	@RequestMapping(
 			value = "/filtrirajPravnaLica/{jmbg}/{ime}/{prezime}/{adresa}/{telefon}/{email}/{pib}/{fax}/{odobrio}",
 			method = RequestMethod.GET,
@@ -156,7 +156,7 @@ public class PravnoLiceController {
 
 		return new ResponseEntity<Collection<PravnoLice>>( repository.findByJmbgContainingIgnoreCaseOrImeContainingIgnoreCaseOrPrezimeContainingIgnoreCaseOrAdresaContainingIgnoreCaseOrTelefonContainingIgnoreCaseOrEmailContainingIgnoreCaseOrPibContainingIgnoreCaseOrFaxContainingIgnoreCaseOrOdobrioContainingIgnoreCase(jmbg, ime, prezime, adresa, telefon, email, pib, fax, odobrio), HttpStatus.OK);
 	}
-	/*
+	
 	@RequestMapping(
 			value = "/filtrirajPravnaLicaZaNaseljenoMesto/{jmbg}/{ime}/{prezime}/{adresa}/{telefon}/{email}/{pib}/{fax}/{odobrio}/{id}/{idA}",
 			method = RequestMethod.GET,
