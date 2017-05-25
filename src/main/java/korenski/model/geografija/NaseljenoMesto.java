@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -37,7 +38,7 @@ public class NaseljenoMesto {
 	@NotEmpty
 	private String postanskiBroj;
 	
-	
+	@NotNull
 	@ManyToOne
 	private Drzava drzava;
 
@@ -48,6 +49,17 @@ public class NaseljenoMesto {
 
 	public NaseljenoMesto(String oznaka, String naziv, String postanskiBroj, Drzava drzava) {
 		super();
+		this.oznaka = oznaka;
+		this.naziv = naziv;
+		this.postanskiBroj = postanskiBroj;
+		this.drzava = drzava;
+	}
+
+	
+	
+	public NaseljenoMesto(Long id, String oznaka, String naziv, String postanskiBroj, Drzava drzava) {
+		super();
+		this.id = id;
 		this.oznaka = oznaka;
 		this.naziv = naziv;
 		this.postanskiBroj = postanskiBroj;

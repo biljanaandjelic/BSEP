@@ -6,9 +6,6 @@ administrator.controller('RukovanjeKlijentima', function($scope, $http, $compile
 	$scope.klijent = {};
 	$scope.klijenti = {};
 	$scope.svaNaseljenaMesta = {};
-
-	
-	$scope.sakrijBrowse = false;
 	
 	$scope.$on('filterPoNaseljenomMestuKlijent', function (event, id) {
 	    console.log(id); // Index naseljenog mesta
@@ -17,7 +14,6 @@ administrator.controller('RukovanjeKlijentima', function($scope, $http, $compile
         then(function(response) {
         	$scope.klijenti = response.data;
         	$scope.selektovanoNaseljenoMesto = angular.copy($scope.klijenti[0].naseljenoMesto);
-        	$scope.sakrijBrowse = true;
         });
 	    
 	  });
@@ -46,8 +42,6 @@ administrator.controller('RukovanjeKlijentima', function($scope, $http, $compile
 	
 	this.refresh = function(){
 		
-		$scope.sakrijBrowse = false;
-		
 		$http.get('/sviKlijenti').
         then(function(response) {
         	$scope.klijenti = response.data;
@@ -69,6 +63,14 @@ administrator.controller('RukovanjeKlijentima', function($scope, $http, $compile
 			$scope.selektovanoNaseljenoMesto = {};
 		//}
 	};
+	
+	this.prazanK = function(){
+		if(angular.equals($scope.klijent, {})){
+			return true;
+		}else{
+			return false;
+		}
+	}
 	
 	this.commitClick = function(){
 		
@@ -190,26 +192,62 @@ administrator.controller('RukovanjeKlijentima', function($scope, $http, $compile
     		});
 			
 		}else if(angular.equals($scope.rezim, 2)){ //& !angular.equals($scope.klijent, {})){
+
+			var filter = {};
 			
+			if(angular.isUndefined($scope.klijent.jmbg)){
+				filter.jmbg ="";
+			}else{
+				filter.jmbg = $scope.klijent.jmbg;
+			}
 			
-			//if($scope.sakrijBrowse){
-				$http.get('/filtrirajKlijenteZaNaseljenoMesto/'+$scope.klijent.jmbg+'/'+$scope.klijent.ime+'/'+$scope.klijent.prezime+'/'+$scope.klijent.adresa+'/'+$scope.klijent.telefon+'/'+$scope.klijent.email+'/'+$scope.selektovanoNaseljenoMesto.id).
-		        then(function(response) {
-		        	
-		        	$scope.klijenti = response.data;
-		        	
-		        });
-				return;
-			//}
+			if(angular.isUndefined($scope.klijent.ime)){
+				filter.ime ="";
+			}else{
+				filter.ime = $scope.klijent.ime;
+			}
 			
-			//$http.get('/filtrirajKlijente/'+$scope.klijent.jmbg+'/'+$scope.klijent.ime+'/'+$scope.klijent.prezime+'/'+$scope.klijent.adresa+'/'+$scope.klijent.telefon+'/'+$scope.klijent.email).
-	        //then(function(response) {
+			if(angular.isUndefined($scope.klijent.prezime)){
+				filter.prezime ="";
+			}else{
+				filter.prezime = $scope.klijent.prezime;
+			}
+			
+			if(angular.isUndefined($scope.klijent.adresa)){
+				filter.adresa ="";
+			}else{
+				filter.adresa = $scope.klijent.adresa;
+			}
+			
+			if(angular.isUndefined($scope.klijent.telefon)){
+				filter.telefon ="";
+			}else{
+				filter.telefon = $scope.klijent.telefon;
+			}
+			
+			if(angular.isUndefined($scope.klijent.email)){
+				filter.email ="";
+			}else{
+				filter.email = $scope.klijent.email;
+			}
+			
+			if(angular.equals($scope.selektovanoNaseljenoMesto, {})){
+				filter.mesto = 0;
+			}else{
+				filter.mesto = $scope.selektovanoNaseljenoMesto.id;
+			}
+
+			$http({
+    		    method: 'POST',
+    		    url: '/filtrirajKlijenteZaNaseljenoMesto',
+    		    data: filter
+    		}).
+	        then(function(response) {
 	        	
-	        //	$scope.klijenti = response.data;
+	        	$scope.klijenti = response.data;
 	        	
-	        //});
-			
-			
+	        });
+			return;
 		}
 		
 		
@@ -350,6 +388,7 @@ administrator.controller('RukovanjeKlijentima', function($scope, $http, $compile
 			}).
 			then(function mySucces(response) {
 				toastr.success("Racun uspesno otvoren!");
+				$scope.$parent.$parent.opsti.addRacun();
 			});
 		}
 	}

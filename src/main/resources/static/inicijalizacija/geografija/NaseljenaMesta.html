@@ -58,10 +58,12 @@
 	   <div class="panel panel-default">
 	   		<div class="panel-body">
 	   			<div>
-		   			<p>Oznaka naseljenog mesta : <input type="text" ng-model="naseljenoMesto.oznaka" required autofocus></p>
-		   			<p>Naziv naseljenog mesta : <input type="text" ng-model="naseljenoMesto.naziv" maxlength="40" required></p>
-		   			<p>Postanski broj naseljenog mesta : <input type="text" ng-model="naseljenoMesto.postanskiBroj" maxlength="5" required></p>
-		   			<p>Drzava : {{selektovanaDrzava.naziv}}<button class = "btn btn-primary btn-sm" data-toggle="modal" data-target="#prikaziDrzave" ng-show='!sakrijBrowse' ng-click="rnm.browse()">...</button></p>
+		   			<p>Oznaka naseljenog mesta : <input type="text" ng-model="naseljenoMesto.oznaka" required autofocus ng-readonly="rezim==0 && rnm.praznoNM()"></p>
+		   			<p>Naziv naseljenog mesta : <input type="text" ng-model="naseljenoMesto.naziv" maxlength="40" required ng-readonly="rezim==0 && rnm.praznoNM()"></p>
+		   			<p>Postanski broj naseljenog mesta : <input type="text" ng-model="naseljenoMesto.postanskiBroj" maxlength="5" required ng-readonly="rezim==0 && rnm.praznoNM()"></p>
+		   			<p>Drzava : {{selektovanaDrzava.naziv}}<button class = "btn btn-primary btn-sm" data-toggle="modal"
+		   						 data-target="#prikaziDrzave" ng-hide= 'rezim == 0 && rnm.praznoNM()' 
+		   						 ng-click="rnm.browse()">...</button></p>
 	   			</div>
 	   			<div class="container" id="dugmici">
 	  				<div class="btn-group">
@@ -104,7 +106,7 @@
 			
 		</div>
         <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="rnm.conf()">Zatvori</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="rnm.conf()">Potvrdi</button>
           <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="rnm.dismis()">Zatvori</button>
         </div>
       </div>

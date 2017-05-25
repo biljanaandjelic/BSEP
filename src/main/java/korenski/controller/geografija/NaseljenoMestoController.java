@@ -2,8 +2,11 @@ package korenski.controller.geografija;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolation;
 import javax.ws.rs.core.Context;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +21,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import korenski.model.geografija.Drzava;
 import korenski.model.geografija.NaseljenoMesto;
+import korenski.model.geografija.pomocni.NMFilter;
 import korenski.repository.geografija.DrzavaRepository;
 import korenski.repository.geografija.NaseljenoMestoRepository;
+import korenski.singletons.ValidatorSingleton;
 
 @Controller
 public class NaseljenoMestoController {
@@ -36,8 +41,21 @@ public class NaseljenoMestoController {
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<NaseljenoMesto> novaNaseljenoMesto(@RequestBody NaseljenoMesto naseljenoMesto , @Context HttpServletRequest request) throws Exception {
 
-	
-		return new ResponseEntity<NaseljenoMesto>(repository.save(naseljenoMesto), HttpStatus.OK);
+		NaseljenoMesto validity = validityCheck(naseljenoMesto);
+		if(validity != null){
+			return new ResponseEntity<NaseljenoMesto>(validity, HttpStatus.OK);
+		}
+		
+		
+		NaseljenoMesto nm = null;
+		
+		try {
+			nm = repository.save(naseljenoMesto);
+		} catch (Exception e) {
+			return new ResponseEntity<NaseljenoMesto>(new NaseljenoMesto(new Long(-1), null, "Greska pri cuvanju u bazu!", null, null), HttpStatus.OK);
+		}
+		
+		return new ResponseEntity<NaseljenoMesto>(nm, HttpStatus.OK);
 	}
 	
 	@RequestMapping(
@@ -62,14 +80,25 @@ public class NaseljenoMestoController {
 		
 		
 		NaseljenoMesto naseljenoMestoToModify = repository.findOne(naseljenoMesto.getId());
-		Drzava drzava = repD.findOne(naseljenoMesto.getId());
+		Drzava drzava = repD.findOne(naseljenoMesto.getDrzava().getId());
 		
 		naseljenoMestoToModify.setOznaka(naseljenoMesto.getOznaka());
 		naseljenoMestoToModify.setNaziv(naseljenoMesto.getNaziv());
 		naseljenoMestoToModify.setPostanskiBroj(naseljenoMesto.getPostanskiBroj());
 		naseljenoMestoToModify.setDrzava(drzava);
 
-		return new ResponseEntity<NaseljenoMesto>(repository.save(naseljenoMestoToModify), HttpStatus.OK);
+		NaseljenoMesto validity = validityCheck(naseljenoMesto);
+		if(validity != null){
+			return new ResponseEntity<NaseljenoMesto>(validity, HttpStatus.OK);
+		}
+		
+		try {
+			naseljenoMestoToModify = repository.save(naseljenoMestoToModify);
+		} catch (Exception e) {
+			return new ResponseEntity<NaseljenoMesto>(new NaseljenoMesto(new Long(-1), null, "Greska pri cuvanju u bazu!", null, null), HttpStatus.OK);
+		}
+		
+		return new ResponseEntity<NaseljenoMesto>(naseljenoMestoToModify, HttpStatus.OK);
 	}
 	
 	
@@ -108,17 +137,47 @@ public class NaseljenoMestoController {
 	}
 	
 	@RequestMapping(
-			value = "/filtrirajNaseljenaMestaZaDrzavu/{oznaka}/{naziv}/{postanski_broj}/{id}",
-			method = RequestMethod.GET,
+			value = "/filtrirajNaseljenaMestaZaDrzavu",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Collection<NaseljenoMesto>> filtrirajNaseljenaMestaDrzave(@PathVariable("oznaka") String oznaka,
-			@PathVariable("naziv") String naziv, @PathVariable("postanski_broj") String postanskiBroj,  @PathVariable("id") Long id) throws Exception {
+	public ResponseEntity<Collection<NaseljenoMesto>> filtrirajNaseljenaMestaDrzave(@RequestBody NMFilter nmFilter) throws Exception {
 		
-		Drzava drzava = repD.findOne(id);
+		if(nmFilter.getOznaka() == null){
+			nmFilter.setOznaka("");
+		}
 		
+		if(nmFilter.getNaziv() == null){
+			nmFilter.setNaziv("");
+		}
 		
+		if(nmFilter.getPostanskiBroj() == null){
+			nmFilter.setPostanskiBroj("");
+		}
 		
-		return new ResponseEntity<Collection<NaseljenoMesto>>( repository.findByOznakaContainingIgnoreCaseOrNazivContainingIgnoreCaseOrPostanskiBrojContainingIgnoreCaseOrDrzava(oznaka, naziv, postanskiBroj, drzava), HttpStatus.OK);
+		if(nmFilter.getDrzava() == null){
+			nmFilter.setDrzava(new Long(0));
+		}
+		
+		if(nmFilter.getDrzava().equals(new Long(0))){
+			return new ResponseEntity<Collection<NaseljenoMesto>>( repository.filterBezDrzave(nmFilter.getOznaka(), nmFilter.getNaziv(), nmFilter.getPostanskiBroj()), HttpStatus.OK);
+		}
+		//repository.findByOznakaContainingIgnoreCaseOrNazivContainingIgnoreCaseOrPostanskiBrojContainingIgnoreCaseOrDrzava(oznaka, naziv, postanskiBroj, drzava)
+		return new ResponseEntity<Collection<NaseljenoMesto>>( repository.filter(nmFilter.getOznaka(), nmFilter.getNaziv(), nmFilter.getPostanskiBroj(), nmFilter.getDrzava()), HttpStatus.OK);
 	}
 
+	
+	public NaseljenoMesto validityCheck(NaseljenoMesto naseljenoMesto){
+		Set<ConstraintViolation<NaseljenoMesto>> violations = ValidatorSingleton.getInstance().getValidator().validate(naseljenoMesto);
+		
+		if(!violations.isEmpty()){
+			Iterator iter = violations.iterator();
+
+			ConstraintViolation<NaseljenoMesto> first = (ConstraintViolation<NaseljenoMesto>) iter.next();
+			NaseljenoMesto nm = new NaseljenoMesto(new Long(-1), null, first.getMessage(), null, null);
+			return nm;
+		}else{
+			return null;
+		}
+	}
 }

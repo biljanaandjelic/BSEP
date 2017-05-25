@@ -22,6 +22,14 @@ administrator.controller('RukovanjeDrzavama', function($scope, $http, $compile){
 		
 	};
 	
+	this.praznaDrzava = function(){
+		if(angular.equals($scope.drzava, {})){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
 	this.addClick = function(){
 		
 		$scope.rezim =1;
@@ -63,7 +71,7 @@ administrator.controller('RukovanjeDrzavama', function($scope, $http, $compile){
     		then(function mySucces(response) {
     				
     				if(response.data.id == -1){
-    					toastr.error('Neuspesan unos!');
+    					toastr.error(response.data.naziv);
     					return;
     				}
     			
@@ -105,7 +113,7 @@ administrator.controller('RukovanjeDrzavama', function($scope, $http, $compile){
     		then(function mySucces(response) {
     			
 	    			if(response.data.id == -1){
-						toastr.error('Neuspesan unos!');
+						toastr.error(response.data.naziv);
 						return;
 					}
     			
@@ -127,7 +135,27 @@ administrator.controller('RukovanjeDrzavama', function($scope, $http, $compile){
 			
 		}else if(angular.equals($scope.rezim, 2) & !angular.equals($scope.drzava, {})){
 			
-			$http.get('/filtrirajDrzave/'+$scope.drzava.oznaka+'/'+$scope.drzava.naziv).
+			var filter = {};
+			
+			if(angular.isUndefined($scope.drzava.oznaka)){
+				filter.oznaka = "";
+			}else{
+				filter.oznaka = $scope.drzava.oznaka;
+			}
+			
+				
+			if(angular.isUndefined($scope.drzava.naziv)){
+				filter.naziv = "";
+			}else{
+				filter.naziv = $scope.drzava.naziv;
+			}
+			
+			
+			$http({
+    		    method: 'POST',
+    		    url: '/filtrirajDrzave',
+    		    data: filter
+    		}).
 	        then(function(response) {
 	        	
 	        	$scope.drzave = response.data;
@@ -151,7 +179,13 @@ administrator.controller('RukovanjeDrzavama', function($scope, $http, $compile){
 		}
 	};
 	
-	
+	this.refreshClick = function(){
+		$http.get('/sveDrzave').
+        then(function(response) {
+        	$scope.drzave = response.data;
+        	$scope.$parent.$parent.drzaveIzDrzava = $scope.drzave;
+        });
+	}
 	
 	this.deleteClick= function(){
 		

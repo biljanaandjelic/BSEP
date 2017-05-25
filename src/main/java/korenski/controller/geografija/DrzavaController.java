@@ -1,12 +1,11 @@
 package korenski.controller.geografija;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.ValidatorFactory;
 import javax.ws.rs.core.Context;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import korenski.model.geografija.Drzava;
-import korenski.model.infrastruktura.Bank;
+import korenski.model.geografija.pomocni.DrzavaFilter;
 import korenski.repository.geografija.DrzavaRepository;
+import korenski.singletons.ValidatorSingleton;
 
 @Controller
 public class DrzavaController {
@@ -37,28 +37,33 @@ public class DrzavaController {
 	public ResponseEntity<Drzava> novaDrzava(@RequestBody Drzava drzava , @Context HttpServletRequest request) throws Exception {
 
 		
-		ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+//		ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+//		
+//		javax.validation.Validator validator = validatorFactory.getValidator();
+//		
+//		 
+//		
+//		Set<ConstraintViolation<Drzava>> violations = validator.validate(drzava);
+//		
+//		for (ConstraintViolation<Drzava> violation : violations) {
+//		
+//		   String propertyPath = violation.getPropertyPath().toString();
+//		
+//		    String message = violation.getMessage();
+//		
+//		    System.out.println("invalid value for: '" + propertyPath + "': " + message);
+//		}
 		
-		javax.validation.Validator validator = validatorFactory.getValidator();
-		
-		 
-		
-		Set<ConstraintViolation<Drzava>> violations = validator.validate(drzava);
-		
-		for (ConstraintViolation<Drzava> violation : violations) {
-		
-		   String propertyPath = violation.getPropertyPath().toString();
-		
-		    String message = violation.getMessage();
-		
-		    System.out.println("invalid value for: '" + propertyPath + "': " + message);
+		Drzava validity = validityCheck(drzava);
+		if(validity != null){
+			return new ResponseEntity<Drzava>(validity, HttpStatus.OK);
 		}
 		
 		Drzava drz;
 		try {
 			drz = repository.save(drzava);
 		} catch (Exception e) {
-			drz = new Drzava(new Long(-1), null, null, null);
+			drz = new Drzava(new Long(-1), null, "Greska pri cuvanju u bazu!", null);
 		}
 	
 		return new ResponseEntity<Drzava>(drz, HttpStatus.OK);
@@ -91,13 +96,17 @@ public class DrzavaController {
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Drzava> azurirajDrzavu(@RequestBody Drzava drzava , @Context HttpServletRequest request) throws Exception {
 		
+		Drzava validity = validityCheck(drzava);
+		if(validity != null){
+			return new ResponseEntity<Drzava>(validity, HttpStatus.OK);
+		}
 		
 		Drzava drzavaToModify = null;
 		
 		try {
 			drzavaToModify = repository.findOne(drzava.getId());
 		} catch (Exception e) {
-			return new ResponseEntity<Drzava>(new Drzava(new Long(-1), null, null, null), HttpStatus.OK);
+			return new ResponseEntity<Drzava>(new Drzava(new Long(-1), null, "Takva drzava ne postoji u bazi.", null), HttpStatus.OK);
 		}
 		
 		
@@ -107,7 +116,7 @@ public class DrzavaController {
 		try {
 			drzavaToModify = repository.save(drzavaToModify);
 		} catch (Exception e) {
-			return new ResponseEntity<Drzava>(new Drzava(new Long(-1), null, null, null), HttpStatus.OK);
+			return new ResponseEntity<Drzava>(new Drzava(new Long(-1), null, "Greska pri cuvanju u bazi!", null), HttpStatus.OK);
 		}
 
 		return new ResponseEntity<Drzava>(drzavaToModify, HttpStatus.OK);
@@ -126,16 +135,37 @@ public class DrzavaController {
 	
 	
 	@RequestMapping(
-			value = "/filtrirajDrzave/{oznaka}/{naziv}",
-			method = RequestMethod.GET,
+			value = "/filtrirajDrzave",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Collection<Drzava>> filtrirajDrzave(@PathVariable("oznaka") String oznaka,
-			@PathVariable("naziv") String naziv) throws Exception {
+	public ResponseEntity<Collection<Drzava>> filtrirajDrzave(@RequestBody DrzavaFilter drzavaFilter) throws Exception {
 
+		if(drzavaFilter.getOznaka() == null){
+			drzavaFilter.setOznaka("");
+		}
 		
-		return new ResponseEntity<Collection<Drzava>>( repository.findByOznakaContainingIgnoreCaseOrNazivContainingIgnoreCase(oznaka, naziv), HttpStatus.OK);
+		if(drzavaFilter.getNaziv() == null){
+			drzavaFilter.setNaziv("");
+		}
+		
+		
+		return new ResponseEntity<Collection<Drzava>>( repository.filter(drzavaFilter.getOznaka(), drzavaFilter.getNaziv()), HttpStatus.OK);
 	}
 	
 
+	public Drzava validityCheck(Drzava drzava){
+		Set<ConstraintViolation<Drzava>> violations = ValidatorSingleton.getInstance().getValidator().validate(drzava);
+		
+		if(!violations.isEmpty()){
+			Iterator iter = violations.iterator();
+
+			ConstraintViolation<Drzava> first = (ConstraintViolation<Drzava>) iter.next();
+			Drzava d = new Drzava(new Long(-1), null, first.getMessage(), null);
+			return d;
+		}else{
+			return null;
+		}
+	}
 	
 }

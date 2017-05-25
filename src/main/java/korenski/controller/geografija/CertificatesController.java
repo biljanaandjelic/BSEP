@@ -94,6 +94,10 @@ public class CertificatesController {
 	CertificateInfoService certificateIDService;
 	@Autowired
 	BankRepository bankRepository;
+
+	
+	
+
 	@Autowired
 	RevokeRequestService revokeRequestService;
 	
@@ -144,8 +148,19 @@ public class CertificatesController {
 		System.out.println(serial);
 		
 		X509v3CertificateBuilder certGen;
+
 		//if (dto.selfSigned) {
 		CertificateInfo certificateInfo;
+
+//		if (dto.selfSigned) {
+
+			certificateInfo = new CertificateInfo(serial, CertStatus.GOOD, null, null, dto.alias, Type.NationalBank);
+
+			// certificateInfoService.create(certificateInfo);
+			certGen = new JcaX509v3CertificateBuilder(name, serial, startDate, endDate, name, pair.getPublic());
+//		} else {
+
+
 		
 
 		certificateInfo = new CertificateInfo(serial, CertStatus.GOOD, null, null, dto.alias, Type.NationalBank);
@@ -186,7 +201,7 @@ public class CertificatesController {
 
 		JcaX509CertificateConverter certConverter = new JcaX509CertificateConverter();
 		certConverter = certConverter.setProvider("BC");
-		
+
 		System.out.println(certConverter.getCertificate(certHolder));
 		
 		ks.setCertificateEntry("CERT-" + bank.getSwiftCode(), certConverter.getCertificate(certHolder));
