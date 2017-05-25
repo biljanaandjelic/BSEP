@@ -50,12 +50,90 @@ administrator.controller('MessagesController', function($scope, $http, $compile,
 		$scope.state=State.VIEW_EDIT;
 		this.refresh();
 	}
+	this.searchClick=function(){
+		$scope.state=State.SEARCH;
+	//	saveState();
+	}
+	this.firstClick=function(){
+		if($scope.state===State.VIEW_EDIT){
+			$log.log("First click");
+			$scope.message=$scope.messages[0];
+			//$scope.valutaId=selectedValuta.id;
+		//	$scope.valuta=selectedValuta;
+		
+		
+		}
+	}
+	this.refresh=function(){
+		var path="/messages";
+		
+		$http({
+			method: 'GET',
+			url: path
+		}).then(
+			function successCallback(response){
+				$log.log("ucitavanje svih zabiljezenih poruka");
+				$scope.messages=response.data;
+			},function errorCallback(response){
+				
+			}
+		);
+	}
+	/*
+		Selektovanje prve ispred stavke u odnosu na tenutno selektovanu.
+	*/
+	this.prevClick=function(){
+		if($scope.state===State.VIEW_EDIT){
+			var temp=findIndexOfValuta($scope.message.id);
+			$log.log("Index selektovane stavke "+ temp);
+
+			if(temp!=-1 && temp!=0){
+				$scope.message=$scope.messages[temp-1];
+			
+			}
+		}
+	}
+	/*
+		Selektovanje prve sledece stavke u tabeli. Ako je posljednja stavka selektovana 
+		nista se ne desava.
+	*/
 	
+	findIndexOfValuta=function(id){
+		var temp=-1;
+		for (var i = 0; i < $scope.messages.length; i++) { 
+				if(angular.equals($scope.messages[i].id, id)){
+					temp = i;
+					return temp;
+				}
+			}
+		return temp;
+	}
+	this.lastClick=function(){
+		if($scope.state===State.VIEW_EDIT){
+		
+			$scope.message=$scope.messages[$scope.messages.length-1];
+			
+			
+		}
+	}
+	this.nextClick=function(){
+		if($scope.state===State.VIEW_EDIT){
+			$log.log("Next valuta");
+		//	$log.log("Oznaka djelatnost "+ $scope.message+" "+ $scope.activity.name+" id "+$scope.activity.id);
+			
+			var temp=findIndexOfValuta($scope.message.id);
+			$log.log("Index selektovane stavke "+ temp);
+			if(temp!=-1 && temp!=$scope.messages.length){
+				$scope.message=$scope.messages[temp+1];
+			
+			}
+		}
+	}
 	this.commitClick=function(){
 		
 		
 		$log.log("Stanje "+ $scope.state);
-		$log.log("Activity "+$scope.activity.code +" name "+$scope.activity.name);
+		$log.log("Activity "+$scope.message.code);
 		if($scope.state==State.ADD && check()){
 			$log.log("Stanje dodavanja");
 			var path="/message";
@@ -129,4 +207,15 @@ administrator.controller('MessagesController', function($scope, $http, $compile,
 		$log.log("TRUE");
 		return true;
 	} 
+	
+	this.rollbackClick=function(){
+		$log.log("Ponisti stanje");
+		$scope.state=State.VIEW_EDIT;
+	}
+	
+	this.setSelected=function(activity){
+		
+		
+		$scope.message=message;
+	}
 });

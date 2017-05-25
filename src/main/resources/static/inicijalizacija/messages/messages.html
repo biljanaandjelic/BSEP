@@ -1,4 +1,4 @@
-<div  ng-controller = "MassagesController as ma" data-ng-init="ma.init()">
+<div  ng-controller = "MessagesController as ma" ng-init="ma.init()">
 
 	<div class="panel panel-default" id ="sveobuhvatniNM">
 	
@@ -15,7 +15,7 @@
 		        </thead>
 		        <tbody>
 			    
-					 <tr ng-repeat="item in messages "  ng-click="ma.setSelected(item)" ng-class="{selected: item.id==activity.id}">
+					 <tr ng-repeat="item in messages "  ng-click="ma.setSelected(item)" ng-class="{selected: item.id==message.id}">
 					
 			        	<td>{{item.code}}</td>
 			        	

@@ -108,9 +108,7 @@ public class ValutaControler {
 			method=RequestMethod.GET,
 			produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Set<Valuta>> findValutaByCodeAndName(@PathVariable("code") String code,@PathVariable("name") String name ){
-		/*Set<Valuta> result=new HashSet<Valuta>();
-		result.add(valutaService.findValutaByCode(code));
-		result.add(valutaService.findValutaByName(name));*/
+		
 		Set<Valuta> result=valutaService.findValutaByCodeAndName(code, name);
 		return new ResponseEntity<Set<Valuta>>(result,HttpStatus.OK);
 	}
