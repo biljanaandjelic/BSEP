@@ -4,6 +4,14 @@ logovanje.controller('LogovanjeCtrl', ['$window', '$scope', '$http', '$compile',
 
 	$scope.user = {};
 	
+	this.metoda2 = function(){
+		$http.get('/special/testToken').
+	    then(function(response) {
+	    	
+	    });
+	
+	}
+	
 	this.submitClick = function(){
 		
 		if(angular.equals($scope.user, {})){

@@ -35,24 +35,26 @@ public class AuthorizationInterceptor implements HandlerInterceptor  {
 		
 		System.out.println("X-XSRF-TOKEN VREDNOST JE "+ value);
 		
-//		String tokenValue = request.getHeader("X-XSRF-TOKEN");
-//		
-//		String sessionTokenValue = (String) request.getSession().getAttribute("tokenValue");
-//		
-//		if(tokenValue == null){
-//			return false;
-//		}
-//		
-//		System.out.println("Ima token");
-//		
-//		
-//		if(!tokenValue.equals(sessionTokenValue)){
-//			return false;
-//		}
-//		
-//		System.out.println("Poklapa se token");
-//		
-//		
+		String tokenValue = request.getHeader("X-XSRF-TOKEN");
+		
+		String sessionTokenValue = (String) request.getSession().getAttribute("tokenValue");
+		
+		System.out.println("Vrednost tokena u sesiji je "+sessionTokenValue);
+		
+		if(tokenValue == null){
+			return false;
+		}
+		
+		System.out.println("Ima token");
+		
+		
+		if(!tokenValue.equals(sessionTokenValue)){
+			return false;
+		}
+		
+		System.out.println("Poklapa se token");
+		
+		
 		User user = (User) request.getSession().getAttribute("user");
 		
 		if(user == null){
@@ -90,10 +92,10 @@ public class AuthorizationInterceptor implements HandlerInterceptor  {
 		}
 		
 		for(Permission permission : permissions){
-			System.out.println("Vrednost permisije "+permission.getName());
+			
 			if(permission.getName().equals(annotationValue)){
 				System.out.println("Ima permisiju");
-				
+				System.out.println("Vrednost permisije "+permission.getName());
 				return true;
 			}
 		}

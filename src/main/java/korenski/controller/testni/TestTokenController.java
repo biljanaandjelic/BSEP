@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class TestTokenController {
 
 	@RequestMapping(
-			value = "/napraviToken",
+			value = "/special/napraviToken",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> napraviToken(@Context HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -27,12 +28,12 @@ public class TestTokenController {
 		
 		System.out.println("XSRF-TOKEN vrednost je "+ "val");
 		
-		return new ResponseEntity<String>( "Sve ok", HttpStatus.OK);
+		return new ResponseEntity<String>( "val", HttpStatus.OK);
 	}
 	
-	@CrossOrigin(origins = "http://localhost:8090")
+	
 	@RequestMapping(
-			value = "/testToken",
+			value = "/special/testToken",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> testToken(@Context HttpServletRequest request) throws Exception {
@@ -44,4 +45,43 @@ public class TestTokenController {
 		return new ResponseEntity<String>( "Sve ok", HttpStatus.OK);
 	}
 	
+	
+	@RequestMapping(
+			value = "/special/getSafeToken",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Cookie> getSafeToken(@Context HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		Cookie myCookie =new Cookie("XSRF-TOKEN", "MYPRECIOUSTOKEN");
+		response.addCookie(myCookie);
+		request.getSession().setAttribute("tokenValue", "MYPRECIOUSTOKEN");
+		System.out.println("XSRF-TOKEN vrednost je "+ "MYPRECIOUSTOKEN");
+		
+		return new ResponseEntity<Cookie>( myCookie, HttpStatus.OK);
+	}
+	
+	@RequestMapping(
+			value = "/special/checkToken",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> checkSafeToken(@Context HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String value = request.getHeader("X-XSRF-TOKEN");
+		
+		System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++X-XSRF-TOKEN vrednost je "+value);
+		
+		return new ResponseEntity<String>( "Sve ok", HttpStatus.OK);
+	}
+	
+	@RequestMapping(
+			value = "/special/checkPostToken",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> checkPostSafeToken(@RequestBody String str, @Context HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String value = request.getHeader("X-XSRF-TOKEN");
+		
+		System.out.println("++++++++++++++++&&&&&&&&&&&&&&&&&&&&&&&&&&&&&++++++++X-XSRF-TOKEN vrednost je "+value);
+		
+		return new ResponseEntity<String>( "Sve ok", HttpStatus.OK);
+	}
 }

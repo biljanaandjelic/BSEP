@@ -1,4 +1,4 @@
-administrator.controller('Opsti', function($scope, $http, $compile, $timeout, $rootScope){
+administrator.controller('Opsti', function($scope, $http, $compile, $timeout, $rootScope, $cookies){
 	
 	$scope.tab = 0;
 	
@@ -10,10 +10,42 @@ administrator.controller('Opsti', function($scope, $http, $compile, $timeout, $r
 	
 	$scope.permisijeIzPermisija = [];
 	
+	$scope.token = "";
+	
 	$scope.init = function(){
 	
 		
+		$http.get('/special/getSafeToken').
+		then(function mySucces(response) {
+			
+			$scope.token = response.data.value;
+		});
+	
 	};
+	
+	this.probajZahtev = function(){
+		
+		
+		$http.get('/special/checkToken', {headers: {'X-XSRF-TOKEN': $scope.token}}).
+		then(function mySucces(response) {
+			
+			
+		});
+	}
+	
+	this.probajPostZahtev = function(){
+		var variabla = "Nesto"
+		$http({
+		    method: 'POST',
+		    url: '/special/checkPostToken',
+		    data: variabla,
+		    headers: {'X-XSRF-TOKEN': $scope.token}
+		}).
+		then(function mySucces(response) {
+				
+				
+		});
+	}
 	
 	this.logoff = function(){
 		
