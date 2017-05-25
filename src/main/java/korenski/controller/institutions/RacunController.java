@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import korenski.DTOs.RacunSearchDTO;
 import korenski.controller.institutions.pomocni.ZatvaranjePomocni;
+import korenski.intercepting.CustomAnnotation;
 import korenski.model.autorizacija.User;
 import korenski.model.infrastruktura.Bank;
 import korenski.model.infrastruktura.Racun;
@@ -45,6 +46,7 @@ public class RacunController {
 	@Autowired
 	ZatvaranjeRacunaRepository zatvaranjeRepository;
 	
+	@CustomAnnotation(value = "INSERT_ACCOUNT")
 	@RequestMapping(
 			value = "/noviRacun",
 			method = RequestMethod.POST,
@@ -67,6 +69,7 @@ public class RacunController {
 		return new ResponseEntity<Racun>(repository.save(racun), HttpStatus.OK);
 	}
 	
+	@CustomAnnotation(value = "FILTER_ACCOUNT")
 	@RequestMapping(
 			value = "/filtrirajRacune",
 			method = RequestMethod.POST,
@@ -80,6 +83,7 @@ public class RacunController {
 		return new ResponseEntity<Collection<Racun>>(repository.findBySearch(dto.status, dto.datumOtvaranjaOd, dto.datumOtvaranjaDo, dto.ime, dto.prezime, bank.getId()), HttpStatus.OK);
 	}
 	
+	@CustomAnnotation(value = "FIND_ALL_ACCOUNT")
 	@RequestMapping(
 			value = "/sviRacuni",
 			method = RequestMethod.GET,
@@ -91,6 +95,7 @@ public class RacunController {
 		return new ResponseEntity<Collection<Racun>>( repository.findByBank(bank), HttpStatus.OK);
 	}
 	
+	@CustomAnnotation(value = "FIND_ACCOUNT_BY_OWNER")
 	@RequestMapping(
 			value = "/nadjiRacune/{id}",
 			method = RequestMethod.GET,
@@ -126,7 +131,7 @@ public class RacunController {
 		return bankCode + "-" + racunBase + "-" + checksum;
 	}
 	
-	
+	@CustomAnnotation(value = "DEACTIVATE_ACCOUNT")
 	@RequestMapping(
 			value = "/zatvoriRacun",
 			method = RequestMethod.POST,
@@ -163,7 +168,7 @@ public class RacunController {
 		return new ResponseEntity<Racun>(racun, HttpStatus.OK);
 	}
 	
-	
+	@CustomAnnotation(value = "FIND_ONE_ACCOUNT")
 	@RequestMapping(
 			value = "/nadjiRacun/{id}",
 			method = RequestMethod.GET,

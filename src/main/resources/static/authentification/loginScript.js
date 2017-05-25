@@ -16,7 +16,7 @@ logovanje.controller('LogovanjeCtrl', ['$window', '$scope', '$http', '$compile',
 	
 		$http({
 		    method: 'POST',
-		    url: '/loginSubject',
+		    url: '/special/loginSubject',
 		    data: $scope.user
 		}).
 		then(function mySucces(response) {

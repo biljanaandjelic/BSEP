@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import korenski.controller.institutions.pomocni.ZatvaranjeFilter;
+import korenski.intercepting.CustomAnnotation;
 import korenski.model.autorizacija.User;
 import korenski.model.geografija.NaseljenoMesto;
 import korenski.model.infrastruktura.Bank;
@@ -38,7 +39,7 @@ public class ZatvaranjeRacunaController {
 	@Autowired
 	RacunRepository racunRepository;
 	
-	
+	@CustomAnnotation(value = "FIND_ALL_DEACTIVATION")
 	@RequestMapping(
 			value = "/svaZatvaranja",
 			method = RequestMethod.GET,
@@ -52,18 +53,20 @@ public class ZatvaranjeRacunaController {
 		return new ResponseEntity<Collection<ZatvaranjeRacuna>>( zatvaranja, HttpStatus.OK);
 	}
 	
+	@CustomAnnotation(value = "FILTER_DEACTIVATION_BY_ACCOUNT")
 	@RequestMapping(
 			value = "/filtrirajZatvaranjaPoRacunu/{racun}",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ZatvaranjeRacuna> filtrirajRacune(@PathVariable("racun") Long id, @Context HttpServletRequest request) throws Exception {
+	public ResponseEntity<Collection<ZatvaranjeRacuna>> filtrirajRacune(@PathVariable("racun") Long id, @Context HttpServletRequest request) throws Exception {
 		
 		Racun racun = racunRepository.findOne(id);
-		ZatvaranjeRacuna zatvaranje = repository.findByRacun(racun);
+		Collection<ZatvaranjeRacuna> zatvaranje = repository.findByRacun(racun);
 		
-		return new ResponseEntity<ZatvaranjeRacuna>(zatvaranje, HttpStatus.OK);
+		return new ResponseEntity<Collection<ZatvaranjeRacuna>>(zatvaranje, HttpStatus.OK);
 	}
 	
+	@CustomAnnotation(value = "FILTER_DEACTIVATION")
 	@RequestMapping(
 			value = "/filtrirajZatvaranja",
 			method = RequestMethod.POST,

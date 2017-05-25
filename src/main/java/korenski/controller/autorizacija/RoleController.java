@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import korenski.intercepting.CustomAnnotation;
 import korenski.model.autorizacija.Role;
 import korenski.repository.autorizacija.RoleRepository;
 
@@ -26,6 +27,7 @@ public class RoleController {
 	@Autowired
 	RoleRepository repository;
 	
+	@CustomAnnotation(value = "INSERT_ROLE")
 	@RequestMapping(
 			value = "/newRole",
 			method = RequestMethod.POST,
@@ -44,6 +46,7 @@ public class RoleController {
 		return new ResponseEntity<Role>(rle, HttpStatus.OK);
 	}
 	
+	@CustomAnnotation(value = "DELETE_ROLE")
 	@RequestMapping(
 			value = "/deleteRole/{id}",
 			method = RequestMethod.DELETE,
@@ -62,7 +65,7 @@ public class RoleController {
 	}
 
 	
-	
+	@CustomAnnotation(value = "UPDATE_ROLE")
 	@RequestMapping(
 			value = "/updateRole",
 			method = RequestMethod.POST,
@@ -91,7 +94,7 @@ public class RoleController {
 		return new ResponseEntity<Role>(roleToModify, HttpStatus.OK);
 	}
 	
-	
+	@CustomAnnotation(value = "FIND_ALL_ROLE")
 	@RequestMapping(
 			value = "/allRoles",
 			method = RequestMethod.GET,
