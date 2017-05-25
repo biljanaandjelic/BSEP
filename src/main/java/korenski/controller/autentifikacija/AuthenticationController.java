@@ -213,7 +213,7 @@ public class AuthenticationController {
 	RoleRepository roleRepository;
 
 //	@RequestMapping(
-//			value = "/login",
+//			value = "/special/login",
 //			method = RequestMethod.POST,
 //			consumes = MediaType.APPLICATION_JSON_VALUE,
 //			produces = MediaType.APPLICATION_JSON_VALUE)
@@ -366,5 +366,22 @@ public class AuthenticationController {
 		return new ResponseEntity<User>(user, HttpStatus.OK);
 	}
 */
+	
+	@RequestMapping(
+			value = "/special/checkLogged",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<User> checkLogged(@Context HttpServletRequest request) throws Exception {
+		
+		User user = (User) request.getSession().getAttribute("user");
+		
+		if(user == null){
+			user = new User(new Long(-1), "");
+		}
+		
+		return new ResponseEntity<User>(user, HttpStatus.OK);
+	}
+		
+	
 }
 

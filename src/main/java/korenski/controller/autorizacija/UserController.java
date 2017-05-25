@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import korenski.controller.autentifikacija.pomocneKlase.PasswordChanging;
+import korenski.intercepting.CustomAnnotation;
 import korenski.model.autorizacija.User;
 import korenski.model.geografija.Drzava;
 import korenski.model.infrastruktura.Bank;
@@ -91,6 +92,7 @@ public class UserController {
 //	}
 //	
 	
+	@CustomAnnotation(value = "INSERT_USER")
 	@RequestMapping(
 			value = "/newUser",
 			method = RequestMethod.POST,
@@ -128,6 +130,7 @@ public class UserController {
 		return new ResponseEntity<User>(rle, HttpStatus.OK);
 	}
 	
+	@CustomAnnotation(value = "DELETE_USER")
 	@RequestMapping(
 			value = "/deleteUser/{id}",
 			method = RequestMethod.DELETE,
@@ -146,7 +149,7 @@ public class UserController {
 	}
 
 	
-	
+	@CustomAnnotation(value = "UPDATE_USER")
 	@RequestMapping(
 			value = "/updateUser",
 			method = RequestMethod.POST,
@@ -186,7 +189,7 @@ public class UserController {
 		return new ResponseEntity<User>(userToModify, HttpStatus.OK);
 	}
 	
-	
+	@CustomAnnotation(value = "FIND_ALL_USER")
 	@RequestMapping(
 			value = "/allUsers",
 			method = RequestMethod.GET,

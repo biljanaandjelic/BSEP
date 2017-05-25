@@ -10,10 +10,25 @@ administrator.controller('Opsti', function($scope, $http, $compile, $timeout, $r
 	
 	$scope.permisijeIzPermisija = [];
 	
+	$scope.loggedUser = {'id':-1};
+	
 	$scope.init = function(){
 	
+		$http.get('/special/checkLogged').
+		then(function mySucces(response) {
+			
+				$scope.loggedUser = response.data;
+		});
 		
 	};
+	
+	this.hasLogged = function(){
+		if(angular.equals($scope.loggedUser.id, -1)){
+			return false;
+		}else{
+			return true;
+		}
+	}
 	
 	this.logoff = function(){
 		

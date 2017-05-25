@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import korenski.intercepting.CustomAnnotation;
 import korenski.model.geografija.Drzava;
 import korenski.model.geografija.pomocni.DrzavaFilter;
 import korenski.repository.geografija.DrzavaRepository;
@@ -29,6 +30,7 @@ public class DrzavaController {
 	@Autowired
 	DrzavaRepository repository;
 	
+	@CustomAnnotation(value = "INSERT_STATE")
 	@RequestMapping(
 			value = "/novaDrzava",
 			method = RequestMethod.POST,
@@ -69,6 +71,7 @@ public class DrzavaController {
 		return new ResponseEntity<Drzava>(drz, HttpStatus.OK);
 	}
 	
+	@CustomAnnotation(value = "DELETE_STATE")
 	@RequestMapping(
 			value = "/obrisiDrzavu/{id}",
 			method = RequestMethod.DELETE,
@@ -88,7 +91,7 @@ public class DrzavaController {
 	}
 
 	
-	
+	@CustomAnnotation(value = "UPDATE_STATE")
 	@RequestMapping(
 			value = "/azurirajDrzavu",
 			method = RequestMethod.POST,
@@ -123,17 +126,21 @@ public class DrzavaController {
 	}
 	
 	
+	@CustomAnnotation(value = "FIND_ALL_STATE")
 	@RequestMapping(
 			value = "/sveDrzave",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Collection<Drzava>> sveDrzave() throws Exception {
+	public ResponseEntity<Collection<Drzava>> sveDrzave(@Context HttpServletRequest request) throws Exception {
 
+		String value = request.getHeader("X-XSRF-TOKEN");
+		
+		System.out.println("X-XSRF-TOKEN vrednost je "+value);
 		
 		return new ResponseEntity<Collection<Drzava>>( repository.findAll(), HttpStatus.OK);
 	}
 	
-	
+	@CustomAnnotation(value = "FILTER_STATE")
 	@RequestMapping(
 			value = "/filtrirajDrzave",
 			method = RequestMethod.POST,

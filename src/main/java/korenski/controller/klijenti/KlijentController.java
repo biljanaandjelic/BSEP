@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import korenski.model.klijenti.Klijent;
+import korenski.intercepting.CustomAnnotation;
 import korenski.model.autorizacija.User;
 import korenski.model.geografija.NaseljenoMesto;
 import korenski.model.infrastruktura.Bank;
@@ -33,6 +34,7 @@ public class KlijentController {
 	@Autowired
 	BankRepository bankRepository;
 	
+	@CustomAnnotation(value = "INSERT_PHYSICAL")
 	@RequestMapping(
 			value = "/noviKlijent",
 			method = RequestMethod.POST,
@@ -54,6 +56,7 @@ public class KlijentController {
 		return new ResponseEntity<Klijent>(k, HttpStatus.OK);
 	}
 	
+	@CustomAnnotation(value = "DELETE_PHYSICAL")
 	@RequestMapping(
 			value = "/obrisiKlijenta/{id}",
 			method = RequestMethod.DELETE,
@@ -71,7 +74,7 @@ public class KlijentController {
 	}
 
 	
-	
+	@CustomAnnotation(value = "UPDATE_PHYSICAL")
 	@RequestMapping(
 			value = "/azurirajKlijenta",
 			method = RequestMethod.POST,
@@ -108,7 +111,7 @@ public class KlijentController {
 		return new ResponseEntity<Klijent>(klijentToModify, HttpStatus.OK);
 	}
 	
-	
+	@CustomAnnotation(value = "FIND_ALL_PHYSICAL")
 	@RequestMapping(
 			value = "/sviKlijenti",
 			method = RequestMethod.GET,
@@ -120,7 +123,7 @@ public class KlijentController {
 		return new ResponseEntity<Collection<Klijent>>( repository.findByFizickoLiceAndBank(true, bank), HttpStatus.OK);
 	}
 	
-	
+	@CustomAnnotation(value = "FIND_ALL_PHYSICAL_BY_CITY")
 	@RequestMapping(
 			value = "/nadjiKlijente/{id}",
 			method = RequestMethod.GET,
@@ -146,6 +149,7 @@ public class KlijentController {
 		return new ResponseEntity<Collection<Klijent>>( repository.findByJmbgContainingIgnoreCaseOrImeContainingIgnoreCaseOrPrezimeContainingIgnoreCaseOrAdresaContainingIgnoreCaseOrTelefonContainingIgnoreCaseOrEmailContainingIgnoreCase(jmbg, ime, prezime, adresa, telefon, email), HttpStatus.OK);
 	}
 	
+	@CustomAnnotation(value = "FILTER_PHYSICAL")
 	@RequestMapping(
 			value = "/filtrirajKlijenteZaNaseljenoMesto/{jmbg}/{ime}/{prezime}/{adresa}/{telefon}/{email}/{id}",
 			method = RequestMethod.GET,

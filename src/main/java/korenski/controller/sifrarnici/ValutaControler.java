@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import korenski.intercepting.CustomAnnotation;
 import korenski.model.sifrarnici.Valuta;
 import korenski.service.sifrarnici.ValutaService;
 
@@ -34,6 +35,7 @@ public class ValutaControler {
 	 * @param request
 	 * @return
 	 */
+	@CustomAnnotation(value = "INSERT_VALUTE")
 	@RequestMapping(
 			value="/createNewValuta",
 			method=RequestMethod.POST,
@@ -50,6 +52,7 @@ public class ValutaControler {
 	 * @param request
 	 * @return
 	 */
+	@CustomAnnotation(value = "UPDATE_VALUTE")
 	@RequestMapping(
 			value="/updateValuta",
 			method=RequestMethod.POST,
@@ -60,6 +63,7 @@ public class ValutaControler {
 		return new ResponseEntity<Valuta>(editedValuta,HttpStatus.OK);
 	}
 	
+	@CustomAnnotation(value = "DELETE_VALUTE")
 	@RequestMapping(
 			value="/deleteValuta/{id}",
 			method=RequestMethod.DELETE,
@@ -72,6 +76,7 @@ public class ValutaControler {
 		return new ResponseEntity<Valuta>(valuta, HttpStatus.OK);
 	}
 
+	
 	@RequestMapping(
 			value="/findValue/{id}",
 			method=RequestMethod.GET,
@@ -95,6 +100,7 @@ public class ValutaControler {
 			return new ResponseEntity<Valuta>(valutaSet,HttpStatus.OK);
 	}
 	
+	@CustomAnnotation(value = "FIND_ALL_VALUTE")
 	@RequestMapping(
 			value="/findAllValuta",
 			method=RequestMethod.GET,

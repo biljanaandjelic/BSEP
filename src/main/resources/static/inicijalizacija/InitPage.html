@@ -58,7 +58,7 @@ integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7T
  -->
 </head>
 
- <body ng-controller = "Opsti as opsti" data-ng-init="init()"> 
+ <body ng-controller = "Opsti as opsti" data-ng-init="init()" ng-show="opsti.hasLogged()"> 
  <button ng-click = "opsti.logoff()">LOGOFF</button>
 <!-- <body> -->
  <ul class="nav nav-tabs"> 

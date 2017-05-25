@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import korenski.intercepting.CustomAnnotation;
 import korenski.model.autorizacija.User;
 import korenski.model.geografija.NaseljenoMesto;
 import korenski.model.infrastruktura.Bank;
@@ -39,6 +40,7 @@ public class PravnoLiceController {
 	@Autowired
 	BankRepository bankRepository;
 	
+	@CustomAnnotation(value = "INSERT_LEGAL")
 	@RequestMapping(
 			value = "/novoPravnoLice",
 			method = RequestMethod.POST,
@@ -60,6 +62,7 @@ public class PravnoLiceController {
 		return new ResponseEntity<PravnoLice>(pl, HttpStatus.OK);
 	}
 	
+	@CustomAnnotation(value = "DELETE_LEGAL")
 	@RequestMapping(
 			value = "/obrisiPravnoLice/{id}",
 			method = RequestMethod.DELETE,
@@ -76,7 +79,7 @@ public class PravnoLiceController {
 	}
 
 	
-	
+	@CustomAnnotation(value = "UPDATE_LEGAL")
 	@RequestMapping(
 			value = "/azurirajPravnoLice",
 			method = RequestMethod.POST,
@@ -118,7 +121,7 @@ public class PravnoLiceController {
 		return new ResponseEntity<PravnoLice>(pravnoLiceToModify, HttpStatus.OK);
 	}
 	
-	
+	@CustomAnnotation(value = "FIND_ALL_LEGAL")
 	@RequestMapping(
 			value = "/svaPravnaLica",
 			method = RequestMethod.GET,
@@ -130,7 +133,7 @@ public class PravnoLiceController {
 		return new ResponseEntity<Collection<PravnoLice>>( repository.findByBank(bank), HttpStatus.OK);
 	}
 	
-	
+	@CustomAnnotation(value = "FIND_ALL_LEGAL_BY_CITY")
 	@RequestMapping(
 			value = "/nadjiPravnaLica/{id}",
 			method = RequestMethod.GET,
@@ -155,6 +158,7 @@ public class PravnoLiceController {
 		return new ResponseEntity<Collection<PravnoLice>>( repository.findByJmbgContainingIgnoreCaseOrImeContainingIgnoreCaseOrPrezimeContainingIgnoreCaseOrAdresaContainingIgnoreCaseOrTelefonContainingIgnoreCaseOrEmailContainingIgnoreCaseOrPibContainingIgnoreCaseOrFaxContainingIgnoreCaseOrOdobrioContainingIgnoreCase(jmbg, ime, prezime, adresa, telefon, email, pib, fax, odobrio), HttpStatus.OK);
 	}
 	
+	@CustomAnnotation(value = "FILTER_LEGAL")
 	@RequestMapping(
 			value = "/filtrirajPravnaLicaZaNaseljenoMesto/{jmbg}/{ime}/{prezime}/{adresa}/{telefon}/{email}/{pib}/{fax}/{odobrio}/{id}/{idA}",
 			method = RequestMethod.GET,
