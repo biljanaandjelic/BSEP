@@ -2,6 +2,7 @@ package korenski.controller.autentifikacija;
 
 import java.util.Collection;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Context;
@@ -80,6 +81,9 @@ public class NaiveAuthenticationController {
 //					}
 					
 					String redirect = checkPermission(user);
+					
+					Cookie myCookie =new Cookie("XSRF-TOKEN", "val");
+					response.addCookie(myCookie);
 					
 					
 					//request.getServletContext().getRequestDispatcher(redirect).forward(request, response);
