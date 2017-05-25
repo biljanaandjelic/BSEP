@@ -14,6 +14,7 @@ public class TBSRequest {
 		super();
 		this.version = version;
 		this.requestorName = requestorName;
+		requestList=new ArrayList<Request>();
 	}   
 	
 	public TBSRequest() {

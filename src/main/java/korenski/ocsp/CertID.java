@@ -5,7 +5,7 @@ import java.math.BigInteger;
 
 public class CertID {
 	public enum HashAlgorithm {
-		SHA256WithRSAEncryption, SHA1withRSAencryption
+		SHA256WithRSA, SHA1withRSA, 
 	}
 
 	private  HashAlgorithm hashAlgorithm;

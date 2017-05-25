@@ -223,7 +223,7 @@ app.controller("CertificateRevokeAndGetStatus", function($http,$scope, $log){
 		$log.log("Revoke request alias: "+ $scope.revokeRequest.alias);
 		//$log.log("Selektovana banka je "+ $scope.revokeReques.bank.name);
 		$log.log("Selected bank "+ $scope.bank.name);
-		$scope.revokeRequest.bank=$scope.bank;
+		//$scope.revokeRequest.bank=$scope.bank;
 		var path="/certificates/revokeRequest";
 		$http({
 			method: 'PUT',
@@ -248,7 +248,8 @@ app.controller("CertificateRevokeAndGetStatus", function($http,$scope, $log){
 			function successCallback(response){
 				$log.log(response.data);
 				var index=getIndex(id,$scope.revokeRequests);
-				$scope.revokeRequest.splice(index,1);
+				$log.log("index "+index);
+				$scope.revokeRequests.splice(index,1);
 			},
 			function errorCallback(response){
 				$log.log(response.data);
@@ -265,7 +266,7 @@ app.controller("CertificateRevokeAndGetStatus", function($http,$scope, $log){
 			function successCallback(response){
 				$log.log(response.data);
 				var index=getIndex(id,$scope.revokeRequests);
-				$scope.revokeRequest.splice(index,1);
+				$scope.revokeRequests.splice(index,1);
 			}, 
 			function errorCallback(response){
 				$log.log(response.data);
@@ -333,10 +334,13 @@ app.controller("CertificateStatus", function($http,$scope, $log){
 			$log.log(response.data.status);
 			if(response.data.status=="MALFORMEDREQUEST"){
 				$log.log("Prepoznaje statuse");
+				toastr.error("Status: "+ response.data.status);
 			}
 			if(response.data.status=="SUCCESSFUL"){
-				angular.forEach(response.data.responseBytes.responseData.responses, function (element, index) {
-					
+				var responseBytes=response.data.respnseBytes;
+				var nekiOdgovori=responseBytes.responseData;
+				angular.forEach(nekiOdgovori.responses, function (element, index) {
+					toastr.success("Status: "+ element.certStatus);
 					//$scope.banks.push(element);
 					$log.log("Status: "+ element.certStatus);
 					

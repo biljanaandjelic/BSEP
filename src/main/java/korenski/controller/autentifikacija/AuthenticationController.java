@@ -325,6 +325,7 @@ public class AuthenticationController {
 		
 		return new ResponseEntity<User>(user, HttpStatus.OK);
 	}
+
 	
 	@RequestMapping(
 			value = "/loginDummy3",

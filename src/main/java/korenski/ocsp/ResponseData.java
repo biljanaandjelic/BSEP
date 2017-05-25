@@ -17,6 +17,7 @@ public class ResponseData {
 		super();
 		this.version = version;
 		this.priducedAt = priducedAt;
+		this.responses=new ArrayList<SingleResponse>();
 	}
 
 	public ResponseData() {
