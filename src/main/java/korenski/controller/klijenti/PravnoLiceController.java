@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import korenski.DTOs.KlijentFilter;
+import korenski.DTOs.PravnoLiceFilter;
 import korenski.model.autorizacija.User;
 import korenski.model.geografija.NaseljenoMesto;
 import korenski.model.infrastruktura.Bank;
@@ -144,7 +146,7 @@ public class PravnoLiceController {
 		
 		return new ResponseEntity<Collection<PravnoLice>>( repository.findByNaseljenoMestoAndBank(nm, bank), HttpStatus.OK);
 	}
-	
+	/*
 	@RequestMapping(
 			value = "/filtrirajPravnaLica/{jmbg}/{ime}/{prezime}/{adresa}/{telefon}/{email}/{pib}/{fax}/{odobrio}",
 			method = RequestMethod.GET,
@@ -169,5 +171,68 @@ public class PravnoLiceController {
 		Bank bank = bankRepository.findOne(u.getBank().getId());
 		
 		return new ResponseEntity<Collection<PravnoLice>>( repository.findByJmbgContainingIgnoreCaseOrImeContainingIgnoreCaseOrPrezimeContainingIgnoreCaseOrAdresaContainingIgnoreCaseOrTelefonContainingIgnoreCaseOrEmailContainingIgnoreCaseOrPibContainingIgnoreCaseOrFaxContainingIgnoreCaseOrOdobrioContainingIgnoreCaseOrNaseljenoMestoOrActivityAndBank(jmbg, ime, prezime, adresa, telefon, email, pib, fax, odobrio, naseljenoMesto, activity, bank), HttpStatus.OK);
+	}
+	*/
+	
+	@RequestMapping(
+			value = "/filtrirajPravnaLicaZaNaseljenoMesto",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Collection<PravnoLice>> filtrirajPravnaLicaNaseljenaMesta(@RequestBody PravnoLiceFilter pravnoLiceFilter) throws Exception {
+		
+		if(pravnoLiceFilter.getJmbg() == null){
+			pravnoLiceFilter.setJmbg("");
+		}
+		
+		if(pravnoLiceFilter.getIme() == null){
+			pravnoLiceFilter.setIme("");
+		}
+		
+		if(pravnoLiceFilter.getPrezime() == null){
+			pravnoLiceFilter.setPrezime("");
+		}
+		
+		if(pravnoLiceFilter.getAdresa() == null){
+			pravnoLiceFilter.setAdresa("");
+		}
+		
+		if(pravnoLiceFilter.getTelefon() == null){
+			pravnoLiceFilter.setTelefon("");
+		}
+		
+		if(pravnoLiceFilter.getEmail() == null){
+			pravnoLiceFilter.setEmail("");
+		}
+		
+		if(pravnoLiceFilter.getPib() == null){
+			pravnoLiceFilter.setPib("");
+		}
+		
+		if(pravnoLiceFilter.getFax() == null){
+			pravnoLiceFilter.setFax("");
+		}
+		
+		if(pravnoLiceFilter.getOdobrio() == null){
+			pravnoLiceFilter.setOdobrio("");
+		}
+		
+		if(pravnoLiceFilter.getMesto() == null){
+			pravnoLiceFilter.setMesto(new Long(0));
+		}
+		
+		if(pravnoLiceFilter.getDelatnost() == null){
+			pravnoLiceFilter.setDelatnost(new Long(0));
+		}
+		
+		if(pravnoLiceFilter.getMesto().equals(new Long(0)) && pravnoLiceFilter.getDelatnost().equals(new Long(0))){
+			return new ResponseEntity<Collection<PravnoLice>>( repository.filter(pravnoLiceFilter.getJmbg(), pravnoLiceFilter.getIme(), pravnoLiceFilter.getPrezime(), pravnoLiceFilter.getAdresa(), pravnoLiceFilter.getTelefon(), pravnoLiceFilter.getEmail(), pravnoLiceFilter.getPib(), pravnoLiceFilter.getFax(), pravnoLiceFilter.getOdobrio()), HttpStatus.OK);
+		}else if(pravnoLiceFilter.getMesto().equals(new Long(0))){
+			return new ResponseEntity<Collection<PravnoLice>>( repository.filterDelatnost(pravnoLiceFilter.getJmbg(), pravnoLiceFilter.getIme(), pravnoLiceFilter.getPrezime(), pravnoLiceFilter.getAdresa(), pravnoLiceFilter.getTelefon(), pravnoLiceFilter.getEmail(), pravnoLiceFilter.getPib(), pravnoLiceFilter.getFax(), pravnoLiceFilter.getOdobrio(), pravnoLiceFilter.getDelatnost()), HttpStatus.OK);
+		}else if(pravnoLiceFilter.getDelatnost().equals(new Long(0))){
+			return new ResponseEntity<Collection<PravnoLice>>( repository.filterNaseljenoMesto(pravnoLiceFilter.getJmbg(), pravnoLiceFilter.getIme(), pravnoLiceFilter.getPrezime(), pravnoLiceFilter.getAdresa(), pravnoLiceFilter.getTelefon(), pravnoLiceFilter.getEmail(), pravnoLiceFilter.getPib(), pravnoLiceFilter.getFax(), pravnoLiceFilter.getOdobrio(), pravnoLiceFilter.getMesto()), HttpStatus.OK);
+		}
+		//repository.findByOznakaContainingIgnoreCaseOrNazivContainingIgnoreCaseOrPostanskiBrojContainingIgnoreCaseOrDrzava(oznaka, naziv, postanskiBroj, drzava)
+		return new ResponseEntity<Collection<PravnoLice>>( repository.filterSve(pravnoLiceFilter.getJmbg(), pravnoLiceFilter.getIme(), pravnoLiceFilter.getPrezime(), pravnoLiceFilter.getAdresa(), pravnoLiceFilter.getTelefon(), pravnoLiceFilter.getEmail(), pravnoLiceFilter.getPib(), pravnoLiceFilter.getFax(), pravnoLiceFilter.getOdobrio(), pravnoLiceFilter.getDelatnost(), pravnoLiceFilter.getMesto()), HttpStatus.OK);
 	}
 }

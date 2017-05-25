@@ -24,6 +24,20 @@ administrator.controller('RukovanjeRacunima', function($scope, $http, $compile){
 	    
 	  });
 	
+	$scope.$on('dodavanjeNovogRacuna', function(event){
+		$http.get('/sviRacuni').
+        then(function(response) {
+        	$scope.racuni = response.data;
+        	
+    		for (var i = 0; i < response.data.length; i++) { 
+    			$scope.racuni[i].datumOtvaranja = new Date(response.data[i].datumOtvaranja);
+    			if(new Date(response.data[i].datumOtvaranja) < new Date(response.data[i].datumDeaktivacije)){
+    				$scope.racuni[i].datumDeaktivacije = new Date(response.data[i].datumDeaktivacije);
+    			}
+    		}
+        });
+	});
+	
 	$scope.idSelektovanogRacuna = null;
 	
 	$scope.init = function(){
@@ -34,11 +48,37 @@ administrator.controller('RukovanjeRacunima', function($scope, $http, $compile){
         	
     		for (var i = 0; i < response.data.length; i++) { 
     			$scope.racuni[i].datumOtvaranja = new Date(response.data[i].datumOtvaranja);
-    			$scope.racuni[i].datumDeaktivacije = new Date(response.data[i].datumDeaktivacije);
+    			if(new Date(response.data[i].datumOtvaranja) < new Date(response.data[i].datumDeaktivacije)){
+    				$scope.racuni[i].datumDeaktivacije = new Date(response.data[i].datumDeaktivacije);
+    			}
     		}
         });
 		
 		
+	};
+	
+	this.getStatusRacuna = function(status){
+		if(status){
+			return 'Aktivan';
+		}else{
+			return 'Zatvoren';
+		}
+	};
+	
+	this.prazanR = function(){
+		if(angular.equals($scope.racun, {})){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	this.checkStatus = function(racun){
+		if(racun.status){
+			return true;
+		}else{
+			return false;
+		}
 	};
 	
 		this.nadjiRacun = function(rac){
@@ -63,6 +103,13 @@ administrator.controller('RukovanjeRacunima', function($scope, $http, $compile){
 	
 	this.closeClick = function(){
 		
+		if(!$scope.nulaNaStanju){
+			if(angular.equals($scope.brojRacunaZaPrenos, "")){
+				toastr.error('Stanje na racunu nije 0!Broj racuna za prenos sredstava mora biti unesen!');
+				return;
+			}
+		}
+		
 		var objekat = {};
 		objekat.id = $scope.zaZatvaranje.id;
 		objekat.racun = $scope.brojRacunaZaPrenos;
@@ -75,7 +122,7 @@ administrator.controller('RukovanjeRacunima', function($scope, $http, $compile){
 		then(function mySucces(response) {
 			
 			if(angular.equals(response.data.id, -1)){
-				toastr.error('Neuspesno zatvaranje racuna!')
+				toastr.error(response.data.brojRacuna);
 				return;
 			}else{
 				toastr.success('Uspesno zatvaranje racuna!');
@@ -99,6 +146,7 @@ administrator.controller('RukovanjeRacunima', function($scope, $http, $compile){
 			
 			$scope.zaZatvaranje = {};
 			$scope.nulaNaRacunu = false;
+			$scope.brojRacunaZaPrenos = "";
 			$scope.$parent.$parent.opsti.novoZatvaranje();
 
 			

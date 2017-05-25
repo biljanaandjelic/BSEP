@@ -33,7 +33,7 @@ public class Drzava {
 	private String oznaka;
 	
 	@Column(unique = true)
-	@Size(max = 80)
+	@Size(max = 80, message = "Naziv drzave ne sme biti duzi od 80!")
 	@Pattern(regexp = "([A-Z][a-zA-Z]*)([\\s\\\'-][a-zA-Z]*)*", message = "Naziv drzave podrazumeva veliko pocetno slovo!")
 	@NotEmpty
 	private String naziv;

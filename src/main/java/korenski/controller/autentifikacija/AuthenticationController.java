@@ -211,60 +211,60 @@ public class AuthenticationController {
 	BankRepository bankRepository;
 	@Autowired
 	RoleRepository roleRepository;
-	/*
-	@RequestMapping(
-			value = "/login",
-			method = RequestMethod.POST,
-			consumes = MediaType.APPLICATION_JSON_VALUE,
-			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<LoginObject> loginUser(@RequestBody LoginObject loginObject , @Context HttpServletRequest request) throws Exception {
-		
-		User userFromSession  = (User) request.getSession().getAttribute("user");
-		
-		if(userFromSession != null){
-			loginObject.setId(-2);
-			return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
-		}
-		
-		User user = null;
-		try {
-			user = repository.findByUsername(loginObject.getUsername());
-			
-			boolean expired = userService.checkPasswordExpiration(user);
-			
-			if(expired){
-				loginObject.setId(-4);
-				return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
-			}
-			
-			if(user != null){
-			
-				boolean valid = userService.authenticate(loginObject.getPassword(), user.getPassword(), user.getSalt());
-				
-				if(!valid){
-					loginObject.setId(-1);
-					return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
-				}else{
-					request.getSession().setAttribute("user", user);
-					
-					if(!user.isChangedFirstPassword()){
-						loginObject.setId(-5);
-						loginObject.setUrl("http://localhost:8080/authentification/change.html");
-					}
-					
-					return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
-				}
-			}else{
-				loginObject.setId(-1);
-				return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
-			}
-		} catch (Exception e) {
-			loginObject.setId(-3);
-			return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
-		}
-	
-		//return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
-	}
+
+//	@RequestMapping(
+//			value = "/login",
+//			method = RequestMethod.POST,
+//			consumes = MediaType.APPLICATION_JSON_VALUE,
+//			produces = MediaType.APPLICATION_JSON_VALUE)
+//	public ResponseEntity<LoginObject> loginUser(@RequestBody LoginObject loginObject , @Context HttpServletRequest request) throws Exception {
+//		
+//		User userFromSession  = (User) request.getSession().getAttribute("user");
+//		
+//		if(userFromSession != null){
+//			loginObject.setId(-2);
+//			return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
+//		}
+//		
+//		User user = null;
+//		try {
+//			user = repository.findByUsername(loginObject.getUsername());
+//			
+//			boolean expired = userService.checkPasswordExpiration(user);
+//			
+//			if(expired){
+//				loginObject.setId(-4);
+//				return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
+//			}
+//			
+//			if(user != null){
+//			
+//				boolean valid = userService.authenticate(loginObject.getPassword(), user.getPassword(), user.getSalt());
+//				
+//				if(!valid){
+//					loginObject.setId(-1);
+//					return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
+//				}else{
+//					request.getSession().setAttribute("user", user);
+//					
+//					if(!user.isChangedFirstPassword()){
+//						loginObject.setId(-5);
+//						loginObject.setUrl("http://localhost:8080/authentification/change.html");
+//					}
+//					
+//					return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
+//				}
+//			}else{
+//				loginObject.setId(-1);
+//				return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
+//			}
+//		} catch (Exception e) {
+//			loginObject.setId(-3);
+//			return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
+//		}
+//	
+//		//return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
+//	}
 
 
 	@RequestMapping(
@@ -286,6 +286,7 @@ public class AuthenticationController {
 		return new ResponseEntity<User>(user, HttpStatus.OK);
 	}
 	
+	/*
 	@RequestMapping(
 			value = "/loginDummy2",
 			method = RequestMethod.GET,
@@ -304,7 +305,6 @@ public class AuthenticationController {
 		
 		return new ResponseEntity<User>(user, HttpStatus.OK);
 	}
-<<<<<<< HEAD
 	*/
 	
 	@RequestMapping(
@@ -366,4 +366,4 @@ public class AuthenticationController {
 	}
 
 }
-//>>>>>>> master
+

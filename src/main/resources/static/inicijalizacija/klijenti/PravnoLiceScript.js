@@ -9,8 +9,6 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
 	$scope.sveRadneDelatnosti = {};
 
 	
-	$scope.sakrijBrowse = false;
-	
 	$scope.$on('filterPoNaseljenomMestuPravnoLice', function (event, id) {
 	    console.log(id); // Index naseljenog mesta
 	    
@@ -19,7 +17,6 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
         	$scope.pravnaLica = response.data;
         	$scope.selektovanoNaseljenoMesto = angular.copy($scope.pravnaLica[0].naseljenoMesto);
         	$scope.selektovanaRadnaDelatnost = angular.copy($scope.pravnaLica[0].activity);
-        	$scope.sakrijBrowse = true;
         });
 	    
 	  });
@@ -54,8 +51,6 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
 	
 	this.refresh = function(){
 		
-		$scope.sakrijBrowse = false;
-		
 		$http.get('/svaPravnaLica').
         then(function(response) {
         	$scope.pravnaLica = response.data;
@@ -79,6 +74,14 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
 			$scope.selektovanaRadnaDelatnost = {};
 		//}
 	};
+	
+	this.praznoPL = function(){
+		if(angular.equals($scope.pravnoLice, {})){
+			return true;
+		}else{
+			return false;
+		}
+	}
 	
 	this.commitClick = function(){
 		
@@ -227,27 +230,86 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
     				$scope.selektovanaRadnaDelatnost = {};
     		});
 			
-		}else if(angular.equals($scope.rezim, 2)){// & !angular.equals($scope.pravnoLice, {})){
+		}else if(angular.equals($scope.rezim, 2)){
+			var filter = {};
 			
+			if(angular.isUndefined($scope.pravnoLice.jmbg)){
+				filter.jmbg ="";
+			}else{
+				filter.jmbg = $scope.pravnoLice.jmbg;
+			}
 			
-			//if($scope.sakrijBrowse){
-				$http.get('/filtrirajPravnaLicaZaNaseljenoMesto/'+$scope.pravnoLice.jmbg+'/'+$scope.pravnoLice.ime+'/'+$scope.pravnoLice.prezime+'/'+$scope.pravnoLice.adresa+'/'+$scope.pravnoLice.telefon+'/'+$scope.pravnoLice.email+'/'+$scope.pravnoLice.pib+'/'+$scope.pravnoLice.fax+'/'+$scope.pravnoLice.odobrio+'/'+$scope.selektovanoNaseljenoMesto.id+'/'+$scope.selektovanaRadnaDelatnost.id).
-		        then(function(response) {
-		        	
-		        	$scope.pravnaLica = response.data;
-		        	
-		        });
-				return;
-			//}
+			if(angular.isUndefined($scope.pravnoLice.ime)){
+				filter.ime ="";
+			}else{
+				filter.ime = $scope.pravnoLice.ime;
+			}
 			
-			//$http.get('/filtrirajPravnaLica/'+$scope.pravnoLice.jmbg+'/'+$scope.pravnoLice.ime+'/'+$scope.pravnoLice.prezime+'/'+$scope.pravnoLice.adresa+'/'+$scope.pravnoLice.telefon+'/'+$scope.pravnoLice.email+'/'+$scope.pravnoLice.pib+'/'+$scope.pravnoLice.fax+'/'+$scope.pravnoLice.odobrio).
-	        //then(function(response) {
+			if(angular.isUndefined($scope.pravnoLice.prezime)){
+				filter.prezime ="";
+			}else{
+				filter.prezime = $scope.pravnoLice.prezime;
+			}
+			
+			if(angular.isUndefined($scope.pravnoLice.adresa)){
+				filter.adresa ="";
+			}else{
+				filter.adresa = $scope.pravnoLice.adresa;
+			}
+			
+			if(angular.isUndefined($scope.pravnoLice.telefon)){
+				filter.telefon ="";
+			}else{
+				filter.telefon = $scope.pravnoLice.telefon;
+			}
+			
+			if(angular.isUndefined($scope.pravnoLice.email)){
+				filter.email ="";
+			}else{
+				filter.email = $scope.pravnoLice.email;
+			}
+			
+			if(angular.isUndefined($scope.pravnoLice.pib)){
+				filter.pib ="";
+			}else{
+				filter.pib = $scope.pravnoLice.pib;
+			}
+			
+			if(angular.isUndefined($scope.pravnoLice.fax)){
+				filter.fax ="";
+			}else{
+				filter.fax = $scope.pravnoLice.fax;
+			}
+			
+			if(angular.isUndefined($scope.pravnoLice.odobrio)){
+				filter.odobrio ="";
+			}else{
+				filter.odobrio = $scope.pravnoLice.odobrio;
+			}
+			
+			if(angular.equals($scope.selektovanoNaseljenoMesto, {})){
+				filter.mesto = 0;
+			}else{
+				filter.mesto = $scope.selektovanoNaseljenoMesto.id;
+			}
+			
+			if(angular.equals($scope.selektovanaRadnaDelatnost, {})){
+				filter.delatnost = 0;
+			}else{
+				filter.delatnost = $scope.selektovanaRadnaDelatnost.id;
+			}
+
+			$http({
+    		    method: 'POST',
+    		    url: '/filtrirajPravnaLicaZaNaseljenoMesto',
+    		    data: filter
+    		}).
+	        then(function(response) {
 	        	
-	        //	$scope.pravnaLica = response.data;
+	        	$scope.pravnaLica = response.data;
 	        	
-	        //});
-			
-			
+	        });
+			return;
 		}
 		
 		
@@ -405,6 +467,7 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
 			}).
 			then(function mySucces(response) {
 				toastr.success("Racun uspesno aktiviran!");
+				$scope.$parent.$parent.opsti.addRacun();
 			});
 		}
 	}
