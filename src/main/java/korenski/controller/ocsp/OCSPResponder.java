@@ -53,12 +53,18 @@ import korenski.ocsp.Request;
 import korenski.ocsp.ResponseData;
 import korenski.ocsp.RevocationInfo;
 import korenski.ocsp.SingleResponse;
-//import korenski.ocsp.SingleResponse.CertStatus;
+
 import korenski.ocsp.TBSRequest;
 import korenski.ocsp.TBSRequest.Version;
 import korenski.repository.institutions.BankRepository;
 import korenski.service.dtos.CertificateInfoService;
 
+/**
+ * Klasa koja simulira OCSPResponder koji prima podatke od klijenta na 
+ * osnovu kojih generise OCSP request i na osnovu njega kreira odgovor.
+ * @author Biljana
+ *
+ */
 @Controller
 public class OCSPResponder {
 	@Autowired
@@ -69,7 +75,9 @@ public class OCSPResponder {
 	
 	private KeyStore ks;
 	/**
-	 * 
+	 * Generisanje OSCPRequest-a na osnovu podataka primljenih sa korisnicke forme 
+	 * u kojoj registrovani korisnik na sistem unosi alijas sertifikata ciji status 
+	 * zeli da provjeri.
 	 * @param bank
 	 * @param alias
 	 * @param requestorName
@@ -116,11 +124,11 @@ public class OCSPResponder {
 	 * @author Biljana
 	 */
 	@RequestMapping(value = "/ocspResponse/{alias}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
-	public ResponseEntity<OCSPResponse> processOcspRequest(@RequestBody Bank bank, @PathVariable String alias,
+	public ResponseEntity<OCSPResponse> processOcspRequest( @PathVariable String alias,
 			@Context HttpServletRequest request) {
 	
 		User user=(User) request.getSession().getAttribute("user");
-		
+		Bank bank;
 		String name="";
 		if(user.getSubject() instanceof PravnoLice){
 			bank=user.getBank();
@@ -181,7 +189,8 @@ public class OCSPResponder {
 	}
 
 	/**
-	 * 
+	 * Preouzimanje keyStore-a u kome se ocekuje da se nalazi sertifikat na 
+	 * osnovu putanje do fajla.
 	 * @param filePathString
 	 * @return
 	 * @throws KeyStoreException
@@ -207,7 +216,16 @@ public class OCSPResponder {
 		}
 		return ks;
 	}
-
+	/**
+	 * Generisanje SingleResponse objekta koji nosi podatke o statusu sertifikata
+	 * jednog od proslijedjenih sertifikata cija provjera status je zatrazena. Provjera 
+	 * krece od samog sertifikata za koga je poslan upit pa sve do korijenskog sertifikata.
+	 * Ukoliko se u "lancu" sertifikata pronadje jedna koji je povucen status trazenog
+	 * se postavlja na "REVOKE" i objekat se vraca.
+	 * @param bank
+	 * @param serialNumber
+	 * @return
+	 */
 	public SingleResponse generateSingleResponse(Bank bank, BigInteger serialNumber) {
 		CertificateInfo certInfo = certificateInfoService.findCertificateBySerialNumberAndBank(serialNumber, bank);
 		SingleResponse singleResp;
@@ -240,7 +258,13 @@ public class OCSPResponder {
 		}
 		return singleResp;
 	}
-
+	/**
+	 * Precuzimanje CAData objekta koji sadrzi privatni kljuc issuer-a da bi mogao da 
+	 * potpise odgovor i njegov sertifikat da bi odgovor mogao biti validiran.
+	 * @param bank
+	 * @param serialNumber
+	 * @return
+	 */
 	public CAData getCA(Bank bank, BigInteger serialNumber) {
 		CertificateInfo certificateInfo = certificateInfoService.findCertificateBySerialNumberAndBank(serialNumber,
 				bank);
@@ -266,7 +290,12 @@ public class OCSPResponder {
 		}
 		return null;
 	}
-
+	/**
+	 * Potpisivisivanje podataka
+	 * @param data podaci koji se trebaju potpisati
+	 * @param privateKey kljuc kojim se potpisuju
+	 * @return niz bajtova koji predstavljaju potpis
+	 */
 	private byte[] sign(byte[] data, PrivateKey privateKey) {
 		try {
 			// Kreiranje objekta koji nudi funkcionalnost digitalnog
@@ -292,7 +321,13 @@ public class OCSPResponder {
 		}
 		return null;
 	}
-
+	/**
+	 * Provjera potpisa
+	 * @param data podaci koji su potpisani "plain" podaci
+	 * @param signature potpis nad podacima
+	 * @param publicKey janvi kljuc kojim se vrsi provjera potpisa
+	 * @return
+	 */
 	private boolean verify(byte[] data, byte[] signature, PublicKey publicKey) {
 		try {
 			// Kreiranje objekta koji nudi funkcionalnost digitalnog

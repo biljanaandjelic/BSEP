@@ -545,10 +545,7 @@ public class CertificatesController {
 		return null;
 	}
 
-	public void workWithOCSP() {
-		OCSPReq ocspReq;
 
-	}
 	
 	/**
 	 * Revoke certificate if private key is lost or for some other reason
@@ -575,38 +572,7 @@ public class CertificatesController {
 		}
 	}
 
-	/**
-	 * Check if certificate is valid or not.
-	 * 
-	 * @param serialNumber
-	 */
-	@RequestMapping(value = "/status/{alias}", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN)
-	public ResponseEntity<String> checkCertificateStatus(@PathVariable("alias") String alias) {
-		CertificateInfo certID = certificateIDService.findByAlias(alias);
-		CertificateInfo tempCertID = certID;
-		if (certID != null) {
-			while (tempCertID.getIdOfCA() != null) {
-				if (tempCertID.getStatus() == CertStatus.REVOKED ) {
-					if (tempCertID != certID) {
-						certID.setStatus(CertStatus.REVOKED);
-						certID.setDateOfRevocation(new Date());
-						
-					}
-					return new ResponseEntity<String>("Sertifikat je povucen.", HttpStatus.OK);
 
-				}
-				tempCertID=tempCertID.getCa();
-			}
-			
-			if(certID.getStatus()==CertStatus.GOOD){
-				return new ResponseEntity<String>("Sertifikat je aktuelan.",HttpStatus.OK);
-			}else if(certID.getStatus()==CertStatus.UNKNOWN){
-				return new ResponseEntity<String>("Status sertifikata nije poznat", HttpStatus.OK);
-			}
-		}
-		return new ResponseEntity<String>("Sertifikat nije pronadjen.", HttpStatus.NO_CONTENT);
-
-	}
 	/**
 	 * Procesiranje zahtjeva za povlcenje sertifikata, u slucaju da je prosijedjen tip 
 	 * accept onda

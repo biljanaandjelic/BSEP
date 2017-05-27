@@ -152,40 +152,40 @@ administrator.controller('MessagesController', function($scope, $http, $compile,
 				$log.log("Greska-error");
 			}
 			);
-		}/*else if($scope.state==State.VIEW_EDIT && check() ){
+		}else if($scope.state==State.VIEW_EDIT && check() ){
 			$log.log("stAanje izmjene")
-			var path="/activity";
+			var path="/message";
 			
 			$http({
 				method: 'POST',
 				url: path,
-				data: $scope.activity
+				data: $scope.message
 			}).then(
 			function successCallback(response){
 				$log.log("Success");
-				var index=findIndexOfValuta($scope.activity.id);
-				$scope.activities[index]=response.data;
+				var index=findIndexOfValuta($scope.message.id);
+				$scope.messages[index]=response.data;
 				
 			}, 
 			function errorCallback(response){
 				$log.log("Error");
 			});
 		}else if($scope.state==State.SEARCH){
-			var path="/activities/"+$scope.activity.code+"/"+$scope.activity.name;
+			var path="/messageByCode/"+$scope.message.code;
 			$http({
 				method: 'GET',
 				url: path
 			}).then(
 				function successCallback(response){
 					
-					$scope.activities=response.data;
-					$scope.activity={};
+					$scope.messages=response.data;
+					$scope.message={};
 					
 				}, 
 				function errorCallback(response){
 				}
 			);
-		} */
+		} 
 		else {
 			$log.log("Nije obradjeno");
 		}
@@ -213,9 +213,30 @@ administrator.controller('MessagesController', function($scope, $http, $compile,
 		$scope.state=State.VIEW_EDIT;
 	}
 	
-	this.setSelected=function(activity){
+	this.setSelected=function(message){
 		
 		
 		$scope.message=message;
+	}
+	
+	
+	this.deleteClick=function(){
+		var path='/message/'+ $scope.message.id;
+		$log.log("Path "+ path);
+		$http({
+			method: 'DELETE',
+			url: path
+		}).then(
+			function successCallback(response){
+				var index=findIndexOfValuta(response.data.id);
+				$log.log("Index stavke koja se brise je "+ index);
+				$scope.messages.splice(index,1);
+				$scope.message={};
+				
+			}, 
+			function errorCallback(response){
+			}
+		);
+		
 	}
 });
