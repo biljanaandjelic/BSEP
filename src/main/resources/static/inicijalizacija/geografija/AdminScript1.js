@@ -128,3 +128,21 @@ administrator.controller('Opsti', function($scope, $http, $compile, $timeout, $r
 		$scope.$broadcast('filterZatvaranja', idSelektovanogRacuna); // going down!
 	};
 });
+
+administrator.directive("filelistBind", function($http) {
+	  return function( scope, elm, attrs ) {
+	    elm.bind("change", function( evt ) {
+	      //console.log( evt );
+	      scope.$apply(function( scope ) {
+	        scope[ attrs.name ] = evt.target.files;
+	        
+	        $http.post('/importChosenXML', scope[ attrs.name ][0].name).
+			then(function mySucces(response) {
+				
+				
+			});
+	        
+	      });
+	    });
+	  };
+	});
