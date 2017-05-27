@@ -15,7 +15,7 @@ public interface ZatvaranjeRacunaRepository extends CrudRepository<ZatvaranjeRac
 	public ZatvaranjeRacuna findOne(Long id);
 	public void delete(Long id);
 	public Set<ZatvaranjeRacuna> findAll();
-	public ZatvaranjeRacuna findByRacun(Racun racun);
+	public Set<ZatvaranjeRacuna> findByRacun(Racun racun);
 	@Query("select z from ZatvaranjeRacuna z where z.racun.bank.id = ?1")
 	public Set<ZatvaranjeRacuna> findBySearch(Long id);
 	

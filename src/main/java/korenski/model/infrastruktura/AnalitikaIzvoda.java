@@ -14,45 +14,69 @@ public class AnalitikaIzvoda {
 	@Id
 	@GeneratedValue
 	private Long id;
-	
-	@Column(nullable=false)
+
+	@Column(nullable = false)
 	private Date datumAnalitike;
-	
-	@Column(nullable=false)
+
+	@Column(nullable = false)
 	private String smer;
-	
+
 	private String duznik;
 	private String svrhaPlacanja;
 	private String primalac;
 	private Date datumNaloga;
 	private Date datumValute;
-	//duzina mora biti osamnjaest
+	// duzina mora biti osamnjaest
 	private String racunPrvi;
 	private String modelPrvi;
 	private String pozivNaBrojPrvi;
 	private String racunDrugi;
 	private String modelDrugi;
 	private String pozivNaBrojDrugi;
-	@Column(nullable=false)
-	private BigDecimal iznos;
-	//Sifra valute bi mozda trebala da bude objekat
-	//klase valute
+	@Column(nullable = false)
+	private double iznos;
+	// Sifra valute bi mozda trebala da bude objekat
+	// klase valute
 	private String sifraValute;
 	private Boolean hitno;
-	@ManyToOne(optional=false)
+	@ManyToOne(optional = false)
 	private DnevnoStanjeRacuna dnevnoStanjeRacuna;
-	
+
 	public AnalitikaIzvoda() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	
-	public AnalitikaIzvoda(Long id, Date datumAnalitike, String smer, String duznik, String svrhaPlacanja,
-			String primalac, Date datumNaloga, Date datumValute, String racunPrvi, String modelPrvi,
-			String pozivNaBrojPrvi, String racunDrugi, String modelDrugi, String pozivNaBrojDrugi, BigDecimal iznos,
-			String sifraValute, Boolean hitno, DnevnoStanjeRacuna dnevnoStanjeRacuna) {
+
+//	public AnalitikaIzvoda(Long id, Date datumAnalitike, String smer, String duznik, String svrhaPlacanja,
+//			String primalac, Date datumNaloga, Date datumValute, String racunPrvi, String modelPrvi,
+//			String pozivNaBrojPrvi, String racunDrugi, String modelDrugi, String pozivNaBrojDrugi, BigDecimal iznos,
+//			String sifraValute, Boolean hitno, DnevnoStanjeRacuna dnevnoStanjeRacuna) {
+//		super();
+//		this.id = id;
+//		this.datumAnalitike = datumAnalitike;
+//		this.smer = smer;
+//		this.duznik = duznik;
+//		this.svrhaPlacanja = svrhaPlacanja;
+//		this.primalac = primalac;
+//		this.datumNaloga = datumNaloga;
+//		this.datumValute = datumValute;
+//		this.racunPrvi = racunPrvi;
+//		this.modelPrvi = modelPrvi;
+//		this.pozivNaBrojPrvi = pozivNaBrojPrvi;
+//		this.racunDrugi = racunDrugi;
+//		this.modelDrugi = modelDrugi;
+//		this.pozivNaBrojDrugi = pozivNaBrojDrugi;
+//		this.iznos = iznos;
+//		this.sifraValute = sifraValute;
+//		this.hitno = hitno;
+//		this.dnevnoStanjeRacuna = dnevnoStanjeRacuna;
+//	}
+
+	public AnalitikaIzvoda(Date datumAnalitike, String smer, String duznik, String svrhaPlacanja, String primalac,
+			Date datumNaloga, Date datumValute, String racunPrvi, String modelPrvi, String pozivNaBrojPrvi,
+			String racunDrugi, String modelDrugi, String pozivNaBrojDrugi, double iznos, String sifraValute,
+			Boolean hitno, DnevnoStanjeRacuna dnevnoStanjeRacuna) {
 		super();
-		this.id = id;
 		this.datumAnalitike = datumAnalitike;
 		this.smer = smer;
 		this.duznik = duznik;
@@ -184,11 +208,11 @@ public class AnalitikaIzvoda {
 		this.pozivNaBrojDrugi = pozivNaBrojDrugi;
 	}
 
-	public BigDecimal getIznos() {
+	public double getIznos() {
 		return iznos;
 	}
 
-	public void setIznos(BigDecimal iznos) {
+	public void setIznos(double iznos) {
 		this.iznos = iznos;
 	}
 
@@ -215,12 +239,5 @@ public class AnalitikaIzvoda {
 	public void setDnevnoStanjeRacuna(DnevnoStanjeRacuna dnevnoStanjeRacuna) {
 		this.dnevnoStanjeRacuna = dnevnoStanjeRacuna;
 	}
-	
-	
-	
-	
-	
-	
-	
 
 }

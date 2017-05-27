@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import korenski.intercepting.CustomAnnotation;
 import korenski.model.autorizacija.Permission;
 import korenski.repository.autorizacija.PermissionRepository;
 
@@ -25,6 +26,7 @@ public class PermissionController {
 	@Autowired
 	PermissionRepository repository;
 	
+	@CustomAnnotation(value = "INSERT_PERMISSION")
 	@RequestMapping(
 			value = "/newPermission",
 			method = RequestMethod.POST,
@@ -43,6 +45,7 @@ public class PermissionController {
 		return new ResponseEntity<Permission>(perm, HttpStatus.OK);
 	}
 	
+	@CustomAnnotation(value = "DELETE_PERMISSION")
 	@RequestMapping(
 			value = "/deletePermission/{id}",
 			method = RequestMethod.DELETE,
@@ -61,7 +64,7 @@ public class PermissionController {
 	}
 
 	
-	
+	@CustomAnnotation(value = "UPDATE_PERMISSION")
 	@RequestMapping(
 			value = "/updatePermission",
 			method = RequestMethod.POST,
@@ -89,7 +92,7 @@ public class PermissionController {
 		return new ResponseEntity<Permission>(permissionToModify, HttpStatus.OK);
 	}
 	
-	
+	@CustomAnnotation(value = "FIND_ALL_PERMISSION")
 	@RequestMapping(
 			value = "/allPermissions",
 			method = RequestMethod.GET,

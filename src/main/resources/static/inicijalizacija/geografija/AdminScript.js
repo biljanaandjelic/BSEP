@@ -1,4 +1,4 @@
-var administrator = angular.module('administrator', ['ngRoute','LocalStorageModule','cookieModul']);
+var administrator = angular.module('administrator', ['ngRoute','LocalStorageModule','cookieModul', 'ngCookies']);
 
 
 administrator.controller('RukovanjeDrzavama', function($scope, $http, $compile){
@@ -14,7 +14,7 @@ administrator.controller('RukovanjeDrzavama', function($scope, $http, $compile){
 	
 	$scope.init = function(){
 		
-		$http.get('/sveDrzave').
+		$http.get('/sveDrzave', {headers: {'X-XSRF-TOKEN': $scope.$parent.$parent.token}}).
         then(function(response) {
         	$scope.drzave = response.data;
         	$scope.$parent.$parent.drzaveIzDrzava = $scope.drzave;

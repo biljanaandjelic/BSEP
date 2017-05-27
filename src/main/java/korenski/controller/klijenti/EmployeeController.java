@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import korenski.intercepting.CustomAnnotation;
 import korenski.model.autorizacija.User;
 import korenski.model.infrastruktura.Bank;
 import korenski.model.klijenti.Employee;
@@ -27,6 +28,7 @@ public class EmployeeController {
 	@Autowired 
 	BankRepository bankRepository;
 	
+	@CustomAnnotation(value = "FIND_ALL_EMPLOYEE")
 	@RequestMapping(
 			value = "/sviZaposleni",
 			method = RequestMethod.GET,

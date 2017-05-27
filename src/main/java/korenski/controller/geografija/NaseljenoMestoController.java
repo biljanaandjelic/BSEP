@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import korenski.intercepting.CustomAnnotation;
 import korenski.model.geografija.Drzava;
 import korenski.model.geografija.NaseljenoMesto;
 import korenski.model.geografija.pomocni.NMFilter;
@@ -34,6 +35,7 @@ public class NaseljenoMestoController {
 	@Autowired
 	DrzavaRepository repD;
 	
+	@CustomAnnotation(value = "INSERT_CITY")
 	@RequestMapping(
 			value = "/novoNaseljenoMesto",
 			method = RequestMethod.POST,
@@ -58,6 +60,7 @@ public class NaseljenoMestoController {
 		return new ResponseEntity<NaseljenoMesto>(nm, HttpStatus.OK);
 	}
 	
+	@CustomAnnotation(value = "DELETE_CITY")
 	@RequestMapping(
 			value = "/obrisiNaseljenoMesto/{id}",
 			method = RequestMethod.DELETE,
@@ -70,7 +73,7 @@ public class NaseljenoMestoController {
 	}
 
 	
-	
+	@CustomAnnotation(value = "UPDATE_CITY")
 	@RequestMapping(
 			value = "/azurirajNaseljenoMesto",
 			method = RequestMethod.POST,
@@ -101,7 +104,7 @@ public class NaseljenoMestoController {
 		return new ResponseEntity<NaseljenoMesto>(naseljenoMestoToModify, HttpStatus.OK);
 	}
 	
-	
+	@CustomAnnotation(value = "FIND_ALL_CITY")
 	@RequestMapping(
 			value = "/svaNaseljenaMesta",
 			method = RequestMethod.GET,
@@ -112,7 +115,7 @@ public class NaseljenoMestoController {
 		return new ResponseEntity<Collection<NaseljenoMesto>>( repository.findAll(), HttpStatus.OK);
 	}
 	
-	
+	@CustomAnnotation(value = "FIND_CITY_BY_STATE")
 	@RequestMapping(
 			value = "/nadjiNaseljenaMesta/{id}",
 			method = RequestMethod.GET,
@@ -136,6 +139,7 @@ public class NaseljenoMestoController {
 		return new ResponseEntity<Collection<NaseljenoMesto>>( repository.findByOznakaContainingIgnoreCaseOrNazivContainingIgnoreCaseOrPostanskiBrojContainingIgnoreCase(oznaka, naziv, postanskiBroj), HttpStatus.OK);
 	}
 	
+	@CustomAnnotation(value = "FILTER_CITY")
 	@RequestMapping(
 			value = "/filtrirajNaseljenaMestaZaDrzavu",
 			method = RequestMethod.POST,
