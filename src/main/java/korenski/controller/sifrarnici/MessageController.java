@@ -99,7 +99,7 @@ public class MessageController {
 	@RequestMapping(
 			value="/message/{id}",
 			method=RequestMethod.DELETE,
-			consumes=MediaType.APPLICATION_JSON_VALUE
+			produces=MediaType.APPLICATION_JSON_VALUE
 			)
 	public ResponseEntity<Message> deleteMessage(@PathVariable("id") Long id, @Context HttpServletRequest request){
 		Message messageForDelete=messageService.findMessage(id);
