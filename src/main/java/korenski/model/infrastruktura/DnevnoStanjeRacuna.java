@@ -1,6 +1,6 @@
 package korenski.model.infrastruktura;
 
-import java.math.BigDecimal;
+
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -18,13 +18,13 @@ public class DnevnoStanjeRacuna {
 	@Column(nullable=false)
 	private Date datum;	
 	@Column(nullable=false)
-	private BigDecimal prethodnoStanje;
+	private double prethodnoStanje;
 	@Column(nullable=false)
-	private BigDecimal prometNaTeret;
+	private double prometNaTeret;
 	@Column(nullable=false)
-	private BigDecimal prometUKorist;
+	private double prometUKorist;
 	@Column(nullable=false)
-	private BigDecimal novoStanje;
+	private double novoStanje;
 	@ManyToOne(optional=false)
 	private Racun racun;
 	
@@ -34,10 +34,23 @@ public class DnevnoStanjeRacuna {
 	}
 	
 	
-	public DnevnoStanjeRacuna(Long id, Date datum, BigDecimal prethodnoStanje, BigDecimal prometNaTeret,
-			BigDecimal prometUKorist, BigDecimal novoStanje, Racun racun) {
+	public DnevnoStanjeRacuna(Long id, Date datum, double prethodnoStanje, double prometNaTeret,
+			double prometUKorist, double novoStanje, Racun racun) {
 		super();
 		this.id = id;
+		this.datum = datum;
+		this.prethodnoStanje = prethodnoStanje;
+		this.prometNaTeret = prometNaTeret;
+		this.prometUKorist = prometUKorist;
+		this.novoStanje = novoStanje;
+		this.racun = racun;
+	}
+
+	
+
+	public DnevnoStanjeRacuna(Date datum, double prethodnoStanje, double prometNaTeret,
+			double prometUKorist, double novoStanje, Racun racun) {
+		super();
 		this.datum = datum;
 		this.prethodnoStanje = prethodnoStanje;
 		this.prometNaTeret = prometNaTeret;
@@ -55,35 +68,35 @@ public class DnevnoStanjeRacuna {
 		this.datum = datum;
 	}
 
-	public BigDecimal getPrethodnoStanje() {
+	public double getPrethodnoStanje() {
 		return prethodnoStanje;
 	}
 
-	public void setPrethodnoStanje(BigDecimal prethodnoStanje) {
+	public void setPrethodnoStanje(double prethodnoStanje) {
 		this.prethodnoStanje = prethodnoStanje;
 	}
 
-	public BigDecimal getPrometNaTeret() {
+	public double getPrometNaTeret() {
 		return prometNaTeret;
 	}
 
-	public void setPrometNaTeret(BigDecimal prometNaTeret) {
+	public void setPrometNaTeret(double prometNaTeret) {
 		this.prometNaTeret = prometNaTeret;
 	}
 
-	public BigDecimal getPrometUKorist() {
+	public double getPrometUKorist() {
 		return prometUKorist;
 	}
 
-	public void setPrometUKorist(BigDecimal prometUKorist) {
+	public void setPrometUKorist(double prometUKorist) {
 		this.prometUKorist = prometUKorist;
 	}
 
-	public BigDecimal getNovoStanje() {
+	public double getNovoStanje() {
 		return novoStanje;
 	}
 
-	public void setNovoStanje(BigDecimal novoStanje) {
+	public void setNovoStanje(double novoStanje) {
 		this.novoStanje = novoStanje;
 	}
 

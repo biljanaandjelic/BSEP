@@ -18,8 +18,8 @@ import korenski.intercepting.SpecialInterceptor;
 public class MtbApplication extends WebMvcConfigurerAdapter {
 
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new AuthorizationInterceptor()).excludePathPatterns("/special/*");
-        registry.addInterceptor(new SpecialInterceptor()).addPathPatterns("/special/*");
+        //registry.addInterceptor(new AuthorizationInterceptor()).excludePathPatterns("/special/*");
+        //registry.addInterceptor(new SpecialInterceptor()).addPathPatterns("/special/*");
     }
     
 	public static void main(String[] args) {

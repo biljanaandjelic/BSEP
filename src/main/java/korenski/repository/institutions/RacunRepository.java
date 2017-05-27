@@ -25,4 +25,6 @@ public interface RacunRepository extends CrudRepository<Racun, Long>{
 	public Set<Racun> findByKlijentAndBank(Klijent klijent, Bank bank);
 	@Query("select r from Racun r where r.status = ?1 or r.datumOtvaranja between ?2 and ?3 or r.klijent.ime like ?4 or r.klijent.prezime like ?5 and r.bank.id = ?6")
 	public Set<Racun> findBySearch(boolean status, Date datumOtvaranjaOd, Date datumOtvaranjaDo, String ime, String prezime, Long id);
+	
+	public Racun findByBankAndBrojRacunaAndStatusTrue(Bank bank, String brojRacuna);
 }
