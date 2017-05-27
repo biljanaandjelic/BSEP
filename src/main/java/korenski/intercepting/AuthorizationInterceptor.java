@@ -41,19 +41,19 @@ public class AuthorizationInterceptor implements HandlerInterceptor  {
 		
 		System.out.println("Vrednost tokena u sesiji je "+sessionTokenValue);
 		
-		if(tokenValue == null){
-			return false;
-		}
-		
-		System.out.println("Ima token");
-		
-		
-		if(!tokenValue.equals(sessionTokenValue)){
-			return false;
-		}
-		
-		System.out.println("Poklapa se token");
-		
+//		if(tokenValue == null){
+//			return false;
+//		}
+//		
+//		System.out.println("Ima token");
+//		
+//		
+//		if(!tokenValue.equals(sessionTokenValue)){
+//			return false;
+//		}
+//		
+//		System.out.println("Poklapa se token");
+//		
 		
 		User user = (User) request.getSession().getAttribute("user");
 		
@@ -61,15 +61,12 @@ public class AuthorizationInterceptor implements HandlerInterceptor  {
 			return false;
 		}
 		
-		//user = userRepository.findOne(user.getId());
-				
 		
 		System.out.println("Ima ulogovanog korisnika");
 		
 		
 		Role role = user.getRole();
 		
-		//role = roleRepository.findOne(role.getId());
 		
 		Collection<Permission> permissions = role.getPermissions();
 		

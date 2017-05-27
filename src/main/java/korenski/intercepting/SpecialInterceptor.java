@@ -1,5 +1,6 @@
 package korenski.intercepting;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Context;
@@ -26,15 +27,17 @@ public class SpecialInterceptor implements HandlerInterceptor  {
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
 			throws Exception {
-		// TODO Auto-generated method stub
-		
+//		Cookie myCookie =new Cookie("XSRF-TOKEN", "val22");
+//		response.addCookie(myCookie);
+//		
+//		System.out.println("XSRF-TOKEN vrednost je "+ "val22");
 	}
 
 }

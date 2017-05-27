@@ -81,14 +81,10 @@ public class NaiveAuthenticationController {
 //						request.getRequestDispatcher("/authentification/change.html").forward(request, response);
 //					}
 					
-					String redirect = checkPermission(user);
-					Cookie myCookie =new Cookie("XSRF-TOKEN", "val22");
+					Cookie myCookie =new Cookie("XSRF-TOKEN", "MYPRECIOUS");
 					response.addCookie(myCookie);
 					
-					System.out.println("XSRF-TOKEN vrednost je "+ "val22");
-					
-					//request.getServletContext().getRequestDispatcher(redirect).forward(request, response);
-					
+					System.out.println("XSRF-TOKEN vrednost je "+ "MYPRECIOUS");
 					
 					return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
 				}
