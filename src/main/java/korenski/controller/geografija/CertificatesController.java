@@ -159,28 +159,19 @@ public class CertificatesController {
 		System.out.println(serial);
 		CertificateInfo certificateInfo;
 		X509v3CertificateBuilder certGen;
-//		if (dto.selfSigned) {
 
-			certificateInfo = new CertificateInfo(serial, CertStatus.GOOD, null, null, dto.alias, Type.NationalBank);
+		certificateInfo = new CertificateInfo(serial, CertStatus.GOOD, null, null, dto.alias, Type.NationalBank);
 
-			// certificateInfoService.create(certificateInfo);
-			certGen = new JcaX509v3CertificateBuilder(name, serial, startDate, endDate, name, pair.getPublic());
-//		} else {
+		certGen = new JcaX509v3CertificateBuilder(name, serial, startDate, endDate, name, pair.getPublic());
 
-		
-
-//		certificateID = new CertificateID(serial, Status.OK, null, null, dto.alias);
 		
 		//ovo je tvoj deo biljo, samo zakaci na certificateinfo banku
 		Bank bank = ((User)request.getSession().getAttribute("user")).getBank();
 		certificateInfo.setBank(bank);
-//		certificateIDService.create(certificateID);
 		certGen = new JcaX509v3CertificateBuilder(name, serial, startDate, endDate, name,
 				pair.getPublic());
 		
-	//	certGen.addExtension(Extension.basicConstraints, true, new BasicConstraints(dto.ca));
-		// CertificateInfo certificateID;
-		CertificateInfo ca = certificateInfoService.findByAlias(dto.issuerAlias);
+		//CertificateInfo ca = certificateInfoService.findByAlias(dto.issuerAlias);
 	
 		certificateInfoService.create(certificateInfo);
 
@@ -193,9 +184,16 @@ public class CertificatesController {
 
 		System.out.println(certConverter.getCertificate(certHolder));
 		
-		ks.setCertificateEntry("CERT-" + bank.getSwiftCode(), certConverter.getCertificate(certHolder));
-		ks.setKeyEntry("KEY", pair.getPrivate(), "test".toCharArray(), new Certificate[] { (Certificate) certConverter.getCertificate(certHolder) });
-
+		int cnt = 1;
+		while(true){
+			if(!ks.isCertificateEntry("CERT-" + bank.getSwiftCode() + "-" + cnt)){
+				ks.setCertificateEntry("CERT-" + bank.getSwiftCode() + "-" + cnt, certConverter.getCertificate(certHolder));
+				ks.setKeyEntry("KEY-" + cnt, pair.getPrivate(), "test".toCharArray(), new Certificate[] { (Certificate) certConverter.getCertificate(certHolder) });
+				break;
+			}
+			cnt++;
+		}
+		
 		saveKeyStore(filePathString);
 		
 		return new ResponseEntity<String>("ok", HttpStatus.OK);
@@ -274,13 +272,20 @@ public class CertificatesController {
 		
 		getKeyStore("./files/KEYSTORE-" + bankSwiftCode + ".jks");
 		
-		Certificate certificate = ks.getCertificate("CERT-" + bankSwiftCode);
+		Certificate certificate = ks.getCertificate("CERT-" + bankSwiftCode + "-1");
 		
 		saveKeyStore("./files/KEYSTORE-" + bankSwiftCode + ".jks");
 		
 		getKeyStore("./files/KEYSTORE-" + dto.uid + ".jks");
-
-		ks.setKeyEntry("KEY", pair.getPrivate(), "test".toCharArray(), new Certificate[] { (certificate) });
+		
+		int cnt = 1;
+		while(true){
+			if(!ks.isKeyEntry("KEY-" + cnt)){
+				ks.setKeyEntry("KEY-" + cnt, pair.getPrivate(), "test".toCharArray(), new Certificate[] { (certificate) });
+				break;
+			}
+			cnt++;
+		}
 		
 		saveKeyStore("./files/KEYSTORE-" + dto.uid + ".jks");
 		
@@ -377,7 +382,7 @@ public class CertificatesController {
 
 		builder = builder.setProvider("BC");
 
-		ContentSigner contentSigner = builder.build((PrivateKey)ks.getKey("KEY", "test".toCharArray()));
+		ContentSigner contentSigner = builder.build((PrivateKey)ks.getKey("KEY-1", "test".toCharArray()));
 
 		Calendar cal = Calendar.getInstance();
 		Date startDate = cal.getTime();
@@ -390,7 +395,7 @@ public class CertificatesController {
 		X509v3CertificateBuilder certGen;
 		CertificateInfo certificateID;
 		
-		X509Certificate certificate = (X509Certificate)ks.getCertificate("CERT-" + bankSwiftCode);
+		X509Certificate certificate = (X509Certificate)ks.getCertificate("CERT-" + bankSwiftCode + "-1");
 		X500Name issuer = X500Name.getInstance(PrincipalUtil.getIssuerX509Principal(certificate));
 		
 		SubjectPublicKeyInfo pkInfo = csr.getSubjectPublicKeyInfo();
@@ -416,14 +421,28 @@ public class CertificatesController {
 		certConverter = certConverter.setProvider("BC");
 		
 		System.out.println(certConverter.getCertificate(certHolder));
-		
-		ks.setCertificateEntry("CERT-" + IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()), certConverter.getCertificate(certHolder));
+
+		int cnt = 1;
+		while(true){
+			if(!ks.isCertificateEntry("CERT-" + IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()) + "-" +cnt)){
+				ks.setCertificateEntry("CERT-" + IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()), certConverter.getCertificate(certHolder));
+				break;
+			}
+			cnt++;
+		}
 		
 		saveKeyStore(filePathString);
 		
 		getKeyStore("./files/KEYSTORE-" + IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()) + ".jks");
 		
-		ks.setCertificateEntry("CERT-" + IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()), certConverter.getCertificate(certHolder));
+		cnt = 1;
+		while(true){
+			if(!ks.isCertificateEntry("CERT-" + IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()) + "-" +cnt)){
+				ks.setCertificateEntry("CERT-" + IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()) + "-" + cnt, certConverter.getCertificate(certHolder));
+				break;
+			}
+			cnt++;
+		}
 		
 		saveKeyStore("./files/KEYSTORE-" + IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()) + ".jks");
 		
