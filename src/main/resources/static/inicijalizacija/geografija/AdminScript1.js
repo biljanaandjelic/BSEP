@@ -127,6 +127,17 @@ administrator.controller('Opsti', function($scope, $http, $compile, $timeout, $r
 		$scope.tab = num;
 		$scope.$broadcast('filterZatvaranja', idSelektovanogRacuna); // going down!
 	};
+	
+	this.tabClick10 = function(num, idSelektovanogRacuna){
+		$scope.tab = num;
+		$scope.$broadcast('filterDnevnihStanja', idSelektovanogRacuna); // going down!
+	};
+	
+	this.tabClick11 = function(num, idSelektovanogStanja){
+		$scope.tab = num;
+		$scope.$broadcast('filterAnalitika', idSelektovanogStanja); // going down!
+	};
+	
 });
 
 administrator.directive("filelistBind", function($http) {
@@ -139,6 +150,7 @@ administrator.directive("filelistBind", function($http) {
 	        $http.post('/importChosenXML', scope[ attrs.name ][0].name).
 			then(function mySucces(response) {
 				
+				//$scope.$emit('novaStanja');
 				
 			});
 	        
