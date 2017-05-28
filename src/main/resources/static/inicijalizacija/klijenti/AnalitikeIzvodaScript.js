@@ -1,59 +1,48 @@
-administrator.controller('RukovanjeZatvaranjima', function($scope, $http, $compile){
+administrator.controller('RukovanjeAnalitikamaIzvoda', function($scope, $http, $compile){
 	
 	$scope.rezim = 0;
 	//0 za pregled, 1 za dodavanje, 2 za pretragu
 	
-	$scope.zatvaranje = {};
-	$scope.zatvaranjeSearch = {};
-	$scope.zatvaranja = {};
 	
-	$scope.sakrijBrowse = false;
+	$scope.analitikaSearch = {};
+	$scope.analitike = {};
 	
-	$scope.zaZatvaranje = {};
-	$scope.nulaNaStanju = false;
-	$scope.brojRacunaZaPrenos = "";
+	$scope.idSelektovaneAnalitike = null;
 	
-	$scope.$on('novoZatvaranje', function (event) {
-		$http.get('/svaZatvaranja').
-        then(function(response) {
-        	$scope.zatvaranja = response.data;
-        	
-    		
-        });
-        
-	  });
 	
-	$scope.$on('filterZatvaranja', function (event, obj) {
+	$scope.$on('filterAnalitika', function (event, obj) {
 		
 		if(obj == null){
-			$http.get('/svaZatvaranja').
+			$http.get('/sveAnalitike').
 	        then(function(response) {
-	        	$scope.zatvaranja = response.data;
+	        	$scope.analitike = response.data;
 	        	
 	    		
 	        });
+			
 			return;
 		}
 		
-	     $http.get('/filtrirajZatvaranjaPoRacunu/'+obj).
+		
+	     $http.get('/filtrirajAnalitikePoStanju/'+obj).
         then(function(response) {
-        	$scope.racunSearch = {};
-			$scope.zatvaranja = response.data;
-        	$scope.sakrijBrowse = true;
-			$scope.rezim = 0;
+        	$scope.analitikaSearch = {};
+			$scope.analitike = response.data;
+        	$scope.rezim = 0;
+        	$scope.idSelektovaneAnalitike = null;
         });
 	    
 	   
         
 	  });
 	
-	$scope.idSelektovanogZatvaranja = null;
+	
 	
 	$scope.init = function(){
 		
-		$http.get('/svaZatvaranja').
+		$http.get('/sveAnalitike').
         then(function(response) {
-        	$scope.zatvaranja = response.data;
+        	$scope.analitike = response.data;
         	
     		
         });
@@ -73,12 +62,11 @@ administrator.controller('RukovanjeZatvaranjima', function($scope, $http, $compi
 	}
 	
 	this.refresh = function(){
+	
 		
-		$scope.sakrijBrowse = false;
-		
-		$http.get('/svaZatvaranja').
+		$http.get('/sveAnalitike').
         then(function(response) {
-        	$scope.zatvaranja = response.data;
+        	$scope.analitike = response.data;
         	
         });
 	}
@@ -86,33 +74,29 @@ administrator.controller('RukovanjeZatvaranjima', function($scope, $http, $compi
 	
 	this.searchClick = function(){
 		$scope.rezim =2;
-		$scope.zatvaranjeSearch = {};
+		$scope.analitikaSearch = {};
 	};
 
 	this.commitClickSearch = function(){
 		
 		$http({
 		    method: 'POST',
-		    url: '/filtrirajZatvaranja',
-		    data: $scope.zatvaranjeSearch
+		    url: '/filtrirajAnalitike',
+		    data: $scope.analitikaSearch
 		}).
 		then(function mySucces(response) {
-			$scope.racunSearch = {};
-			//$scope.rezim = 0;
+			$scope.analitikaSearch = {};
 			
-			$scope.zatvaranja = response.data;
+			$scope.analitike = response.data;
 		});
 	}
 	
 	this.rollbackClick = function(){
-		if(angular.equals($scope.rezim, 1) || angular.equals($scope.rezim, 2)){
-			$scope.rezim = 0;
-			$scope.zatvaranje = {};
-		}else{
+		
 			$scope.rezim = 0;
 			
-			$scope.zatvaranje = {};
-		}
+			$scope.idSelektovaneAnalitike = {};
+		
 	};
 	
 	
@@ -131,8 +115,8 @@ administrator.controller('RukovanjeZatvaranjima', function($scope, $http, $compi
 			return;
 		}
 		
-		$scope.zatvaranje = angular.copy($scope.zatvaranja[0]);
-		$scope.idSelektovanogZatvaranja = $scope.zatvaranja[0].id;
+		
+		$scope.idSelektovaneAnalitike = $scope.analitike[0].id;
 	};
 
 	this.prevClick = function(){
@@ -142,8 +126,8 @@ administrator.controller('RukovanjeZatvaranjima', function($scope, $http, $compi
 		}
 		
 		var temp = -1;
-		for (var i = 0; i < $scope.zatvaranja.length; i++) { 
-		    if(angular.equals($scope.zatvaranja[i].id, $scope.zatvaranje.id)){
+		for (var i = 0; i < $scope.analitike.length; i++) { 
+		    if(angular.equals($scope.analitike[i].id, $scope.idSelektovaneAnalitike)){
 		    	temp = i;
 		    	break;
 		    }
@@ -153,8 +137,8 @@ administrator.controller('RukovanjeZatvaranjima', function($scope, $http, $compi
 			return;
 		}
 		
-		$scope.zatvaranje = angular.copy($scope.zatvaranja[temp-1]);
-		$scope.idSelektovanogZatvaranja = $scope.zatvaranja[temp-1].id;
+		$scope.stanje = angular.copy($scope.analitike[temp-1]);
+		$scope.idSelektovaneAnalitike = $scope.analitike[temp-1].id;
 	};
 	
 
@@ -164,19 +148,19 @@ administrator.controller('RukovanjeZatvaranjima', function($scope, $http, $compi
 		}
 		
 		var temp = -1;
-		for (var i = 0; i < $scope.zatvaranja.length; i++) { 
-		    if(angular.equals($scope.zatvaranja[i].id, $scope.zatvaranje.id)){
+		for (var i = 0; i < $scope.analitike.length; i++) { 
+		    if(angular.equals($scope.analitike[i].id, $scope.idSelektovaneAnalitike)){
 		    	temp = i;
 		    	break;
 		    }
 		}
 		
-		if(temp == $scope.zatvaranja.length-1 & temp!=-1){
+		if(temp == $scope.analitike.length-1 & temp!=-1){
 			return;
 		}
 		
-		$scope.zatvaranje = angular.copy($scope.zatvaranja[temp+1]);
-		$scope.idSelektovanogZatvaranja = $scope.zatvaranja[temp+1].id;
+		
+		$scope.idSelektovaneAnalitike = $scope.analitike[temp+1].id;
 	};
 	
 
@@ -184,14 +168,14 @@ administrator.controller('RukovanjeZatvaranjima', function($scope, $http, $compi
 		if(!$scope.nultoStanje()){
 			return;
 		}
-		$scope.zatvaranje = angular.copy($scope.zatvaranja[$scope.zatvaranja.length-1]);
-		$scope.idSelektovanogZatvaranja = $scope.zatvaranja[$scope.zatvaranja.length-1].id;
+		
+		$scope.idSelektovaneAnalitike = $scope.analitike[$scope.analitike.length-1].id;
 	};
 	
 	this.setSelected = function(r){
 		if(angular.equals($scope.rezim, 0)){
-			$scope.idSelektovanogZatvaranja = r.id;
-			$scope.zatvaranje = angular.copy(r);
+			$scope.idSelektovaneAnalitike = r.id;
+			
 		}
 	};
 	
