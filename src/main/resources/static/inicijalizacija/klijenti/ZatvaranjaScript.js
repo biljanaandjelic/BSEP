@@ -24,6 +24,17 @@ administrator.controller('RukovanjeZatvaranjima', function($scope, $http, $compi
 	  });
 	
 	$scope.$on('filterZatvaranja', function (event, obj) {
+		
+		if(obj == null){
+			$http.get('/svaZatvaranja').
+	        then(function(response) {
+	        	$scope.zatvaranja = response.data;
+	        	
+	    		
+	        });
+			return;
+		}
+		
 	     $http.get('/filtrirajZatvaranjaPoRacunu/'+obj).
         then(function(response) {
         	$scope.racunSearch = {};

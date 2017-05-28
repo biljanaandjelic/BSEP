@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import korenski.intercepting.CustomAnnotation;
 import korenski.model.sifrarnici.Activity;
 import korenski.service.sifrarnici.ActivityService;
 
@@ -30,6 +31,7 @@ public class ActivityController {
 	 * @param newActivity
 	 * @return createdActivity
 	 */
+	@CustomAnnotation(value = "INSERT_ACTIVITY")
 	@RequestMapping(
 			value="/activity",
 			method=RequestMethod.PUT,
@@ -44,6 +46,7 @@ public class ActivityController {
 	 * @param changedActivity
 	 * @return editedActivity
 	 */
+	@CustomAnnotation(value = "UPDATE_ACTIVITY")
 	@RequestMapping(
 			value="/activity",
 			method=RequestMethod.POST,
@@ -60,6 +63,7 @@ public class ActivityController {
 	 * @param request
 	 * @return
 	 */
+	
 	@RequestMapping(
 			value="/activity/{id}",
 			method=RequestMethod.GET,
@@ -73,6 +77,7 @@ public class ActivityController {
 	 * Metoda vraca sve djelatnosti koje su zabiljezene u sifrarniku.
 	 * @return
 	 */
+	@CustomAnnotation(value = "FIND_ALL_ACTIVITY")
 	@RequestMapping(
 			value="/activities",
 			method=RequestMethod.GET
@@ -87,6 +92,7 @@ public class ActivityController {
 	 * @param request
 	 * @return
 	 */
+	@CustomAnnotation(value = "DELETE_ACTIVITY")
 	@RequestMapping(
 			value="/activity/{id}",
 			method=RequestMethod.DELETE,
@@ -105,6 +111,7 @@ public class ActivityController {
 	 * @param name
 	 * @return
 	 */
+	@CustomAnnotation(value = "FILTER_ACTIVITY")
 	@RequestMapping(
 			value="/activities/{code}/{name}",
 			method=RequestMethod.GET,

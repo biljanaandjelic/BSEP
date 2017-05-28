@@ -7,16 +7,18 @@
 							<div class="panel-body">
 		<form name="myForm" ng-submit="cRGS.sendRevocationRequest(revokeRequest)">
 		<fieldset class="form-group">
+		<!---Combo Box za izbor banke dok nije bilo regulisano logovanje-->
+		<!--
 			<label for="repeatSelect"> Izaberite izdavaoca sertifikata: </label>
 	
 			<select name="repeatSelect"  ng-model="bank" id="repeatSelect" ng-options="bankItem.name for bankItem in banks" class="form-control">
-			<!--  <option ng-repeat="bankItem in banks" value="{{bankBank.id}}">{{bankItem.name}}</option> -->
+			
 			<option value="" >Please Select</option>
 			</select>  
-		</fieldset>
+		</fieldset> -->
 		<fieldset class="form-group">
 			<label>Serijski broj</label>
-			<input type="text" class="control-form" placeholder="Unesite serijski broj" ng-model="revokeRequest.alias"/>
+			<input type="text" class="control-form" placeholder="Unesite alijas" ng-model="revokeRequest.alias"/>
 		</fieldset>
 		<fieldset class="form-group">
 			<label>Zalba</label>
@@ -29,7 +31,7 @@
 				<input  type="submit" class="btn btn-lg btn-primary btn-block pull-right" value="Generate" />
 				
 		</form>
-		<p>Selected bank: {{bank.name}} </p>
+		
 		</div>
 		</div>
 		</div>

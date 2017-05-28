@@ -2,7 +2,6 @@ package korenski.controller.sifrarnici;
 
 
 
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import korenski.intercepting.CustomAnnotation;
 import korenski.model.sifrarnici.Valuta;
 import korenski.service.sifrarnici.ValutaService;
 
@@ -34,6 +34,7 @@ public class ValutaControler {
 	 * @param request
 	 * @return
 	 */
+	@CustomAnnotation(value = "INSERT_VALUTE")
 	@RequestMapping(
 			value="/createNewValuta",
 			method=RequestMethod.POST,
@@ -50,6 +51,7 @@ public class ValutaControler {
 	 * @param request
 	 * @return
 	 */
+	@CustomAnnotation(value = "UPDATE_VALUTE")
 	@RequestMapping(
 			value="/updateValuta",
 			method=RequestMethod.POST,
@@ -60,6 +62,7 @@ public class ValutaControler {
 		return new ResponseEntity<Valuta>(editedValuta,HttpStatus.OK);
 	}
 	
+	@CustomAnnotation(value = "DELETE_VALUTE")
 	@RequestMapping(
 			value="/deleteValuta/{id}",
 			method=RequestMethod.DELETE,
@@ -72,6 +75,7 @@ public class ValutaControler {
 		return new ResponseEntity<Valuta>(valuta, HttpStatus.OK);
 	}
 
+	
 	@RequestMapping(
 			value="/findValue/{id}",
 			method=RequestMethod.GET,
@@ -95,6 +99,7 @@ public class ValutaControler {
 			return new ResponseEntity<Valuta>(valutaSet,HttpStatus.OK);
 	}
 	
+	@CustomAnnotation(value = "FIND_ALL_VALUTE")
 	@RequestMapping(
 			value="/findAllValuta",
 			method=RequestMethod.GET,
@@ -103,14 +108,13 @@ public class ValutaControler {
 		return new ResponseEntity<Set<Valuta>>(valutaService.findAllValuta(),HttpStatus.OK);
 	}
 	
+	@CustomAnnotation(value = "FILTER_VALUTE")
 	@RequestMapping(
 			value="/valute/{code}/{name}",
 			method=RequestMethod.GET,
 			produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Set<Valuta>> findValutaByCodeAndName(@PathVariable("code") String code,@PathVariable("name") String name ){
-		/*Set<Valuta> result=new HashSet<Valuta>();
-		result.add(valutaService.findValutaByCode(code));
-		result.add(valutaService.findValutaByName(name));*/
+		
 		Set<Valuta> result=valutaService.findValutaByCodeAndName(code, name);
 		return new ResponseEntity<Set<Valuta>>(result,HttpStatus.OK);
 	}

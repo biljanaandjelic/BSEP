@@ -1,4 +1,4 @@
-administrator.controller('Opsti', function($scope, $http, $compile, $timeout, $rootScope){
+administrator.controller('Opsti', function($scope, $http, $compile, $timeout, $rootScope, $cookies){
 	
 	$scope.tab = 0;
 	
@@ -10,10 +10,42 @@ administrator.controller('Opsti', function($scope, $http, $compile, $timeout, $r
 	
 	$scope.permisijeIzPermisija = [];
 	
+	$scope.token = "";
+	
 	$scope.init = function(){
 	
 		
+		$http.get('/special/getSafeToken').
+		then(function mySucces(response) {
+			
+			$scope.token = response.data.value;
+		});
+	
 	};
+	
+	this.probajZahtev = function(){
+		
+		
+		$http.get('/special/checkToken', {headers: {'X-XSRF-TOKEN': $scope.token}}).
+		then(function mySucces(response) {
+			
+			
+		});
+	}
+	
+	this.probajPostZahtev = function(){
+		var variabla = "Nesto"
+		$http({
+		    method: 'POST',
+		    url: '/special/checkPostToken',
+		    data: variabla,
+		    headers: {'X-XSRF-TOKEN': $scope.token}
+		}).
+		then(function mySucces(response) {
+				
+				
+		});
+	}
 	
 	this.logoff = function(){
 		
@@ -95,4 +127,34 @@ administrator.controller('Opsti', function($scope, $http, $compile, $timeout, $r
 		$scope.tab = num;
 		$scope.$broadcast('filterZatvaranja', idSelektovanogRacuna); // going down!
 	};
+	
+	this.tabClick10 = function(num, idSelektovanogRacuna){
+		$scope.tab = num;
+		$scope.$broadcast('filterDnevnihStanja', idSelektovanogRacuna); // going down!
+	};
+	
+	this.tabClick11 = function(num, idSelektovanogStanja){
+		$scope.tab = num;
+		$scope.$broadcast('filterAnalitika', idSelektovanogStanja); // going down!
+	};
+	
 });
+
+administrator.directive("filelistBind", function($http) {
+	  return function( scope, elm, attrs ) {
+	    elm.bind("change", function( evt ) {
+	      //console.log( evt );
+	      scope.$apply(function( scope ) {
+	        scope[ attrs.name ] = evt.target.files;
+	        
+	        $http.post('/importChosenXML', scope[ attrs.name ][0].name).
+			then(function mySucces(response) {
+				
+				//$scope.$emit('novaStanja');
+				
+			});
+	        
+	      });
+	    });
+	  };
+	});

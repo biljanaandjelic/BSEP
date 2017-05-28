@@ -6,10 +6,10 @@ public class OCSPResponse {
 	}
 	
 	private OCSPResponseStatus status;
-	//provjeriti
+	
     private	BasicOCSPResponse respnseBytes;
     
-    
+ 
 	public OCSPResponse() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -35,6 +35,7 @@ public class OCSPResponse {
 	public void setRespnseBytes(BasicOCSPResponse respnseBytes) {
 		this.respnseBytes = respnseBytes;
 	}
+	
     
 	
     

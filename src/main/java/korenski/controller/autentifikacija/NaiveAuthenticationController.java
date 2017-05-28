@@ -2,6 +2,7 @@ package korenski.controller.autentifikacija;
 
 import java.util.Collection;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Context;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import korenski.controller.autentifikacija.pomocneKlase.LoginObject;
+import korenski.intercepting.CustomAnnotation;
 import korenski.model.autorizacija.Permission;
 import korenski.model.autorizacija.User;
 import korenski.repository.autorizacija.RoleRepository;
@@ -39,7 +41,7 @@ public class NaiveAuthenticationController {
 	RoleRepository roleRepository;
 	
 	@RequestMapping(
-			value = "/loginSubject",
+			value = "/special/loginSubject",
 			method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
@@ -79,11 +81,10 @@ public class NaiveAuthenticationController {
 //						request.getRequestDispatcher("/authentification/change.html").forward(request, response);
 //					}
 					
-					String redirect = checkPermission(user);
+					Cookie myCookie =new Cookie("XSRF-TOKEN", "MYPRECIOUS");
+					response.addCookie(myCookie);
 					
-					
-					//request.getServletContext().getRequestDispatcher(redirect).forward(request, response);
-					
+					System.out.println("XSRF-TOKEN vrednost je "+ "MYPRECIOUS");
 					
 					return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
 				}
@@ -117,7 +118,7 @@ public class NaiveAuthenticationController {
 		return "";
 	}
 	
-	
+	@CustomAnnotation(value = "LOGOFF")
 	@RequestMapping(
 			value = "/logoff",
 			method = RequestMethod.GET,
@@ -128,6 +129,11 @@ public class NaiveAuthenticationController {
 		
 		request.getSession().setAttribute("user", null);
 		
+		String redirect = checkPermission(user);
+		Cookie myCookie =new Cookie("XSRF-TOKEN", null);
+		response.addCookie(myCookie);
+		
+		request.getSession().invalidate();
 		return new ResponseEntity<User>(new User(), HttpStatus.OK);
 		
 		

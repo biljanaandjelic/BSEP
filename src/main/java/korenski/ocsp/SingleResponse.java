@@ -14,18 +14,20 @@ public class SingleResponse {
 	private CertID certID;
 	private Date thisUpdate;
 	private Date nextUpdate;
+	private RevocationInfo revocationInfo;
 	
 	public SingleResponse() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public SingleResponse(CertStatus certStatus, CertID certID, Date thisUpdate, Date nextUpdate) {
+	public SingleResponse(CertStatus certStatus, CertID certID, Date thisUpdate, Date nextUpdate, RevocationInfo revocationInfo) {
 		super();
 		this.certStatus = certStatus;
 		this.certID = certID;
 		this.thisUpdate = thisUpdate;
 		this.nextUpdate = nextUpdate;
+		this.revocationInfo=revocationInfo;
 	}
 
 	public CertStatus getCertStatus() {
@@ -58,6 +60,14 @@ public class SingleResponse {
 
 	public void setNextUpdate(Date nextUpdate) {
 		this.nextUpdate = nextUpdate;
+	}
+
+	public RevocationInfo getRevocationInfo() {
+		return revocationInfo;
+	}
+
+	public void setRevocationInfo(RevocationInfo revocationInfo) {
+		this.revocationInfo = revocationInfo;
 	}
 	
 	 

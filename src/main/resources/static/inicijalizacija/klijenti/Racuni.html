@@ -52,8 +52,8 @@
 		</div>
 		
 		<div class="btn-group">
-		  <button type="button" class="btn btn-default" ><img src="ikonice/nextform.gif" ng-click ="rr.nextFormClick()" width="20" /></button>
-		  
+		  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#prikaziOdabir"><img src="ikonice/nextform.gif"  width="20" /></button>
+		  <!-- ng-click ="rr.nextFormClick()" -->
 		</div>
 		
 		<div class="panel panel-info">
@@ -132,5 +132,36 @@
 		
 		
 	</div>
+	
+	<div class="modal fade" id="prikaziOdabir" role="dialog">
+    <div class="modal-dialog">
+    
+      
+      <div class="modal-content" >
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Odabir</h4>
+        </div>
+        <div class="modal-body">
+       	
+       		<label>
+    			<input type="radio" ng-model="odabir" value="Zatvaranja" checked="checked">
+    			Zatvaranja
+  			</label><br/>
+ 			<label>
+    			<input type="radio" ng-model="odabir" value="DnevnaStanja">
+    			Dnevna stanja
+  			</label><br/>
+       			
+			
+		</div>
+        <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click ="rr.nextFormClick()">Prihvati</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" >Zatvori</button>
+        </div>
+      </div>
+		
+	</div>	
+	</div>	
 	
 </div>

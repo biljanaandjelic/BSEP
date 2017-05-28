@@ -8,7 +8,7 @@ proba.controller('ProbaCtrl', function($scope, $http, $compile){//, $sanitize) {
 	$scope.model2 = "";
 	
 	this.metoda1 = function(){
-		$http.get('/napraviToken').
+		$http.get('/special/napraviToken').
 	    then(function(response) {
 	    	
 	    });
@@ -16,7 +16,7 @@ proba.controller('ProbaCtrl', function($scope, $http, $compile){//, $sanitize) {
 	}
 	
 	this.metoda2 = function(){
-		$http.get('/testToken').
+		$http.get('/special/testToken').
 	    then(function(response) {
 	    	
 	    });
