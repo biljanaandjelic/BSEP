@@ -80,6 +80,14 @@ public class BusinessLogicService {
 			}
 		}
 		
+		boolean hitno;
+		
+		if(nalog.getHitno().equals("Da")){
+			hitno = true;
+		}else{
+			hitno = false;
+		}
+		
 		AnalitikaIzvoda analitikaDuznika=new AnalitikaIzvoda(new Date(new Date().getTime()), "T", nalog.getPodaciODuzniku().getAdresa(),
 				nalog.getSvrhaPlacanja(), nalog.getPodaciOPoveriocu().getAdresa(), nalog.getPodaciOPlacanju().getDatumValute(),
 				nalog.getPodaciOPlacanju().getDatumValute(), racunDuznika.getBrojRacuna(),
@@ -88,7 +96,7 @@ public class BusinessLogicService {
 				racunPoverioca.getBrojRacuna(),
 				nalog.getPodaciOPlacanju().getFinansijskiPodaciPoverilac().getModel(),
 				nalog.getPodaciOPlacanju().getFinansijskiPodaciPoverilac().getPozivNaBroj(),
-				nalog.getPodaciOPlacanju().getIznos(), nalog.getPodaciOPlacanju().getValuta(), null,dnevnoStanjeDuznika);
+				nalog.getPodaciOPlacanju().getIznos(), nalog.getPodaciOPlacanju().getValuta(), hitno ,dnevnoStanjeDuznika);
 		
 		
 		AnalitikaIzvoda analitikaPoverioca=new AnalitikaIzvoda(new Date(new Date().getTime()), "K", nalog.getPodaciODuzniku().getAdresa(),
@@ -100,7 +108,7 @@ public class BusinessLogicService {
 				nalog.getPodaciOPlacanju().getFinansijskiPodaciDuznik().getPozivNaBroj(), 
 				racunPoverioca.getBrojRacuna(), nalog.getPodaciOPlacanju().getFinansijskiPodaciPoverilac().getModel(), 
 				nalog.getPodaciOPlacanju().getFinansijskiPodaciPoverilac().getPozivNaBroj(), nalog.getPodaciOPlacanju().getIznos(),
-				nalog.getPodaciOPlacanju().getValuta(), null,dnevnoStanjePoverioca);
+				nalog.getPodaciOPlacanju().getValuta(), hitno,dnevnoStanjePoverioca);
 		
 //		if((dnevnoStanjeDuznika.getNovoStanje()-analitikaDuznika.getIznos()) < 0){
 //			System.out.println("Nema dovoljno sredstava!");
@@ -193,8 +201,10 @@ public class BusinessLogicService {
 				racunPoverioca,
 				nalog.getPodaciOPlacanju().getFinansijskiPodaciPoverilac().getModel(),
 				nalog.getPodaciOPlacanju().getFinansijskiPodaciPoverilac().getPozivNaBroj(),
-				nalog.getPodaciOPlacanju().getIznos(), nalog.getPodaciOPlacanju().getValuta(), null,dnevnoStanjeDuznika);
-		
+				nalog.getPodaciOPlacanju().getIznos(), nalog.getPodaciOPlacanju().getValuta(), false,dnevnoStanjeDuznika);
+		if(nalog.getHitno().equals("Da")){
+			analitikaDuznika.setHitno(true);
+		}
 		dnevnoStanjeDuznika.setPrometNaTeret(nalog.getPodaciOPlacanju().getIznos());
 		dnevnoStanjeDuznika.setNovoStanje(dnevnoStanjeDuznika.getNovoStanje()-nalog.getPodaciOPlacanju().getIznos());
 		

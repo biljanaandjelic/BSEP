@@ -6,6 +6,8 @@ administrator.controller('RukovanjeRacunima', function($scope, $http, $compile){
 	$scope.racun = {};
 	$scope.racuni = {};
 	
+	$scope.odabir = "Zatvaranja";
+	
 	$scope.sakrijBrowse = false;
 	
 	$scope.zaZatvaranje = {};
@@ -234,6 +236,8 @@ administrator.controller('RukovanjeRacunima', function($scope, $http, $compile){
 			
 			$scope.racun = {};
 		}
+		
+		$scope.idSelektovanogRacuna = null;
 	};
 	
 	
@@ -321,7 +325,12 @@ administrator.controller('RukovanjeRacunima', function($scope, $http, $compile){
 	};
 	
 	this.nextFormClick = function(){
-		$scope.$parent.$parent.opsti.tabClick8(8, $scope.idSelektovanogRacuna);
+		
+		if(angular.equals($scope.odabir, "Zatvaranja")){
+			$scope.$parent.$parent.opsti.tabClick8(8, $scope.idSelektovanogRacuna);
+		}else{
+			$scope.$parent.$parent.opsti.tabClick10(10, $scope.idSelektovanogRacuna);
+		}
 
 	};
 	

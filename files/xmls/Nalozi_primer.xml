@@ -27,7 +27,7 @@
                 <Model>97</Model>
                 <Poziv_na_broj>321456789032145</Poziv_na_broj>
             </Finansijski_podaci_poverilac>
-            <Datum_valute>2018-08-27T00:25:03</Datum_valute>
+            <Datum_valute>2017-05-27T00:25:03</Datum_valute>
         </Podaci_o_placanju>
     </Nalog_za_prenos>
     <Nalog_za_prenos Hitno="Da">
@@ -55,7 +55,7 @@
                 <Model>97</Model>
                 <Poziv_na_broj>321456789032145</Poziv_na_broj>
             </Finansijski_podaci_poverilac>
-            <Datum_valute>2019-01-05T00:25:03</Datum_valute>
+            <Datum_valute>2017-01-05T00:25:03</Datum_valute>
         </Podaci_o_placanju>
     </Nalog_za_prenos>
 	  <Nalog_za_prenos Hitno="Ne">

@@ -39,8 +39,10 @@ public class AnalitikaIzvoda {
 	// Sifra valute bi mozda trebala da bude objekat
 	// klase valute
 	private String sifraValute;
-	private Boolean hitno;
-	@ManyToOne(fetch=FetchType.LAZY)
+
+	private boolean hitno;
+	@ManyToOne(optional = false)
+
 	private DnevnoStanjeRacuna dnevnoStanjeRacuna;
 
 	public AnalitikaIzvoda() {
@@ -53,7 +55,7 @@ public class AnalitikaIzvoda {
 	public AnalitikaIzvoda(Date datumAnalitike, String smer, String duznik, String svrhaPlacanja, String primalac,
 			Date datumNaloga, Date datumValute, String racunPrvi, String modelPrvi, String pozivNaBrojPrvi,
 			String racunDrugi, String modelDrugi, String pozivNaBrojDrugi, double iznos, String sifraValute,
-			Boolean hitno, DnevnoStanjeRacuna dnevnoStanjeRacuna) {
+			boolean hitno, DnevnoStanjeRacuna dnevnoStanjeRacuna) {
 		super();
 		this.datumAnalitike = datumAnalitike;
 		this.smer = smer;
@@ -202,11 +204,11 @@ public class AnalitikaIzvoda {
 		this.sifraValute = sifraValute;
 	}
 
-	public Boolean getHitno() {
+	public boolean getHitno() {
 		return hitno;
 	}
 
-	public void setHitno(Boolean hitno) {
+	public void setHitno(boolean hitno) {
 		this.hitno = hitno;
 	}
 
