@@ -19,32 +19,8 @@ administrator.controller('MessagesController', function($scope, $http, $compile,
 		
 	}
 	
-	this.firstClick=function(){
-		if($scope.state===State.VIEW_EDIT){
-			$log.log("First click");
-			$scope.activity=$scope.activities[0];
-			//$scope.valutaId=selectedValuta.id;
-		//	$scope.valuta=selectedValuta;
-		
-		
-		}
-	}
 	
-	this.refresh=function(){
-		var path="/messages";
-		
-		$http({
-			method: 'GET',
-			url: path
-		}).then(
-			function successCallback(response){
-				
-				$scope.messages=response.data;
-			},function errorCallback(response){
-				
-			}
-		);
-	}
+	
 	
 	this.init=function(){
 		$scope.state=State.VIEW_EDIT;

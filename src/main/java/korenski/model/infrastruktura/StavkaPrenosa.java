@@ -13,18 +13,18 @@ public class StavkaPrenosa {
 	@ManyToOne(optional=false)
 	private AnalitikaIzvoda analitikaIzvoda;
 	@ManyToOne(optional=false)
-	private StavkaPrenosa stavkaPrenosa;
+	private MedjubankarskiPrenos medjubankarskiPrenos;
 	
 	public StavkaPrenosa() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public StavkaPrenosa(Long id, AnalitikaIzvoda analitikaIzvoda, StavkaPrenosa stavkaPrenosa) {
+	public StavkaPrenosa(Long id, AnalitikaIzvoda analitikaIzvoda, MedjubankarskiPrenos medjubankarskiPrenos) {
 		super();
 		this.id = id;
 		this.analitikaIzvoda = analitikaIzvoda;
-		this.stavkaPrenosa = stavkaPrenosa;
+		this.medjubankarskiPrenos = medjubankarskiPrenos;
 	}
 
 	public Long getId() {
@@ -43,12 +43,12 @@ public class StavkaPrenosa {
 		this.analitikaIzvoda = analitikaIzvoda;
 	}
 
-	public StavkaPrenosa getStavkaPrenosa() {
-		return stavkaPrenosa;
+	public MedjubankarskiPrenos getStavkaPrenosa() {
+		return medjubankarskiPrenos;
 	}
 
-	public void setStavkaPrenosa(StavkaPrenosa stavkaPrenosa) {
-		this.stavkaPrenosa = stavkaPrenosa;
+	public void setStavkaPrenosa(MedjubankarskiPrenos medjubankarskiPrenos) {
+		this.medjubankarskiPrenos = medjubankarskiPrenos;
 	}
 	
 

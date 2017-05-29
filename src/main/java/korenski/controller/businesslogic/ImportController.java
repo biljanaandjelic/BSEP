@@ -91,13 +91,13 @@ public class ImportController {
 				continue;
 			}
 			
-			if(duznik != null && poverilac != null){
+			if(duznik != null && poverilac != null && duznik.getStanje()>= nalog.getPodaciOPlacanju().getIznos()){
 				System.out.println("Racuni su iz iste banke!");
 				blService.sameBankTransfer(nalog, duznik, poverilac);
 				
-			}else if(duznik!= null && poverilac == null){
+			}else if(duznik!= null && poverilac == null && duznik.getStanje()>= nalog.getPodaciOPlacanju().getIznos()){
 				System.out.println("Racuni su iz razlicitih banaka");
-				blService.differentBanksTransfer(nalog, duznik, poverilac);
+				blService.differentBanksTransfer(nalog, duznik, racunPoverioca);
 			}else{
 				continue;
 			}

@@ -448,7 +448,13 @@ public class CertificatesController {
 		
 		return new ResponseEntity<String>("ok", HttpStatus.OK);
 	}
-	
+	/**
+	 * Metodu zamjeniti....
+	 * @param alias
+	 * @return
+	 * @throws KeyStoreException
+	 * @throws NoSuchProviderException
+	 */
 	@RequestMapping(value = "/certificate/{alias}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON)
 	public ResponseEntity<CertificateDTO> findCertificateDTO(@PathVariable("alias") String alias)
 			throws KeyStoreException, NoSuchProviderException {
@@ -477,38 +483,38 @@ public class CertificatesController {
 		return new ResponseEntity<CertificateDTO>(HttpStatus.NOT_FOUND);
 	}
 
-	public CertificateDTO getCertificateBySerialNumber(String serialNumber) {
-		try {
-			
-			ks.load(new FileInputStream("./files/gagi.jks"), "test".toCharArray());
-			Enumeration aliases = ks.aliases();
-			String alias;
-			for (; aliases.hasMoreElements();) {
-				alias = (String) aliases.nextElement();
-
-				Certificate cert = ks.getCertificate(alias);
-
-				if (cert.getType().equals(BCStyle.SERIALNUMBER)) {
-					
-					if (((X509Certificate) cert).getSerialNumber().equals(serialNumber)) {
-						CertificateDTO certDTO = getDataFromCertificate(cert);
-						return certDTO;
-					}
-				}
-
-			}
-		} catch (NoSuchAlgorithmException | CertificateException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (KeyStoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		// List the aliases
-		return null;
-
-	}
+//	public CertificateDTO getCertificateBySerialNumber(String serialNumber) {
+//		try {
+//			
+//			ks.load(new FileInputStream("./files/gagi.jks"), "test".toCharArray());
+//			Enumeration aliases = ks.aliases();
+//			String alias;
+//			for (; aliases.hasMoreElements();) {
+//				alias = (String) aliases.nextElement();
+//
+//				Certificate cert = ks.getCertificate(alias);
+//
+//				if (cert.getType().equals(BCStyle.SERIALNUMBER)) {
+//					
+//					if (((X509Certificate) cert).getSerialNumber().equals(serialNumber)) {
+//						CertificateDTO certDTO = getDataFromCertificate(cert);
+//						return certDTO;
+//					}
+//				}
+//
+//			}
+//		} catch (NoSuchAlgorithmException | CertificateException | IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (KeyStoreException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//
+//		// List the aliases
+//		return null;
+//
+//	}
 
 	public CertificateDTO getDataFromCertificate(Certificate certificat) {
 		X500Name x500name;
@@ -550,7 +556,8 @@ public class CertificatesController {
 	/**
 	 * Revoke certificate if private key is lost or for some other reason
 	 * 
-	 * @param serialNumber
+	 * @param serialNumber seijski broj sertifikata cije povlacenje je zatrazeno
+	 * @author Biljana
 	 */
 	@RequestMapping(value = "/revokeCertificate/{alias}", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN)
 	public ResponseEntity<String> revokeCertificate(@PathVariable("alias") String alias) {

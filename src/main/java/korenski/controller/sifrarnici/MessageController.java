@@ -1,5 +1,6 @@
 package korenski.controller.sifrarnici;
 
+import java.util.Date;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,14 +16,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import korenski.model.infrastruktura.Racun;
 import korenski.model.sifrarnici.Message;
+import korenski.repository.institutions.RacunRepository;
 import korenski.service.sifrarnici.MessageService;
 
 @Controller
 public class MessageController {
 	@Autowired
 	MessageService messageService;
-	
+	@Autowired 
+	RacunRepository racunRepository;
 	
 	@RequestMapping(
 			value="/message",
@@ -32,6 +36,13 @@ public class MessageController {
 			)
 	public ResponseEntity<Message> createMessage(@RequestBody Message message, @Context HttpServletRequest request){
 		Message newMessage=messageService.create(message);
+		Date racun=racunRepository.findMaxDate();
+		if(racun!=null){
+			//System.out.println("Racun "+ racun.getBrojRacuna());
+			
+			System.out.println("Maxdate");
+		}
+		System.out.println("MAXDATE "+ racun);
 		if(message!=null){
 			return new ResponseEntity<Message>(newMessage,HttpStatus.OK);
 		}else{

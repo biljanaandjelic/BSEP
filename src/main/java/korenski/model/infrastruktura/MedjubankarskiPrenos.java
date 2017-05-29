@@ -25,7 +25,7 @@ public class MedjubankarskiPrenos {
 	@Column(nullable=false)
 	private Date datum;
 	@Column(nullable=false)
-	private BigDecimal iznos;
+	private double iznos;
 	
 	public MedjubankarskiPrenos() {
 		super();
@@ -33,7 +33,7 @@ public class MedjubankarskiPrenos {
 	}
 
 	public MedjubankarskiPrenos(Long id, Bank bankaPrva, Bank bankaDruga, Message poruka, Date datum,
-			BigDecimal iznos) {
+			double iznos) {
 		super();
 		this.id = id;
 		this.bankaPrva = bankaPrva;
@@ -83,11 +83,11 @@ public class MedjubankarskiPrenos {
 		this.datum = datum;
 	}
 
-	public BigDecimal getIznos() {
+	public double getIznos() {
 		return iznos;
 	}
 
-	public void setIznos(BigDecimal iznos) {
+	public void setIznos(double iznos) {
 		this.iznos = iznos;
 	}
 	

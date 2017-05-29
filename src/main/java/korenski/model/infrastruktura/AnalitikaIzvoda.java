@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -26,7 +27,7 @@ public class AnalitikaIzvoda {
 	private String primalac;
 	private Date datumNaloga;
 	private Date datumValute;
-	// duzina mora biti osamnjaest
+	
 	private String racunPrvi;
 	private String modelPrvi;
 	private String pozivNaBrojPrvi;
@@ -39,7 +40,7 @@ public class AnalitikaIzvoda {
 	// klase valute
 	private String sifraValute;
 	private Boolean hitno;
-	@ManyToOne(optional = false)
+	@ManyToOne(fetch=FetchType.LAZY)
 	private DnevnoStanjeRacuna dnevnoStanjeRacuna;
 
 	public AnalitikaIzvoda() {
@@ -47,30 +48,7 @@ public class AnalitikaIzvoda {
 		// TODO Auto-generated constructor stub
 	}
 
-//	public AnalitikaIzvoda(Long id, Date datumAnalitike, String smer, String duznik, String svrhaPlacanja,
-//			String primalac, Date datumNaloga, Date datumValute, String racunPrvi, String modelPrvi,
-//			String pozivNaBrojPrvi, String racunDrugi, String modelDrugi, String pozivNaBrojDrugi, BigDecimal iznos,
-//			String sifraValute, Boolean hitno, DnevnoStanjeRacuna dnevnoStanjeRacuna) {
-//		super();
-//		this.id = id;
-//		this.datumAnalitike = datumAnalitike;
-//		this.smer = smer;
-//		this.duznik = duznik;
-//		this.svrhaPlacanja = svrhaPlacanja;
-//		this.primalac = primalac;
-//		this.datumNaloga = datumNaloga;
-//		this.datumValute = datumValute;
-//		this.racunPrvi = racunPrvi;
-//		this.modelPrvi = modelPrvi;
-//		this.pozivNaBrojPrvi = pozivNaBrojPrvi;
-//		this.racunDrugi = racunDrugi;
-//		this.modelDrugi = modelDrugi;
-//		this.pozivNaBrojDrugi = pozivNaBrojDrugi;
-//		this.iznos = iznos;
-//		this.sifraValute = sifraValute;
-//		this.hitno = hitno;
-//		this.dnevnoStanjeRacuna = dnevnoStanjeRacuna;
-//	}
+
 
 	public AnalitikaIzvoda(Date datumAnalitike, String smer, String duznik, String svrhaPlacanja, String primalac,
 			Date datumNaloga, Date datumValute, String racunPrvi, String modelPrvi, String pozivNaBrojPrvi,
