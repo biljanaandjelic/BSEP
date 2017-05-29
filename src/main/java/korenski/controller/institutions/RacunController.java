@@ -1,8 +1,13 @@
 package korenski.controller.institutions;
 
+import java.io.File;
 import java.math.BigInteger;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Properties;
 import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +35,8 @@ import korenski.repository.institutions.BankRepository;
 import korenski.repository.institutions.RacunRepository;
 import korenski.repository.institutions.ZatvaranjeRacunaRepository;
 import korenski.repository.klijenti.KlijentRepository;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
 
 @Controller
 public class RacunController {
@@ -189,5 +196,39 @@ public class RacunController {
 		return new ResponseEntity<Racun>(racun, HttpStatus.OK);
 	}
 	
-	
+	@RequestMapping(
+			value = "/izvestajiRacuna",
+			method = RequestMethod.GET,
+			produces = MediaType.TEXT_PLAIN_VALUE)
+	public ResponseEntity<String> izvestajiRacuna(@Context HttpServletRequest request) throws Exception {
+		//idiotizam
+		try {
+			
+			Properties connectionProps = new Properties();
+		    connectionProps.put("user", "test");
+		    connectionProps.put("password", "test");
+		    
+		    Connection conn = DriverManager.getConnection(
+	                   "jdbc:mysql://localhost:3306/finalni?useSSL=false",
+	                   connectionProps);
+			
+		    
+		    Bank bank = ((User)request.getSession().getAttribute("user")).getBank();
+		    HashMap<String, Object> parameters = new HashMap<String, Object>();
+		    parameters.put("id_banke", bank.getId());
+		    
+		    String jp = JasperFillManager.fillReportToFile("./files/accounts.jasper", parameters, conn);
+		    
+			//JasperPrint jp = JasperFillManager.fillReport(
+			//	new FileInputStream("./files/test.jasper"),
+			//	new HashMap<String, Object>(), conn);
+			//eksport
+			//File pdf = File.createTempFile("output.", ".pdf");
+			JasperExportManager.exportReportToPdfFile(jp, "./files/accounts.pdf");
+		}catch (Exception ex) {
+				ex.printStackTrace();
+		}
+		
+		return new ResponseEntity<String>("ok", HttpStatus.OK);
+	}
 }

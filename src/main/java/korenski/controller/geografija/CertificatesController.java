@@ -53,7 +53,6 @@ import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
-import org.bouncycastle.cert.ocsp.OCSPReq;
 import org.bouncycastle.crypto.params.RSAKeyParameters;
 import org.bouncycastle.crypto.util.PublicKeyFactory;
 import org.bouncycastle.jce.PrincipalUtil;
@@ -99,7 +98,7 @@ public class CertificatesController {
 	RevokeRequestService revokeRequestService;
 	
 	private KeyStore ks;
-
+	
 	@RequestMapping(value = "/genCertificate", method = RequestMethod.POST, produces = MediaType.TEXT_PLAIN)
 	public ResponseEntity<String> genCertificate(@RequestBody CertificateDTO dto, @Context HttpServletRequest request)
 			throws KeyStoreException, NoSuchAlgorithmException, CertificateException, FileNotFoundException,
