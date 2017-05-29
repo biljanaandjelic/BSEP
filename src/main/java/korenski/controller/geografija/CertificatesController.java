@@ -98,7 +98,7 @@ public class CertificatesController {
 	RevokeRequestService revokeRequestService;
 	
 	private KeyStore ks;
-	
+
 	@RequestMapping(value = "/genCertificate", method = RequestMethod.POST, produces = MediaType.TEXT_PLAIN)
 	public ResponseEntity<String> genCertificate(@RequestBody CertificateDTO dto, @Context HttpServletRequest request)
 			throws KeyStoreException, NoSuchAlgorithmException, CertificateException, FileNotFoundException,
@@ -144,6 +144,7 @@ public class CertificatesController {
 		System.out.println(serial);
 		
 		X509v3CertificateBuilder certGen;
+
 		CertificateInfo certificateInfo;
 
 		certificateInfo = new CertificateInfo(serial, CertStatus.GOOD, null, null, dto.alias, Type.NationalBank);
@@ -153,26 +154,27 @@ public class CertificatesController {
 		//ovo je tvoj deo biljo, samo zakaci na certificateinfo banku
 		Bank bank = ((User)request.getSession().getAttribute("user")).getBank();
 		certificateInfo.setBank(bank);
+		//certGen = new JcaX509v3CertificateBuilder(name, serial, startDate, endDate, name,
+		//		pair.getPublic());
+		
+		certificateIDService.create(certificateInfo);
+		/*
 		certGen = new JcaX509v3CertificateBuilder(name, serial, startDate, endDate, name,
 				pair.getPublic());
-		
-		//CertificateInfo ca = certificateInfoService.findByAlias(dto.issuerAlias);
-	
-		certificateIDService.create(certificateInfo);
-		
-		/*
+
 		certificateInfo = new CertificateInfo(serial, CertStatus.GOOD, null, null, dto.alias, Type.NationalBank);
 		
 		//ovo je tvoj deo biljo, samo zakaci na certificateinfo banku
+		
 		Bank bank = ((User)request.getSession().getAttribute("user")).getBank();
 		certificateInfo.setBank(bank);
 		
 		certificateInfo.setAlias("CERT-"+bank.getSwiftCode());
 		certificateIDService.create(certificateInfo);
-		*/
+		
 		certGen = new JcaX509v3CertificateBuilder(name, serial, startDate, endDate, name,
 				pair.getPublic());
-
+		*/
 		certGen.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
 		
 		X509CertificateHolder certHolder = certGen.build(contentSigner);
