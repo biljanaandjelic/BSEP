@@ -208,8 +208,8 @@ public class RacunController {
 		try {
 			
 			Properties connectionProps = new Properties();
-		    connectionProps.put("user", "test");
-		    connectionProps.put("password", "test");
+		    connectionProps.put("user", "root");
+		    connectionProps.put("password", "password");
 		    
 		    Connection conn = DriverManager.getConnection(
 	                   "jdbc:mysql://localhost:3306/finalni?useSSL=false",

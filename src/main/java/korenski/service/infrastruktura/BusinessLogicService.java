@@ -145,27 +145,27 @@ public class BusinessLogicService {
 	 * @author Biljana
 	 */
 	public void differentBanksTransfer(NalogZaPrenos nalog, Racun racunDuznika, String racunPoverioca) {
-		 Logger logger = Logger.getLogger("MyLog");  
-		    FileHandler fh;  
-
-		    try {  
-
-		       
-		        fh = new FileHandler("./files/Logger/logFile.log");  
-		        logger.addHandler(fh);
-		        SimpleFormatter formatter = new SimpleFormatter();  
-		        fh.setFormatter(formatter);  
-
-		       
-		        logger.info("My first log");  
-
-		    } catch (SecurityException e) {  
-		        e.printStackTrace();  
-		    } catch (IOException e) {  
-		        e.printStackTrace();  
-		    }  
-
-		    logger.info("Hi How r u?");  
+//		 Logger logger = Logger.getLogger("MyLog");  
+//		    FileHandler fh;  
+//
+//		    try {  
+//
+//		       
+//		        fh = new FileHandler("./files/Logger/logFile.log");  
+//		        logger.addHandler(fh);
+//		        SimpleFormatter formatter = new SimpleFormatter();  
+//		        fh.setFormatter(formatter);  
+//
+//		       
+//		        logger.info("My first log");  
+//
+//		    } catch (SecurityException e) {  
+//		        e.printStackTrace();  
+//		    } catch (IOException e) {  
+//		        e.printStackTrace();  
+//		    }  
+//
+//		    logger.info("Hi How r u?");  
 			DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
 			Date today = new Date();

@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import korenski.model.sifrarnici.Message;
 
@@ -22,7 +24,9 @@ public class MedjubankarskiPrenos {
 	private Bank bankaDruga;
 	@ManyToOne(optional=false)
 	private Message poruka;
+	
 	@Column(nullable=false)
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date datum;
 	@Column(nullable=false)
 	private double iznos;
