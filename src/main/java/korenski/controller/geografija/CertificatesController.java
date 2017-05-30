@@ -144,34 +144,8 @@ public class CertificatesController {
 		System.out.println(serial);
 		
 		X509v3CertificateBuilder certGen;
-		CertificateInfo certificateInfo;
-
-		certificateInfo = new CertificateInfo(serial, CertStatus.GOOD, null, null, dto.alias, Type.NationalBank);
 
 		certGen = new JcaX509v3CertificateBuilder(name, serial, startDate, endDate, name, pair.getPublic());
-
-		//ovo je tvoj deo biljo, samo zakaci na certificateinfo banku
-		Bank bank = ((User)request.getSession().getAttribute("user")).getBank();
-		certificateInfo.setBank(bank);
-		certGen = new JcaX509v3CertificateBuilder(name, serial, startDate, endDate, name,
-				pair.getPublic());
-		
-		//CertificateInfo ca = certificateInfoService.findByAlias(dto.issuerAlias);
-	
-		certificateIDService.create(certificateInfo);
-		
-		/*
-		certificateInfo = new CertificateInfo(serial, CertStatus.GOOD, null, null, dto.alias, Type.NationalBank);
-		
-		//ovo je tvoj deo biljo, samo zakaci na certificateinfo banku
-		Bank bank = ((User)request.getSession().getAttribute("user")).getBank();
-		certificateInfo.setBank(bank);
-		
-		certificateInfo.setAlias("CERT-"+bank.getSwiftCode());
-		certificateIDService.create(certificateInfo);
-		*/
-		certGen = new JcaX509v3CertificateBuilder(name, serial, startDate, endDate, name,
-				pair.getPublic());
 
 		certGen.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
 		
@@ -182,18 +156,23 @@ public class CertificatesController {
 
 		System.out.println(certConverter.getCertificate(certHolder));
 		
+		CertificateInfo certificateInfo = new CertificateInfo(serial, CertStatus.GOOD, null, null, "", Type.NationalBank);
+		Bank bank = ((User)request.getSession().getAttribute("user")).getBank();
+		certificateInfo.setBank(bank);
+		//biljo ovo je deo za generisanje sertifikata sa inkrementom,
+		//premestio sam deo gde se alijas sertifikata dodaje ovde, pa se posle toga stavljau bazu
 		int cnt = 1;
 		while(true){
 			if(!ks.isCertificateEntry("CERT-" + bank.getSwiftCode() + "-" + cnt)){
 				ks.setCertificateEntry("CERT-" + bank.getSwiftCode() + "-" + cnt, certConverter.getCertificate(certHolder));
+				certificateInfo.setAlias("CERT-" + bank.getSwiftCode() + "-" + cnt);
 				ks.setKeyEntry("KEY-" + cnt, pair.getPrivate(), "test".toCharArray(), new Certificate[] { (Certificate) certConverter.getCertificate(certHolder) });
 				break;
 			}
 			cnt++;
 		}
 		
-		ks.setCertificateEntry("CERT-" + bank.getSwiftCode(), certConverter.getCertificate(certHolder));
-		ks.setKeyEntry("KEY", pair.getPrivate(), "test".toCharArray(), new Certificate[] { (Certificate) certConverter.getCertificate(certHolder) });
+		certificateIDService.create(certificateInfo);
 		saveKeyStore(filePathString);
 		
 		return new ResponseEntity<String>("ok", HttpStatus.OK);
@@ -407,21 +386,20 @@ public class CertificatesController {
 			certGen.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
 			certificateInfo=new CertificateInfo(serial,CertStatus.GOOD,null,null,"",Type.Bank);
 			certificateInfo.setBank(((User)httpRequest.getSession().getAttribute("user")).getBank());
-			certificateInfo.setAlias("CERT-"+IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()));
+			//certificateInfo.setAlias("CERT-"+IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()));
 			CertificateInfo ca=certificateIDService.findByAlias("CERT-"+((User)httpRequest.getSession().getAttribute("user")).getBank().getSwiftCode());
 			certificateInfo.setCa(ca);
 		}else if(u.getRole().getId().equals(new Long(2))){
 			certGen.addExtension(Extension.basicConstraints, true, new BasicConstraints(false));
 			certificateInfo=new CertificateInfo(serial,CertStatus.GOOD,null,null,"",Type.Company);
 			certificateInfo.setBank(((User)httpRequest.getSession().getAttribute("user")).getBank());
-			certificateInfo.setAlias("CERT-"+IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()));
+			//certificateInfo.setAlias("CERT-"+IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()));
 			CertificateInfo ca=certificateIDService.findByAlias("CERT-"+((User)httpRequest.getSession().getAttribute("user")).getBank().getSwiftCode());
 			certificateInfo.setCa(ca);
 		}else{
 			return null;
 		}
 		
-		certificateIDService.create(certificateInfo);
 		X509CertificateHolder certHolder = certGen.build(contentSigner);
 
 		JcaX509CertificateConverter certConverter = new JcaX509CertificateConverter();
@@ -429,15 +407,19 @@ public class CertificatesController {
 		
 		System.out.println(certConverter.getCertificate(certHolder));
 
+		//biljo ovo je deo za generisanje sertifikata sa inkrementom,
+		//premestio sam deo gde se alijas sertifikata dodaje ovde, pa se posle toga stavljau bazu
 		int cnt = 1;
 		while(true){
-			if(!ks.isCertificateEntry("CERT-" + IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()) + "-" +cnt)){
-				ks.setCertificateEntry("CERT-" + IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()), certConverter.getCertificate(certHolder));
+			if(!ks.isCertificateEntry("CERT-" + IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()) + "-" + cnt)){
+				ks.setCertificateEntry("CERT-" + IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()) + "-" + cnt, certConverter.getCertificate(certHolder));
+				certificateInfo.setAlias("CERT-"+IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()) + "-" + cnt);
 				break;
 			}
 			cnt++;
 		}
 		
+		certificateIDService.create(certificateInfo);
 		saveKeyStore(filePathString);
 		
 		getKeyStore("./files/KEYSTORE-" + IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()) + ".jks");
