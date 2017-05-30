@@ -16,7 +16,7 @@ public interface ActivityRepository extends CrudRepository<Activity,Long> {
 	public Activity  findActivityByCode(String code);
 	public Activity  findActivityByName(String name);
 	public Set<Activity> findAll();
-	public Set<Activity> findByCodeContainingIgnoreCaseOrNameContainingIgnoreCase(String code, String name);
+	public Set<Activity> findByCodeContainingIgnoreCaseAndNameContainingIgnoreCase(String code, String name);
 
 	
 

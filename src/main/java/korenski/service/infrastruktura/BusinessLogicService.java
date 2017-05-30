@@ -193,7 +193,15 @@ public class BusinessLogicService {
 		Date maxDate=mBRepository.findMaxDate(racunDuznika.getBank(), bankaDruga);
 		MedjubankarskiPrenos latestMBPrenos=mBRepository.findLatestMedjubankarskiPrenos(maxDate);
 		Set<StavkaPrenosa> stavkePrenosa=sPRepository.findStavkaPrenosaByMedjubankarskiPrenos(latestMBPrenos);
-		AnalitikaIzvoda analitikaDuznika=new AnalitikaIzvoda(new Date(new Date().getTime()), "T", nalog.getPodaciODuzniku().getAdresa(),
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		Date newDate=new Date();
+		try {
+			newDate=sdf.parse(sdf.format(today));
+		} catch (ParseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		AnalitikaIzvoda analitikaDuznika=new AnalitikaIzvoda(newDate, "T", nalog.getPodaciODuzniku().getAdresa(),
 				nalog.getSvrhaPlacanja(), nalog.getPodaciOPoveriocu().getAdresa(), nalog.getPodaciOPlacanju().getDatumValute(),
 				nalog.getPodaciOPlacanju().getDatumValute(), racunDuznika.getBrojRacuna(),
 				nalog.getPodaciOPlacanju().getFinansijskiPodaciDuznik().getModel(), 
@@ -238,11 +246,13 @@ public class BusinessLogicService {
 			}catch(Exception e){
 				return;
 			}
+		}else{
+			latestMBPrenos.setIznos(latestMBPrenos.getIznos()+nalog.getPodaciOPlacanju().getIznos());
 		}
 		
 		StavkaPrenosa stavkaPrenosa=new StavkaPrenosa();
 		stavkaPrenosa.setAnalitikaIzvoda(analitikaDuznika);
-		latestMBPrenos.setIznos(latestMBPrenos.getIznos()+nalog.getPodaciOPlacanju().getIznos());
+		
 		try{
 			mBRepository.save(latestMBPrenos);
 			stavkaPrenosa.setStavkaPrenosa(latestMBPrenos);

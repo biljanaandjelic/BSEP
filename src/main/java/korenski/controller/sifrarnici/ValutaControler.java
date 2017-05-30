@@ -2,9 +2,11 @@ package korenski.controller.sifrarnici;
 
 
 
+import java.util.Iterator;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolation;
 import javax.ws.rs.core.Context;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +20,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import korenski.intercepting.CustomAnnotation;
+import korenski.model.sifrarnici.Activity;
 import korenski.model.sifrarnici.Valuta;
 import korenski.service.sifrarnici.ValutaService;
+import korenski.singletons.ValidatorSingleton;
 
 
 @Controller
@@ -42,7 +46,17 @@ public class ValutaControler {
 			produces=MediaType.APPLICATION_JSON_VALUE
 			)
 	public ResponseEntity<Valuta> createNewValuta(@RequestBody  Valuta valuta, @Context HttpServletRequest request){
-		Valuta newValuta=valutaService.createValuta(valuta);
+		Valuta v=validityCheck(valuta);
+		if(v!=null){
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		Valuta newValuta;
+		try{
+			 newValuta=valutaService.createValuta(valuta);
+		}catch (Exception e) {
+			// TODO: handle exception
+			return new ResponseEntity<Valuta>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 		return new ResponseEntity<Valuta>(newValuta,HttpStatus.OK);
 	}
 	/**
@@ -82,11 +96,18 @@ public class ValutaControler {
 			consumes=MediaType.APPLICATION_JSON_VALUE,
 			produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Valuta> findValuta(@RequestBody Long id, @Context HttpServletRequest request){
-		Valuta valuta=valutaService.findValuta(id);
+	
+		Valuta valuta=null;
+		try{
+			valuta=valutaService.findValuta(id);
+		}catch (Exception e) {
+			// TODO: handle exception
+			return new ResponseEntity<Valuta>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 		if(valuta!=null){
 			return new ResponseEntity<Valuta>(valuta,HttpStatus.OK);
 		}
-		return new ResponseEntity<Valuta>(HttpStatus.OK);
+		return new ResponseEntity<Valuta>(HttpStatus.NO_CONTENT);
 	}
 	@RequestMapping(
 			value="/findValueByCode/{code}",
@@ -105,7 +126,17 @@ public class ValutaControler {
 			method=RequestMethod.GET,
 			produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Set<Valuta>> findAllValuta(){
-		return new ResponseEntity<Set<Valuta>>(valutaService.findAllValuta(),HttpStatus.OK);
+		Set<Valuta> valute=null;
+		try{
+			valute=valutaService.findAllValuta();
+		}catch (Exception e) {
+			// TODO: handle exception
+			return new ResponseEntity<Set<Valuta>>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		if(valute!=null)
+			return new ResponseEntity<Set<Valuta>>(valutaService.findAllValuta(),HttpStatus.OK);
+		else
+			return new ResponseEntity<Set<Valuta>>(HttpStatus.NO_CONTENT);
 	}
 	
 	@CustomAnnotation(value = "FILTER_VALUTE")
@@ -115,7 +146,35 @@ public class ValutaControler {
 			produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Set<Valuta>> findValutaByCodeAndName(@PathVariable("code") String code,@PathVariable("name") String name ){
 		
-		Set<Valuta> result=valutaService.findValutaByCodeAndName(code, name);
-		return new ResponseEntity<Set<Valuta>>(result,HttpStatus.OK);
+		Set<Valuta> result=null;
+		try{
+			result=valutaService.findValutaByCodeAndName(code, name);
+		}catch (Exception e) {
+			// TODO: handle exception
+			return new ResponseEntity<Set<Valuta>>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		if(result!=null)
+			return new ResponseEntity<Set<Valuta>>(result,HttpStatus.OK);
+		else
+			return new ResponseEntity<Set<Valuta>>(HttpStatus.NO_CONTENT);
+	}
+	public Valuta validityCheck(Valuta valuta) {
+		System.out.println("**************************");
+		System.out.println("VALIDATOR");
+		System.out.println("**************************");
+
+		Set<ConstraintViolation<Valuta>> violations = ValidatorSingleton.getInstance().getValidator()
+				.validate(valuta);
+
+		if (!violations.isEmpty()) {
+			Iterator iter = violations.iterator();
+
+			ConstraintViolation<Valuta> first = (ConstraintViolation<Valuta>) iter.next();
+
+			Valuta v=new Valuta(new Long(-1), "", first.getMessage());
+			return v;
+		} else {
+			return null;
+		}
 	}
 }

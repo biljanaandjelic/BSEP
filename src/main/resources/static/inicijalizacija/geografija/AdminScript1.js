@@ -138,6 +138,13 @@ administrator.controller('Opsti', function($scope, $http, $compile, $timeout, $r
 		$scope.$broadcast('filterAnalitika', idSelektovanogStanja); // going down!
 	};
 	
+	this.tabClickMedjubankarski11=function(num, medjubankarskiPrenos){
+		$scope.tab = num;
+		var stavke=[];
+		
+		$scope.$broadcast('filterPoStavkamaPrenosa', medjubankarskiPrenos); // going down!
+	};
+	
 });
 
 administrator.directive("filelistBind", function($http) {

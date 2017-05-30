@@ -70,6 +70,9 @@ insert into permission values ('56', 'FILTER_LEGAL');
 insert into permission values ('57', 'LOGOFF');
 
 
+
+
+
 insert into role values (1, 'ADMINISTRATOR_BANK');
 insert into role values (2, 'MANAGER');
 insert into role values (3, 'COUNTER_OFFICER');

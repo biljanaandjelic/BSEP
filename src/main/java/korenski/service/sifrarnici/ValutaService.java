@@ -42,7 +42,7 @@ public class ValutaService {
 	}
 	
 	public Set<Valuta> findValutaByCodeAndName(String code,String name){
-		return valutaRepository.findByCodeContainingIgnoreCaseOrNameContainingIgnoreCase(code, name);
+		return valutaRepository.findByCodeContainingIgnoreCaseAndNameContainingIgnoreCase(code, name);
 	}
 	
 	
