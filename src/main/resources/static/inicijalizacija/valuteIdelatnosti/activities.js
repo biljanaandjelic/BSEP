@@ -11,6 +11,7 @@ administrator.controller('HandleActivities', function($scope, $http, $compile,$l
 	}
 	$scope.state=State.VIEW_EDIT;
 	this.addClick=function(){
+		$log.log("ADD CLICK--> ACTIVITIES");
 		$scope.state=State.ADD;
 		if(states.length==2){
 			states.splice(0,1);
@@ -20,6 +21,7 @@ administrator.controller('HandleActivities', function($scope, $http, $compile,$l
 		
 	}
 	this.deleteClick=function(){
+		$log.log("DELETE CLICK--ACTIVITIES");
 		var path='/activity/'+ $scope.activity.id;
 
 		$http({
@@ -38,7 +40,7 @@ administrator.controller('HandleActivities', function($scope, $http, $compile,$l
 		
 	}
 	this.init=function(){
-		
+		$log.log("INIT--> ACTIVITIES")
 		$scope.state=State.VIEW_EDIT;
 		states.push($scope.state);
 		this.refresh();
@@ -47,6 +49,7 @@ administrator.controller('HandleActivities', function($scope, $http, $compile,$l
 
 	}
 	this.searchClick=function(){
+		$log.log("SEARCH-->ACTIVITIES")
 		$scope.state=State.SEARCH;
 		saveState();
 	}
@@ -61,6 +64,7 @@ administrator.controller('HandleActivities', function($scope, $http, $compile,$l
 		}
 	}
 	this.refresh=function(){
+		$log.log("REFRESH-->activities")
 		var path="/activities";
 		
 		$http({
@@ -80,6 +84,7 @@ administrator.controller('HandleActivities', function($scope, $http, $compile,$l
 	*/
 	this.prevClick=function(){
 		if($scope.state===State.VIEW_EDIT){
+			$log.log("ID selektovan estavke "+ $scope.activity.id);
 			var temp=findIndexOfValuta($scope.activity.id);
 			$log.log("Index selektovane stavke "+ temp);
 

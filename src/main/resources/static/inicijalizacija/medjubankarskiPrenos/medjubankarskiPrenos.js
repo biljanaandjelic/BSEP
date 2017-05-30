@@ -218,7 +218,12 @@ administrator.controller('MedjubankarskiPrenosController', function($scope, $htt
 		$scope.medjubankarskiPrenos=medjubankarskiPrenos;
 	}
 	
-	
+	this.nextFormClick = function(){
+		$log.log("XXXXXXX");
+		$log.log("Next mexanizam");
+		$scope.$parent.$parent.opsti.tabClickMedjubankarski11(11, $scope.medjubankarskiPrenos);
+		
+	};
 	
 
 });

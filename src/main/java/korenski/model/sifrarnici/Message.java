@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.validation.constraints.Pattern;
 
 @Entity
 public class Message {
@@ -13,6 +14,7 @@ public class Message {
 	private Long id;
 	
 	@Column(nullable=false, unique=true)
+	@Pattern(regexp = "MT[0-9]{3}", message = "Oznaka valute se mora sastojati od tacno 5 karaktera tako da su prva dva MT a preostala 3 cifre!")
 	private String code;
 
 	
