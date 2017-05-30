@@ -393,6 +393,21 @@ administrator.controller('RukovanjeKlijentima', function($scope, $http, $compile
 		}
 	}
 	
+	this.izvestajIzvoda = function(klijent){
+		$http({
+		    method: 'POST',
+		    url: '/izvestajIzvoda',
+		    data: klijent
+		}).
+		then(function mySucces(response) {
+			if(response.data === 'ok'){
+				toastr.success("Izvestaj izvoda klijenta uspesno napravljen!");
+			}else{
+				toastr.error('Doslo je do neocekivane greske!');
+			}
+		});
+	}
+	
 	this.setSelected = function(nm){
 		if(angular.equals($scope.rezim, 0)){
 			$scope.idSelektovanogKlijenta = nm.id;

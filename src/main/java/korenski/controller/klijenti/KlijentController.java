@@ -1,6 +1,12 @@
 package korenski.controller.klijenti;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Context;
@@ -23,6 +29,10 @@ import korenski.model.geografija.NaseljenoMesto;
 import korenski.model.geografija.pomocni.NMFilter;
 import korenski.model.infrastruktura.Bank;
 import korenski.repository.klijenti.KlijentRepository;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+//import net.sf.jasperreports.engine.JasperExportManager;
+//import net.sf.jasperreports.engine.JasperFillManager;
 import korenski.repository.geografija.NaseljenoMestoRepository;
 import korenski.repository.institutions.BankRepository;
 
@@ -208,5 +218,46 @@ public class KlijentController {
 		}
 		//repository.findByOznakaContainingIgnoreCaseOrNazivContainingIgnoreCaseOrPostanskiBrojContainingIgnoreCaseOrDrzava(oznaka, naziv, postanskiBroj, drzava)
 		return new ResponseEntity<Collection<Klijent>>( repository.filterNaseljenoMesto(klijentFilter.getJmbg(), klijentFilter.getIme(), klijentFilter.getPrezime(), klijentFilter.getAdresa(), klijentFilter.getTelefon(), klijentFilter.getEmail(), klijentFilter.getMesto()), HttpStatus.OK);
+	}
+	
+	@RequestMapping(
+			value = "/izvestajIzvoda",
+			method = RequestMethod.POST,
+			produces = MediaType.TEXT_PLAIN_VALUE)
+	public ResponseEntity<String> izvestajiRacuna(@Context HttpServletRequest request, @RequestBody Klijent klijent) throws Exception {
+		//idiotizam
+		try {
+			
+			Properties connectionProps = new Properties();
+		    connectionProps.put("user", "test");
+		    connectionProps.put("password", "test");
+		    
+		    Connection conn = DriverManager.getConnection(
+	                   "jdbc:mysql://localhost:3306/finalni?useSSL=false",
+	                   connectionProps);
+			
+		    Calendar cal = Calendar.getInstance();
+			Date end = cal.getTime();
+			cal.add(Calendar.DATE, -7);
+			Date start = cal.getTime();
+		    
+		    HashMap<String, Object> parameters = new HashMap<String, Object>();
+		    parameters.put("id_klijenta", klijent.getId());
+		    parameters.put("od", start);
+		    parameters.put("do", end);
+		    
+		    String jp = JasperFillManager.fillReportToFile("./files/izvodKlijenta.jasper", parameters, conn);
+		    
+			//JasperPrint jp = JasperFillManager.fillReport(
+			//	new FileInputStream("./files/test.jasper"),
+			//	new HashMap<String, Object>(), conn);
+			//eksport
+			//File pdf = File.createTempFile("output.", ".pdf");
+			JasperExportManager.exportReportToPdfFile(jp, "./files/izvod_klijenta_" + klijent.getId() + ".pdf");
+		}catch (Exception ex) {
+				ex.printStackTrace();
+		}
+
+		return new ResponseEntity<String>("ok", HttpStatus.OK);
 	}
 }

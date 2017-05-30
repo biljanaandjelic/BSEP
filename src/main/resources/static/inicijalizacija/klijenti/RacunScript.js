@@ -103,6 +103,17 @@ administrator.controller('RukovanjeRacunima', function($scope, $http, $compile){
 		
 	};
 	
+	this.accountReports = function(){
+		$http.get('/izvestajiRacuna').
+        then(function(response) {
+        	if(response.data === "ok"){
+        		toastr.success('Izvestaj je uspesno napravljen!');
+        	}else{
+        		toastr.error('Doslo je do neocekivane greske!');
+        	}
+        });
+	}
+	
 	this.closeClick = function(){
 		
 		if(!$scope.nulaNaStanju){
