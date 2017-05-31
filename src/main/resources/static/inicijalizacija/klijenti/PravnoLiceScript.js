@@ -142,7 +142,7 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
     		then(function mySucces(response) {
     				
     				if(response.data.id == -1){
-    					toastr.error('Neuspesan unos!');
+    					toastr.error(response.data.ime);
     					return;
     				}
     			
@@ -209,7 +209,7 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
     		then(function mySucces(response) {
     			
 	    			if(response.data.id == -1){
-						toastr.error('Neuspesan unos!');
+						toastr.error(response.data.ime);
 						return;
 					}
     			

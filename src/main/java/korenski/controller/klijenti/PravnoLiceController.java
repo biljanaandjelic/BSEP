@@ -1,9 +1,12 @@
 package korenski.controller.klijenti;
 
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.Set;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolation;
 import javax.ws.rs.core.Context;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +32,7 @@ import korenski.repository.geografija.NaseljenoMestoRepository;
 import korenski.repository.institutions.BankRepository;
 import korenski.repository.klijenti.PravnoLiceRepository;
 import korenski.repository.sifrarnici.ActivityRepository;
+import korenski.singletons.ValidatorSingleton;
 
 @Controller
 public class PravnoLiceController {
@@ -51,6 +55,11 @@ public class PravnoLiceController {
 	public ResponseEntity<PravnoLice> novoPravnoLice(@RequestBody PravnoLice pravnoLice, @Context HttpServletRequest request) throws Exception {
 		pravnoLice.setFizickoLice(false);
 		
+		PravnoLice validity = validityCheck(pravnoLice);
+		if(validity != null){
+			return new ResponseEntity<PravnoLice>(validity, HttpStatus.OK);
+		}
+		
 		User u = (User)request.getSession().getAttribute("user");
 		Bank bank = bankRepository.findOne(u.getBank().getId());
 		pravnoLice.setBank(bank);
@@ -59,7 +68,7 @@ public class PravnoLiceController {
 		try {
 			pl = repository.save(pravnoLice);
 		} catch (Exception e){
-			return new ResponseEntity<PravnoLice>(new PravnoLice(new Long(-1), null, null, null, null, null, null, null), HttpStatus.OK);
+			return new ResponseEntity<PravnoLice>(new PravnoLice(new Long(-1), null, "Greska pri cuvanju u bazi!", null, null, null, null, null), HttpStatus.OK);
 		}
 		return new ResponseEntity<PravnoLice>(pl, HttpStatus.OK);
 	}
@@ -88,7 +97,10 @@ public class PravnoLiceController {
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<PravnoLice> azurirajPravnoLice(@RequestBody PravnoLice pravnoLice, @Context HttpServletRequest request) throws Exception {
-		//zar se ne koristi metoda update?
+		PravnoLice validity = validityCheck(pravnoLice);
+		if(validity != null){
+			return new ResponseEntity<PravnoLice>(validity, HttpStatus.OK);
+		}
 		
 		PravnoLice pravnoLiceToModify = null;
 		NaseljenoMesto naseljenoMesto = null;
@@ -100,7 +112,7 @@ public class PravnoLiceController {
 			naseljenoMesto = repNM.findOne(pravnoLice.getNaseljenoMesto().getId());
 			activity = repA.findOne(pravnoLice.getActivity().getId());
 		} catch (Exception e){
-			return new ResponseEntity<PravnoLice>(new PravnoLice(new Long(-1), null, null, null, null, null, null, null), HttpStatus.OK);
+			return new ResponseEntity<PravnoLice>(new PravnoLice(new Long(-1), null, "Ne postoji pravno lice u bazi.", null, null, null, null, null), HttpStatus.OK);
 		}
 		
 		pravnoLiceToModify.setJmbg(pravnoLice.getJmbg());
@@ -118,7 +130,7 @@ public class PravnoLiceController {
 		try {
 			repository.save(pravnoLiceToModify);
 		} catch (Exception e) {
-			return new ResponseEntity<PravnoLice>(new PravnoLice(new Long(-1), null, null, null, null, null, null, null), HttpStatus.OK);
+			return new ResponseEntity<PravnoLice>(new PravnoLice(new Long(-1), null, "Greska pri cuvanju u bazi!", null, null, null, null, null), HttpStatus.OK);
 		}
 		return new ResponseEntity<PravnoLice>(pravnoLiceToModify, HttpStatus.OK);
 	}
@@ -237,5 +249,21 @@ public class PravnoLiceController {
 		}
 		//repository.findByOznakaContainingIgnoreCaseOrNazivContainingIgnoreCaseOrPostanskiBrojContainingIgnoreCaseOrDrzava(oznaka, naziv, postanskiBroj, drzava)
 		return new ResponseEntity<Collection<PravnoLice>>( repository.filterSve(pravnoLiceFilter.getJmbg(), pravnoLiceFilter.getIme(), pravnoLiceFilter.getPrezime(), pravnoLiceFilter.getAdresa(), pravnoLiceFilter.getTelefon(), pravnoLiceFilter.getEmail(), pravnoLiceFilter.getPib(), pravnoLiceFilter.getFax(), pravnoLiceFilter.getOdobrio(), pravnoLiceFilter.getDelatnost(), pravnoLiceFilter.getMesto()), HttpStatus.OK);
+	}
+	
+	public PravnoLice validityCheck(PravnoLice pravnoLice){
+		Set<ConstraintViolation<PravnoLice>> violations = ValidatorSingleton.getInstance().getValidator().validate(pravnoLice);
+		
+		if(!violations.isEmpty()){
+			Iterator iter = violations.iterator();
+
+			ConstraintViolation<PravnoLice> first = (ConstraintViolation<PravnoLice>) iter.next();
+			PravnoLice pl = new PravnoLice();
+			pl.setId(new Long(-1));
+			pl.setIme(first.getMessage());
+			return pl;
+		}else{
+			return null;
+		}
 	}
 }

@@ -118,10 +118,10 @@ administrator.controller('RukovanjeKlijentima', function($scope, $http, $compile
     		then(function mySucces(response) {
     				
     				if(response.data.id == -1){
-    					toastr.error('Neuspesan unos!');
+    					toastr.error(response.data.ime);
     					return;
     				}
-    			
+    				
     				$scope.klijenti.push(response.data);
     				$scope.klijent = {};
     				$scope.selektovanoNaseljenoMesto = {};
@@ -171,7 +171,7 @@ administrator.controller('RukovanjeKlijentima', function($scope, $http, $compile
     		then(function mySucces(response) {
     			
 	    			if(response.data.id == -1){
-						toastr.error('Neuspesan unos!');
+						toastr.error(response.data.ime);
 						return;
 					}
     			
