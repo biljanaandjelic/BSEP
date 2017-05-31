@@ -31,12 +31,12 @@ public class Klijent extends Subject{
 	
 	@Column(nullable = false)
 	@Size(max = 60)
-	@Pattern(regexp = "[A-Z][a-z]*")
+	@Pattern(regexp = "[A-Z][a-z]*", message = "Ime mora imati veliko pocetno slovo.")
 	private String ime;
 	
 	@Column(nullable = false)
 	@Size(max = 60)
-	@Pattern(regexp = "[A-Z][a-z]*")
+	@Pattern(regexp = "[A-Z][a-z]*", message = "Prezime mora imati veliko pocetno slovo.")
 	private String prezime;
 	
 	@Column(nullable = false)
@@ -47,7 +47,7 @@ public class Klijent extends Subject{
 	@Column(nullable = false)
 	@Size(max = 20)
 	//@Pattern(regexp = "\\(?([0-9]{3})\\)?([ .-]?)([0-9]{3})\2([0-9]{4})")
-	@Pattern(regexp = "[0-9]{9,15}")
+	@Pattern(regexp = "[0-9]{9,15}", message = "Telefon se sastoji od 9 do 15 cifara")
 	private String telefon;
 	
 	@Column(unique = true, nullable = false)
