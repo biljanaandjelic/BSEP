@@ -36,6 +36,8 @@ import korenski.repository.klijenti.KlijentRepository;
 import korenski.singletons.ValidatorSingleton;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
+//import net.sf.jasperreports.engine.JasperExportManager;
+//import net.sf.jasperreports.engine.JasperFillManager;
 import korenski.repository.geografija.NaseljenoMestoRepository;
 import korenski.repository.institutions.BankRepository;
 
@@ -241,8 +243,8 @@ public class KlijentController {
 		try {
 			
 			Properties connectionProps = new Properties();
-		    connectionProps.put("user", "test");
-		    connectionProps.put("password", "test");
+		    connectionProps.put("user", "root");
+		    connectionProps.put("password", "password");
 		    
 		    Connection conn = DriverManager.getConnection(
 	                   "jdbc:mysql://localhost:3306/finalni?useSSL=false",

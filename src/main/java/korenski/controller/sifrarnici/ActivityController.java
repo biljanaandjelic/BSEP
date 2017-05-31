@@ -1,9 +1,11 @@
 package korenski.controller.sifrarnici;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolation;
 import javax.ws.rs.core.Context;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +20,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import korenski.intercepting.CustomAnnotation;
 import korenski.model.sifrarnici.Activity;
+import korenski.repository.sifrarnici.ActivityRepository;
 import korenski.service.sifrarnici.ActivityService;
+import korenski.singletons.ValidatorSingleton;
 
 @Controller
 public class ActivityController {
 	@Autowired
 	ActivityService activityService;
+	@Autowired
+	ActivityRepository activityRepository;
 	
 	/**
 	 * Metoda kreira novu djelatnost i cuva je u sifrarniku djelatnosti koji se stojati
@@ -39,6 +45,16 @@ public class ActivityController {
 			produces=MediaType.APPLICATION_JSON_VALUE
 			)
 	public ResponseEntity<Activity>  createActivity(@RequestBody Activity newActivity, @Context HttpServletRequest request){
+		Activity createdActivity=null;
+		Activity a=validityCheck(newActivity);
+		if(a!=null){
+			return new ResponseEntity<Activity>(HttpStatus.BAD_REQUEST);
+		}
+		try{
+			createdActivity=activityService.create(newActivity);
+		}catch(Exception e){
+			return new ResponseEntity<Activity>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 		return new ResponseEntity<Activity>(activityService.create(newActivity), HttpStatus.OK);
 	}
 	/**
@@ -54,7 +70,16 @@ public class ActivityController {
 			produces=MediaType.APPLICATION_JSON_VALUE
 			)
 	public ResponseEntity<Activity> editActivity(@RequestBody Activity changedActivity, @Context HttpServletRequest request){
-		return new ResponseEntity<Activity>(activityService.edit(changedActivity), HttpStatus.OK);
+		Activity a=validityCheck(changedActivity);
+		if(a!=null){
+			return new ResponseEntity<Activity>(HttpStatus.BAD_REQUEST);
+		}
+		try{
+			changedActivity=activityService.edit(changedActivity);
+		}catch (Exception e) {
+			return new ResponseEntity<Activity>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<Activity>(changedActivity, HttpStatus.OK);
 	}
 	
 	/**
@@ -70,7 +95,14 @@ public class ActivityController {
 			produces=MediaType.APPLICATION_JSON_VALUE
 			)
 	public ResponseEntity<Activity>  findActivity(@PathVariable("id") Long id, @Context HttpServletRequest request){
-		return new ResponseEntity<Activity>(activityService.findActivity(id), HttpStatus.OK);
+		Activity foundActivit=null;
+		try{
+			foundActivit=activityService.findActivity(id);
+		}catch (Exception e) {
+			// TODO: handle exception
+			return new ResponseEntity<Activity>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<Activity>(foundActivit, HttpStatus.OK);
 	}
 	
 	/**
@@ -84,6 +116,12 @@ public class ActivityController {
 		
 			)
 	public ResponseEntity<Set<Activity>> findAcitities(){
+		Set<Activity> foundActivities=null;
+		try{
+			foundActivities=activityService.findAll();
+		}catch(Exception e){
+			return new ResponseEntity<Set<Activity>>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 		return new ResponseEntity<Set<Activity>>(activityService.findAll(), HttpStatus.OK);
 	}
 	/**
@@ -98,9 +136,20 @@ public class ActivityController {
 			method=RequestMethod.DELETE,
 			produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Activity>  deleteActivity(@PathVariable("id") Long id, @Context HttpServletRequest request){
-		Activity activityForDelete=activityService.findActivity(id);
+		Activity activityForDelete=null;
+		try{
+			activityForDelete=activityService.findActivity(id);
+		}catch (Exception e) {
+			// TODO: handle exception
+			return new ResponseEntity<Activity>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 		if(activityForDelete!=null){
-			activityService.deleteActivity(activityForDelete.getId());
+			try{
+				activityService.deleteActivity(activityForDelete.getId());
+			}catch (Exception e) {
+				// TODO: handle exception
+				return new ResponseEntity<Activity>(HttpStatus.INTERNAL_SERVER_ERROR);
+			}
 		}
 		
 		return new ResponseEntity<Activity>(activityForDelete, HttpStatus.OK);
@@ -118,11 +167,45 @@ public class ActivityController {
 			produces=MediaType.APPLICATION_JSON_VALUE
 			)
 	public ResponseEntity<Set<Activity>> findActivitiesByCodeOrName(@PathVariable("code") String code, @PathVariable("name") String name){
-		Set<Activity> result=new HashSet<Activity>();
+		Set<Activity> result=null;
 		/*result.add(activityService.findActivityByCode(code));
 		result.add(activityService.findActivityByName(name));*/
-		result=activityService.findActivityByCodeAndName(code, name);
+		try{
+			if(!code.equals("") && !name.equals("")){
+				result=activityService.findActivityByCodeAndName(code, name);
+			}else if(code.equals("")){
+				result=activityRepository.findByNameContainingIgnoreCase(name);
+			}else if(name.equals("")){
+				result=activityRepository.findByCodeContainingIgnoreCase(code);
+			}
+		}catch (Exception e) {
+			// TODO: handle exception
+			return new ResponseEntity<Set<Activity>>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		if(result==null){
+			return new ResponseEntity<Set<Activity>>(HttpStatus.NO_CONTENT);
+		}
 		return new ResponseEntity<Set<Activity>>(result, HttpStatus.OK);
 		
+	}
+	
+	public Activity validityCheck(Activity activity) {
+		System.out.println("**************************");
+		System.out.println("VALIDATOR");
+		System.out.println("**************************");
+
+		Set<ConstraintViolation<Activity>> violations = ValidatorSingleton.getInstance().getValidator()
+				.validate(activity);
+
+		if (!violations.isEmpty()) {
+			Iterator iter = violations.iterator();
+
+			ConstraintViolation<Activity> first = (ConstraintViolation<Activity>) iter.next();
+
+			Activity a=new Activity(new Long(-1), "", first.getMessage());
+			return a;
+		} else {
+			return null;
+		}
 	}
 }

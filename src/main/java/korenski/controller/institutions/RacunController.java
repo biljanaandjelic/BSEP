@@ -37,6 +37,9 @@ import korenski.repository.institutions.ZatvaranjeRacunaRepository;
 import korenski.repository.klijenti.KlijentRepository;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
+//import net.sf.jasperreports.engine.JasperExportManager;
+//import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
 
 @Controller
 public class RacunController {
@@ -205,8 +208,8 @@ public class RacunController {
 		try {
 			
 			Properties connectionProps = new Properties();
-		    connectionProps.put("user", "test");
-		    connectionProps.put("password", "test");
+		    connectionProps.put("user", "root");
+		    connectionProps.put("password", "password");
 		    
 		    Connection conn = DriverManager.getConnection(
 	                   "jdbc:mysql://localhost:3306/finalni?useSSL=false",
@@ -217,9 +220,9 @@ public class RacunController {
 		    HashMap<String, Object> parameters = new HashMap<String, Object>();
 		    parameters.put("id_banke", bank.getId());
 		    
-		    String jp = JasperFillManager.fillReportToFile("./files/accounts.jasper", parameters, conn);
+		   String jp = JasperFillManager.fillReportToFile("./files/accounts.jasper", parameters, conn);
 		    
-			//JasperPrint jp = JasperFillManager.fillReport(
+		//	JasperPrint jp = JasperFillManager.fillReport(
 			//	new FileInputStream("./files/test.jasper"),
 			//	new HashMap<String, Object>(), conn);
 			//eksport

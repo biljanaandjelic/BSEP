@@ -138,7 +138,7 @@ public class OCSPResponder {
 			name= ((Klijent)user.getSubject()).getJmbg();
 		}else if(user.getSubject() instanceof Employee){
 			bank=bankRepository.findOne(new Long(1));
-			name= ((Klijent)user.getSubject()).getJmbg();
+			name= ((Employee)user.getSubject()).getName();
 		}
 		bank=user.getBank();
 		OCSPRequest ocspReq = generateOcspRequest(bank, alias, name);
@@ -208,11 +208,15 @@ public class OCSPResponder {
 			ks = KeyStore.getInstance("BKS", "BC");
 		}
 		String newFilePath = "./files/KEYSTORE-" + filePathString + ".jks";
-		File f = new File(newFilePath);
-		if (f.exists() && !f.isDirectory()) {
-			ks.load(new FileInputStream(newFilePath), "test".toCharArray());
-		} else {
-			// ks.load(null, "test".toCharArray());
+		try{
+			File f = new File(newFilePath);
+			if (f.exists() && !f.isDirectory()) {
+				ks.load(new FileInputStream(newFilePath), "test".toCharArray());
+			} else {
+				// ks.load(null, "test".toCharArray());
+			}
+		}catch(Exception e){
+			System.out.println("Nesto je krenulo lose sa ucitavanjem keystore");
 		}
 		return ks;
 	}

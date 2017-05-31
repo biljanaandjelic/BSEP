@@ -70,6 +70,9 @@ insert into permission values ('56', 'FILTER_LEGAL');
 insert into permission values ('57', 'LOGOFF');
 
 
+
+
+
 insert into role values (1, 'ADMINISTRATOR_BANK');
 insert into role values (2, 'MANAGER');
 insert into role values (3, 'COUNTER_OFFICER');
@@ -183,6 +186,8 @@ insert into subject values ('11');
 insert into subject values ('12');
 insert into subject values ('13');
 insert into subject values ('14');
+insert into subject values ('15');
+insert into subject values ('16');
 
 
 
@@ -206,18 +211,28 @@ insert into user values ('4', TRUE, '2013-08-30 19:08:00', 'neki4@kkk.kkk', 'use
 insert into user values ('5', TRUE, '2013-08-30 19:09:00', 'neki5@kkk.kkk', 'username5', '', 'username5', '1', '2', '5');
 insert into user values ('6', TRUE, '2013-08-30 19:10:00', 'neki6@kkk.kkk', 'username6', '', 'username6', '1', '3', '6');
 insert into user values ('7', TRUE, '2013-08-30 19:11:00', 'neki7@kkk.kkk', 'username7', '', 'username7', '1', '3', '7');
-
+insert into user values ('8', TRUE, '2013-08-30 19:11:00', 'neki8@kkk.kkk', 'username8', '', 'username8', '2', '2', '8');
+insert into user values ('9', TRUE, '2013-09-30 19:11:00', 'neki9@kkk.kkk', 'username9', '' ,'username9', '3', '3', '9');
 
 insert into klijent values ('adresa', 'mail1@kkk.kkk', TRUE, 'Ime1', '4578445121255', 'Prezime1', '123456788', '12', '1', '1');
 insert into klijent values ('adresa', 'mail2@kkk.kkk', TRUE, 'Ime2', '4578545121255', 'Prezime2', '123454788', '13', '1', '1');
 insert into klijent values ('adresa', 'mail3@kkk.kkk', TRUE, 'Ime3', '4518545121255', 'Prezime3', '123452788', '14', '1', '1');
+insert into klijent values ('Adresa1', 'ime3@prezime.com', TRUE, 'Ime', '0000000000000', 'Prezime', '123452788', '15', '2', '2');
+insert into klijent values ('Adresa1', 'ime4@prezime.com', TRUE, 'Ime', '0000000000000', 'Prezime', '123452788', '16', '3', '3');
 
 insert into racun values ('1', '123-1726533787929-93', '2017-04-30 19:05:00', '2013-02-15 19:05:00', '0', FALSE, '1', '12');
-insert into racun values ('2', '123-9338670954849-69', NULL, '2013-01-15 19:05:00', '2000', TRUE, '1', '12');
+insert into racun values ('2', '123-9338670954849-69', NULL, '2013-01-15 19:05:00', '20000', TRUE, '1', '12');
 insert into racun values ('3', '123-8880775775674-13', null, '2013-05-10 19:05:00', '12000', TRUE, '1', '13');
 insert into racun values ('4', '123-7184821064803-82', null, '2013-05-07 19:05:00', '12000', TRUE, '1', '13');
-
+insert into racun values ('5', '234-6355718718680-9', null, '2013-05-16 19:05:00', '12000', TRUE, '2', '15');
+insert into racun values ('6', '345-3990849817799-56', null,'2014-05-16 19:05:00','20000', TRUE,'3','16');
 insert into zatvaranje_racuna values ('1', '2017-04-30 19:05:00', '123-7184821064803-82', '1');
+
+
+insert into message values ('1', 'MT102');
+insert into message values ('2', 'MT103');
+insert into message values ('3', 'MT202');
+insert into message values ('4', 'MT900');
 
 insert into dnevno_stanje_racuna values ('1', '2017-05-27 00:00:00', '1000', '2000', '1000', '0', '1');
 insert into dnevno_stanje_racuna values ('2', '2017-05-28 00:00:00', '1500', '1000', '0', '500', '1');
@@ -235,3 +250,4 @@ insert into analitika_izvoda values ('6', '2017-05-29 00:00:00', '2017-05-29 00:
 
 insert into analitika_izvoda values ('7', '2017-05-30 00:00:00', '2017-05-30 00:00:00', '2017-05-30 00:00:00', '', TRUE, '1000', '97', '97', '123456789012345', '123456789012345', '', '123-9338670954849-69', '123-1726533787929-93', 'DIN', 'K', '', '4');
 insert into analitika_izvoda values ('8', '2017-05-30 00:00:00', '2017-05-30 00:00:00', '2017-05-30 00:00:00', '', FALSE, '500', '97', '97', '123456789012345', '123456789012345', '', '123-9338670954849-69', '123-1726533787929-93', 'DIN', 'K', '', '4');
+

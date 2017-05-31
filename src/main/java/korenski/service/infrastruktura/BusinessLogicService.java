@@ -1,19 +1,33 @@
 package korenski.service.infrastruktura;
 
-import java.math.BigDecimal;
+import java.io.IOException;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Set;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import korenski.model.infrastruktura.AnalitikaIzvoda;
+import korenski.model.infrastruktura.Bank;
 import korenski.model.infrastruktura.DnevnoStanjeRacuna;
+import korenski.model.infrastruktura.MedjubankarskiPrenos;
 import korenski.model.infrastruktura.Racun;
+import korenski.model.infrastruktura.StavkaPrenosa;
 import korenski.model.nalog_za_prenos.NalogZaPrenos;
 import korenski.repository.institutions.AnalitikaIzvodaRepository;
 import korenski.repository.institutions.BankRepository;
 import korenski.repository.institutions.DnevnoStanjeRepository;
+import korenski.repository.institutions.MedjubankarskiPrenosRepository;
 import korenski.repository.institutions.RacunRepository;
+import korenski.repository.institutions.StavkaPrenosaRepository;
+import korenski.repository.sifrarnici.MessageRepository;
 
 @Service
 public class BusinessLogicService {
@@ -26,14 +40,29 @@ public class BusinessLogicService {
 	DnevnoStanjeRepository dnevnoStanjeRepository;
 	@Autowired
 	AnalitikaIzvodaRepository analitikaIzvodaRepository;
+	@Autowired
+	MedjubankarskiPrenosRepository mBRepository;
+	@Autowired
+	StavkaPrenosaRepository sPRepository;
+	@Autowired
+	MessageRepository messageRepository;
 	
 	public void sameBankTransfer(NalogZaPrenos nalog, Racun racunDuznika, Racun racunPoverioca) {
+		DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
-		DnevnoStanjeRacuna dnevnoStanjeDuznika = dnevnoStanjeRepository.findByDatumAndRacun(new Date(), racunDuznika);
-		DnevnoStanjeRacuna dnevnoStanjePoverioca = dnevnoStanjeRepository.findByDatumAndRacun(new Date(), racunPoverioca);
+		Date today = new Date();
+		Date todayWithZeroTime=null;
+		try {
+			 todayWithZeroTime = formatter.parse(formatter.format(today));
+		} catch (ParseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		DnevnoStanjeRacuna dnevnoStanjeDuznika = dnevnoStanjeRepository.findByDatumAndRacun(todayWithZeroTime, racunDuznika);
+		DnevnoStanjeRacuna dnevnoStanjePoverioca = dnevnoStanjeRepository.findByDatumAndRacun(todayWithZeroTime, racunPoverioca);
 		
 		if(dnevnoStanjeDuznika == null){
-			dnevnoStanjeDuznika = new DnevnoStanjeRacuna(new Date(),racunDuznika.getStanje(),0,0,racunDuznika.getStanje(),racunDuznika);
+			dnevnoStanjeDuznika = new DnevnoStanjeRacuna(todayWithZeroTime,racunDuznika.getStanje(),0,0,racunDuznika.getStanje(),racunDuznika);
 			try{
 				dnevnoStanjeRepository.save(dnevnoStanjeDuznika);
 			}catch (Exception e) {
@@ -103,9 +132,145 @@ public class BusinessLogicService {
 		}
 
 	}
+	/**
+	 * Metoda koja obradjuje nalog u slucaju da se racun poverioca ne nalazi u
+	 * istoj banci u kojoj je i duznik. Provjerava se status naloga da li je hitno
+	 * ili je iznos veci od 250000. Ukoliko je slucaj jedan od ta dva ucitava se 
+	 * MT103 koja oznacava da se transfer obavlja u RTGS rezimu,a  ukolio ovo nije 
+	 * slucaj ucitava se poruka MT102 i dodjeljuje prenosu sto je oznacava kao poruku
+	 * za obradu kliring rezimu rada.
+	 * @param nalog nalog koji se obradjuje
+	 * @param racunDuznika racun duznika iz nase banke za koji se generise analiti,
+	 * azurira dnevno stanje i stanje racuna
+	 * @param racunPoverioca  broj racuna poverioca koji se nalazi u nekoj drugoj banci.
+	 * @author Biljana
+	 */
+	public void differentBanksTransfer(NalogZaPrenos nalog, Racun racunDuznika, String racunPoverioca) {
+//		 Logger logger = Logger.getLogger("MyLog");  
+//		    FileHandler fh;  
+//
+//		    try {  
+//
+//		       
+//		        fh = new FileHandler("./files/Logger/logFile.log");  
+//		        logger.addHandler(fh);
+//		        SimpleFormatter formatter = new SimpleFormatter();  
+//		        fh.setFormatter(formatter);  
+//
+//		       
+//		        logger.info("My first log");  
+//
+//		    } catch (SecurityException e) {  
+//		        e.printStackTrace();  
+//		    } catch (IOException e) {  
+//		        e.printStackTrace();  
+//		    }  
+//
+//		    logger.info("Hi How r u?");  
+			DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
-	public void differentBanksTransfer(NalogZaPrenos nalog, Racun racunDuznika, Racun racunPoverioca) {
+			Date today = new Date();
+			Date todayWithZeroTime=null;
+			try {
+				 todayWithZeroTime = formatter.parse(formatter.format(today));
+			} catch (ParseException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		DnevnoStanjeRacuna dnevnoStanjeDuznika = dnevnoStanjeRepository.findByDatumAndRacun(todayWithZeroTime, racunDuznika);
+		
+		if(dnevnoStanjeDuznika==null){
+			dnevnoStanjeDuznika = new DnevnoStanjeRacuna(todayWithZeroTime,racunDuznika.getStanje(),0,0,racunDuznika.getStanje(),racunDuznika);
+			try{
+				dnevnoStanjeRepository.save(dnevnoStanjeDuznika);
+			}catch (Exception e) {
+				// TODO: handle exception
+				return;
+			}
+		}
+		String code=racunPoverioca.substring(0, 3);
+		
+		Bank bankaDruga=bankRepository.findByCode(code);
+		Date maxDate=mBRepository.findMaxDate(racunDuznika.getBank(), bankaDruga);
+		System.out.println("MaxDate "+maxDate);
+		MedjubankarskiPrenos latestMBPrenos=mBRepository.findLatestMedjubankarskiPrenos(maxDate);
+		Set<StavkaPrenosa> stavkePrenosa=sPRepository.findStavkaPrenosaByMedjubankarskiPrenos(latestMBPrenos);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		Date newDate=new Date();
+		try {
+			newDate=sdf.parse(sdf.format(today));
+		} catch (ParseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		AnalitikaIzvoda analitikaDuznika=new AnalitikaIzvoda(newDate, "T", nalog.getPodaciODuzniku().getAdresa(),
+				nalog.getSvrhaPlacanja(), nalog.getPodaciOPoveriocu().getAdresa(), nalog.getPodaciOPlacanju().getDatumValute(),
+				nalog.getPodaciOPlacanju().getDatumValute(), racunDuznika.getBrojRacuna(),
+				nalog.getPodaciOPlacanju().getFinansijskiPodaciDuznik().getModel(), 
+				nalog.getPodaciOPlacanju().getFinansijskiPodaciDuznik().getPozivNaBroj(),
+				racunPoverioca,
+				nalog.getPodaciOPlacanju().getFinansijskiPodaciPoverilac().getModel(),
+				nalog.getPodaciOPlacanju().getFinansijskiPodaciPoverilac().getPozivNaBroj(),
+				nalog.getPodaciOPlacanju().getIznos(), nalog.getPodaciOPlacanju().getValuta(), false,dnevnoStanjeDuznika);
+		if(nalog.getHitno().equals("Da")){
+			analitikaDuznika.setHitno(true);
+		}
+		dnevnoStanjeDuznika.setPrometNaTeret(nalog.getPodaciOPlacanju().getIznos());
+		dnevnoStanjeDuznika.setNovoStanje(dnevnoStanjeDuznika.getNovoStanje()-nalog.getPodaciOPlacanju().getIznos());
+		
+		try{
+			 dnevnoStanjeRepository.save(dnevnoStanjeDuznika);
+			 analitikaDuznika=analitikaIzvodaRepository.save(analitikaDuznika);
+			 racunDuznika.setStanje(racunDuznika.getStanje()-nalog.getPodaciOPlacanju().getIznos());;
+			 racunRepository.save(racunDuznika);
+			
+		}catch(Exception e){
+			System.out.println("Problem sa cuvanjem analitika izvoda");
+			return;
+		}
+		
+		if(maxDate==null || latestMBPrenos==null || stavkePrenosa.size()==4 || nalog.getHitno().equals("Da")){
+			latestMBPrenos=new MedjubankarskiPrenos();
+			long start = System.currentTimeMillis();
+			long end = start + 1000; // 60 seconds * 1000 ms/sec
+			while (System.currentTimeMillis() < end)
+			{
+			    // run
+			}
+			latestMBPrenos.setDatum(new Timestamp((new Date().getTime())));
+			latestMBPrenos.setBankaPrva(racunDuznika.getBank());
+			
+			latestMBPrenos.setBankaDruga(bankaDruga);
+			latestMBPrenos.setIznos(nalog.getPodaciOPlacanju().getIznos());
+			if(nalog.getPodaciOPlacanju().getIznos()>250000 || nalog.getHitno().equals("Da")){
+				latestMBPrenos.setPoruka(messageRepository.findOne(new Long(2)));
+			}else{
+				latestMBPrenos.setPoruka(messageRepository.findOne(new Long(1)));
+			}
+			try{
+				
+				MedjubankarskiPrenos newMedjubankarskiPrenos=mBRepository.save(latestMBPrenos);
+				System.out.println("Uspijesno cuvanje medjubankarskog prenosa");
+			}catch(Exception e){
+				return;
+			}
+		}else{
+			latestMBPrenos.setIznos(latestMBPrenos.getIznos()+nalog.getPodaciOPlacanju().getIznos());
+		}
+		
+		StavkaPrenosa stavkaPrenosa=new StavkaPrenosa();
+		stavkaPrenosa.setAnalitikaIzvoda(analitikaDuznika);
+		
+		try{
+			mBRepository.save(latestMBPrenos);
+			stavkaPrenosa.setStavkaPrenosa(latestMBPrenos);
+			stavkaPrenosa=sPRepository.save(stavkaPrenosa);
+		}catch(Exception e){
+			return;
+		}
+		
 
+		
 	}
 
 }

@@ -1,6 +1,7 @@
 package korenski.model.infrastruktura;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -8,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import korenski.model.sifrarnici.Message;
 
@@ -22,18 +25,20 @@ public class MedjubankarskiPrenos {
 	private Bank bankaDruga;
 	@ManyToOne(optional=false)
 	private Message poruka;
+	
 	@Column(nullable=false)
-	private Date datum;
+	//@Temporal(TemporalType.TIMESTAMP)
+	private Timestamp datum;
 	@Column(nullable=false)
-	private BigDecimal iznos;
+	private double iznos;
 	
 	public MedjubankarskiPrenos() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public MedjubankarskiPrenos(Long id, Bank bankaPrva, Bank bankaDruga, Message poruka, Date datum,
-			BigDecimal iznos) {
+	public MedjubankarskiPrenos(Long id, Bank bankaPrva, Bank bankaDruga, Message poruka, Timestamp datum,
+			double iznos) {
 		super();
 		this.id = id;
 		this.bankaPrva = bankaPrva;
@@ -79,15 +84,15 @@ public class MedjubankarskiPrenos {
 		return datum;
 	}
 
-	public void setDatum(Date datum) {
+	public void setDatum(Timestamp datum) {
 		this.datum = datum;
 	}
 
-	public BigDecimal getIznos() {
+	public double getIznos() {
 		return iznos;
 	}
 
-	public void setIznos(BigDecimal iznos) {
+	public void setIznos(double iznos) {
 		this.iznos = iznos;
 	}
 	

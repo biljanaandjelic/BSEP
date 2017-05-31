@@ -4,6 +4,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 @Entity
 //@Table(name="valuta")
@@ -14,9 +16,12 @@ public class Valuta {
 	private Long id;
 	
 	@Column(unique=true, nullable=false)
+	@Pattern(regexp = "[A-Z]{3}", message = "Oznaka valute se mora sastojati od tacno 3 velika slova!")
 	private String code;
 	
 	@Column(unique=true, nullable=false)
+	@Size(max=30)
+	//@Pattern(regexp = "[A-Z]*[a-z]*[A-Z]*", message = "Oznaka valute se mora sastojati od tacno 3 velika slova!")
 	private String name;
 	
 	public Valuta() {
