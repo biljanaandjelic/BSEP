@@ -1,6 +1,7 @@
 package korenski.service.infrastruktura;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -191,6 +192,7 @@ public class BusinessLogicService {
 		
 		Bank bankaDruga=bankRepository.findByCode(code);
 		Date maxDate=mBRepository.findMaxDate(racunDuznika.getBank(), bankaDruga);
+		System.out.println("MaxDate "+maxDate);
 		MedjubankarskiPrenos latestMBPrenos=mBRepository.findLatestMedjubankarskiPrenos(maxDate);
 		Set<StavkaPrenosa> stavkePrenosa=sPRepository.findStavkaPrenosaByMedjubankarskiPrenos(latestMBPrenos);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
@@ -229,7 +231,13 @@ public class BusinessLogicService {
 		
 		if(maxDate==null || latestMBPrenos==null || stavkePrenosa.size()==4 || nalog.getHitno().equals("Da")){
 			latestMBPrenos=new MedjubankarskiPrenos();
-			latestMBPrenos.setDatum(new Date(new Date().getTime()));
+			long start = System.currentTimeMillis();
+			long end = start + 1000; // 60 seconds * 1000 ms/sec
+			while (System.currentTimeMillis() < end)
+			{
+			    // run
+			}
+			latestMBPrenos.setDatum(new Timestamp((new Date().getTime())));
 			latestMBPrenos.setBankaPrva(racunDuznika.getBank());
 			
 			latestMBPrenos.setBankaDruga(bankaDruga);
@@ -261,11 +269,7 @@ public class BusinessLogicService {
 			return;
 		}
 		
-//		try{
-//			stavkaPrenosa=sPRepository.save(stavkaPrenosa);
-//		}catch(Exception e){
-//			return;
-//		}
+
 		
 	}
 

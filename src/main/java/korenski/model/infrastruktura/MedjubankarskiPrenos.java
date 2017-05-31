@@ -1,6 +1,7 @@
 package korenski.model.infrastruktura;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -26,8 +27,8 @@ public class MedjubankarskiPrenos {
 	private Message poruka;
 	
 	@Column(nullable=false)
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date datum;
+	//@Temporal(TemporalType.TIMESTAMP)
+	private Timestamp datum;
 	@Column(nullable=false)
 	private double iznos;
 	
@@ -36,7 +37,7 @@ public class MedjubankarskiPrenos {
 		// TODO Auto-generated constructor stub
 	}
 
-	public MedjubankarskiPrenos(Long id, Bank bankaPrva, Bank bankaDruga, Message poruka, Date datum,
+	public MedjubankarskiPrenos(Long id, Bank bankaPrva, Bank bankaDruga, Message poruka, Timestamp datum,
 			double iznos) {
 		super();
 		this.id = id;
@@ -83,7 +84,7 @@ public class MedjubankarskiPrenos {
 		return datum;
 	}
 
-	public void setDatum(Date datum) {
+	public void setDatum(Timestamp datum) {
 		this.datum = datum;
 	}
 

@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import korenski.intercepting.CustomAnnotation;
-import korenski.model.sifrarnici.Activity;
 import korenski.model.sifrarnici.Valuta;
+import korenski.repository.sifrarnici.ValutaRepository;
 import korenski.service.sifrarnici.ValutaService;
 import korenski.singletons.ValidatorSingleton;
 
@@ -31,6 +31,8 @@ public class ValutaControler {
 
 	@Autowired
 	ValutaService valutaService;
+	@Autowired
+	ValutaRepository valutaRepository;
 	
 	/**
 	 * Create new currency and persist it in database.
@@ -82,11 +84,24 @@ public class ValutaControler {
 			method=RequestMethod.DELETE,
 			produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Valuta> deleteValuta(@PathVariable("id") Long id, @Context HttpServletRequest request){
-		Valuta valuta=valutaService.findValuta(id);
-		if(valuta!=null){
-			valutaService.deleteValuta(id);
+		Valuta valuta=null;
+		try{
+				valuta=valutaService.findValuta(id);
+		}catch (Exception e) {
+			// TODO: handle exception
+			return new ResponseEntity<Valuta>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<Valuta>(valuta, HttpStatus.OK);
+		if(valuta!=null){
+			try{
+			valutaService.deleteValuta(id);
+			}catch (Exception e) {
+				// TODO: handle exception
+				return new ResponseEntity<Valuta>(HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+			return new ResponseEntity<Valuta>(valuta, HttpStatus.OK);
+		}
+		return new ResponseEntity<Valuta>(HttpStatus.NO_CONTENT);
+		
 	}
 
 	
@@ -148,7 +163,12 @@ public class ValutaControler {
 		
 		Set<Valuta> result=null;
 		try{
-			result=valutaService.findValutaByCodeAndName(code, name);
+			if(!code.equals("") && !name.equals("")){
+				result=valutaService.findValutaByCodeAndName(code, name);
+			}else if(code.equals("")){
+				result=valutaRepository.findByNameContainingIgnoreCase(name);
+			}else if(name.equals("")){
+			}
 		}catch (Exception e) {
 			// TODO: handle exception
 			return new ResponseEntity<Set<Valuta>>(HttpStatus.INTERNAL_SERVER_ERROR);

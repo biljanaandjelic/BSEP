@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import korenski.intercepting.CustomAnnotation;
 import korenski.model.sifrarnici.Activity;
-
+import korenski.repository.sifrarnici.ActivityRepository;
 import korenski.service.sifrarnici.ActivityService;
 import korenski.singletons.ValidatorSingleton;
 
@@ -28,6 +28,8 @@ import korenski.singletons.ValidatorSingleton;
 public class ActivityController {
 	@Autowired
 	ActivityService activityService;
+	@Autowired
+	ActivityRepository activityRepository;
 	
 	/**
 	 * Metoda kreira novu djelatnost i cuva je u sifrarniku djelatnosti koji se stojati
@@ -165,14 +167,23 @@ public class ActivityController {
 			produces=MediaType.APPLICATION_JSON_VALUE
 			)
 	public ResponseEntity<Set<Activity>> findActivitiesByCodeOrName(@PathVariable("code") String code, @PathVariable("name") String name){
-		Set<Activity> result=new HashSet<Activity>();
+		Set<Activity> result=null;
 		/*result.add(activityService.findActivityByCode(code));
 		result.add(activityService.findActivityByName(name));*/
 		try{
-			result=activityService.findActivityByCodeAndName(code, name);
+			if(!code.equals("") && !name.equals("")){
+				result=activityService.findActivityByCodeAndName(code, name);
+			}else if(code.equals("")){
+				result=activityRepository.findByNameContainingIgnoreCase(name);
+			}else if(name.equals("")){
+				result=activityRepository.findByCodeContainingIgnoreCase(code);
+			}
 		}catch (Exception e) {
 			// TODO: handle exception
 			return new ResponseEntity<Set<Activity>>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		if(result==null){
+			return new ResponseEntity<Set<Activity>>(HttpStatus.NO_CONTENT);
 		}
 		return new ResponseEntity<Set<Activity>>(result, HttpStatus.OK);
 		
