@@ -393,11 +393,16 @@ administrator.controller('RukovanjeKlijentima', function($scope, $http, $compile
 		}
 	}
 	
-	this.izvestajIzvoda = function(klijent){
+	this.izvestajIzvoda = function(){
+		var izvestaj = {};
+		izvestaj.id = $scope.idSelektovanogKlijenta;
+		izvestaj.izvestajOd = $scope.izvestajOd;
+		izvestaj.izvestajDo = $scope.izvestajDo;
+		
 		$http({
 		    method: 'POST',
 		    url: '/izvestajIzvoda',
-		    data: klijent
+		    data: izvestaj
 		}).
 		then(function mySucces(response) {
 			if(response.data === 'ok'){

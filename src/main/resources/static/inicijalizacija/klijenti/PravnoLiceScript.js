@@ -472,6 +472,26 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
 		}
 	}
 	
+	this.izvestajIzvoda = function(){
+		var izvestaj = {};
+		izvestaj.id = $scope.idSelektovanogPravnogLica;
+		izvestaj.izvestajOd = $scope.izvestajOd;
+		izvestaj.izvestajDo = $scope.izvestajDo;
+		
+		$http({
+		    method: 'POST',
+		    url: '/izvestajIzvoda',
+		    data: izvestaj
+		}).
+		then(function mySucces(response) {
+			if(response.data === 'ok'){
+				toastr.success("Izvestaj izvoda klijenta uspesno napravljen!");
+			}else{
+				toastr.error('Doslo je do neocekivane greske!');
+			}
+		});
+	}
+	
 	this.setSelected = function(nm){
 		if(angular.equals($scope.rezim, 0)){
 			$scope.idSelektovanogPravnogLica = nm.id;

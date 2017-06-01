@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import korenski.model.klijenti.Klijent;
+import korenski.DTOs.IzvestajDTO;
 import korenski.DTOs.KlijentFilter;
 import korenski.intercepting.CustomAnnotation;
 import korenski.model.autorizacija.User;
@@ -238,27 +239,27 @@ public class KlijentController {
 			value = "/izvestajIzvoda",
 			method = RequestMethod.POST,
 			produces = MediaType.TEXT_PLAIN_VALUE)
-	public ResponseEntity<String> izvestajiRacuna(@Context HttpServletRequest request, @RequestBody Klijent klijent) throws Exception {
+	public ResponseEntity<String> izvestajiRacuna(@Context HttpServletRequest request, @RequestBody IzvestajDTO dto) throws Exception {
 		//idiotizam
 		try {
 			
 			Properties connectionProps = new Properties();
-		    connectionProps.put("user", "root");
-		    connectionProps.put("password", "password");
+		    connectionProps.put("user", "test");
+		    connectionProps.put("password", "test");
 		    
 		    Connection conn = DriverManager.getConnection(
 	                   "jdbc:mysql://localhost:3306/finalni?useSSL=false",
 	                   connectionProps);
-			
+			/*
 		    Calendar cal = Calendar.getInstance();
 			Date end = cal.getTime();
 			cal.add(Calendar.DATE, -7);
 			Date start = cal.getTime();
-		    
+		    */
 		    HashMap<String, Object> parameters = new HashMap<String, Object>();
-		    parameters.put("id_klijenta", klijent.getId());
-		    parameters.put("od", start);
-		    parameters.put("do", end);
+		    parameters.put("id_klijenta", dto.getId());
+		    parameters.put("od", dto.getIzvestajOd());
+		    parameters.put("do", dto.getIzvestajDo());
 		    
 		    String jp = JasperFillManager.fillReportToFile("./files/izvodKlijenta.jasper", parameters, conn);
 		    
@@ -267,7 +268,7 @@ public class KlijentController {
 			//	new HashMap<String, Object>(), conn);
 			//eksport
 			//File pdf = File.createTempFile("output.", ".pdf");
-			JasperExportManager.exportReportToPdfFile(jp, "./files/izvod_klijenta_" + klijent.getId() + ".pdf");
+			JasperExportManager.exportReportToPdfFile(jp, "./files/izvod_klijenta_" + dto.getId() + ".pdf");
 		}catch (Exception ex) {
 				ex.printStackTrace();
 		}

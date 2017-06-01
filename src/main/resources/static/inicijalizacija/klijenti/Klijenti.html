@@ -28,7 +28,7 @@
 						<td>{{klijent.email}}</td>
 			        	<td>{{klijent.naseljenoMesto.naziv}}</td>
 			        	<td><button type="button" class="btn btn-primary" ng-click="rk.aktivirajRacun(klijent)">Otvori racun</button></td>
-			        	<td><button type="button" class="btn btn-primary" ng-click="rk.izvestajIzvoda(klijent)">Izvestaj racuna</button></td>
+			        	<td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#dijalogIzvestaj">Izvestaj racuna</button></td>
 			        </tr>
 		         
 		        </tbody>
@@ -125,6 +125,7 @@
 	
 	
 </div>
+
 	<div class="modal fade" id="dijalogK" role="dialog">
 	    <div class="modal-dialog">
 	    
@@ -141,6 +142,41 @@
 			</div>
 	        <div class="modal-footer">
 	        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="rk.deleteClick()">Potvrdi</button>
+	          <button type="button" class="btn btn-default" data-dismiss="modal" >Zatvori</button>
+	        </div>
+	      </div>
+			
+		</div>
+		
+		
+	</div>
+	
+		<div class="modal fade" id="dijalogIzvestaj" role="dialog">
+	    <div class="modal-dialog">
+	    
+	      
+	      <div class="modal-content" >
+	        <div class="modal-header">
+	          <button type="button" class="close" data-dismiss="modal">&times;</button>
+	          <h4 class="modal-title">Izvestaj</h4>
+	        </div>
+	        <div class="modal-body">
+	       		<h3>Unesite datume izvestaja:</h3>
+	       		<div class="row">
+		       		<label class="control-label col-sm-3">Od:</label>
+					<div class="col-sm-9">
+						<input ng-model="izvestajOd" type="date" class="form-control" required></input>
+					</div>
+				</div>
+				<div class="row">
+					<label class="control-label col-sm-3">Do:</label>
+					<div class="col-sm-9">
+						<input ng-model="izvestajDo" type="date" class="form-control" required></input>
+					</div>
+				</div>
+			</div>
+	        <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="rk.izvestajIzvoda()">Potvrdi</button>
 	          <button type="button" class="btn btn-default" data-dismiss="modal" >Zatvori</button>
 	        </div>
 	      </div>
