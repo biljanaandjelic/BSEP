@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -19,6 +20,7 @@ public class Bank {
 
 	@Id
 	@GeneratedValue
+	@XmlTransient
 	private Long id;
 	
 	@Column(nullable=false)

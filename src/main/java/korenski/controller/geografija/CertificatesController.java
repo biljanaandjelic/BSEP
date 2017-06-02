@@ -447,21 +447,26 @@ public class CertificatesController {
 	 * @throws NoSuchProviderException
 	 */
 	@RequestMapping(value = "/certificate/{alias}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON)
-	public ResponseEntity<CertificateDTO> findCertificateDTO(@PathVariable("alias") String alias)
+	public ResponseEntity<CertificateDTO> findCertificateDTO(@PathVariable("alias") String alias, @Context HttpServletRequest request)
 			throws KeyStoreException, NoSuchProviderException {
 		System.out.println("Pronalazenje sertifikata na osnovu alijasa");
+		User user=(User)request.getSession().getAttribute("user");
+		Bank bank=user.getBank();
 		if (ks == null) {
 			//ks = KeyStore.getInstance("JCEKS", "SunJCE");
 			ks = KeyStore.getInstance("BKS", "BC");
+			System.out.println("Nije prethodno instanciran");
 		}
 		try {
 			//ks.load(new FileInputStream("./files/keystore.jks"), "test".toCharArray());
-			ks.load(new FileInputStream("./files/gagi.jks"), "test".toCharArray());
+			String newFilePath = "./files/KEYSTORE-" + bank.getSwiftCode() + ".jks";
+			ks.load(new FileInputStream(newFilePath), "test".toCharArray());
+			System.out.println("USpijesno je uctan ks");
 		} catch (NoSuchAlgorithmException | CertificateException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		alias="CERT-"+alias;
 		Certificate foundCertificate = ks.getCertificate(alias);
 
 		if (foundCertificate != null) {
@@ -474,38 +479,7 @@ public class CertificatesController {
 		return new ResponseEntity<CertificateDTO>(HttpStatus.NOT_FOUND);
 	}
 
-//	public CertificateDTO getCertificateBySerialNumber(String serialNumber) {
-//		try {
-//			
-//			ks.load(new FileInputStream("./files/gagi.jks"), "test".toCharArray());
-//			Enumeration aliases = ks.aliases();
-//			String alias;
-//			for (; aliases.hasMoreElements();) {
-//				alias = (String) aliases.nextElement();
-//
-//				Certificate cert = ks.getCertificate(alias);
-//
-//				if (cert.getType().equals(BCStyle.SERIALNUMBER)) {
-//					
-//					if (((X509Certificate) cert).getSerialNumber().equals(serialNumber)) {
-//						CertificateDTO certDTO = getDataFromCertificate(cert);
-//						return certDTO;
-//					}
-//				}
-//
-//			}
-//		} catch (NoSuchAlgorithmException | CertificateException | IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (KeyStoreException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//
-//		// List the aliases
-//		return null;
-//
-//	}
+
 
 	public CertificateDTO getDataFromCertificate(Certificate certificat) {
 		X500Name x500name;

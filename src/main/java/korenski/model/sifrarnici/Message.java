@@ -5,12 +5,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.validation.constraints.Pattern;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 public class Message {
 	
 	@Id
 	@GeneratedValue
+	@XmlTransient
 	private Long id;
 	
 	@Column(nullable=false, unique=true)

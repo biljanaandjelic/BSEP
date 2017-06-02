@@ -220,7 +220,7 @@ insert into klijent values ('adresa', 'mail3@kkk.kkk', TRUE, 'Ime3', '4518545121
 insert into klijent values ('Adresa1', 'ime3@prezime.com', TRUE, 'Ime', '0000000000000', 'Prezime', '123452788', '15', '2', '2');
 insert into klijent values ('Adresa1', 'ime4@prezime.com', TRUE, 'Ime', '0000000000000', 'Prezime', '123452788', '16', '3', '3');
 
-insert into racun values ('1', '123-1726533787929-93', '2017-04-30 19:05:00', '2013-02-15 19:05:00', '0', FALSE, '1', '12');
+insert into racun values ('1', '123-1726533787929-93', '2017-04-30 19:05:00', '2013-02-15 19:05:00', '30000', FALSE, '1', '12');
 insert into racun values ('2', '123-9338670954849-69', NULL, '2013-01-15 19:05:00', '20000', TRUE, '1', '12');
 insert into racun values ('3', '123-8880775775674-13', null, '2013-05-10 19:05:00', '12000', TRUE, '1', '13');
 insert into racun values ('4', '123-7184821064803-82', null, '2013-05-07 19:05:00', '12000', TRUE, '1', '13');
