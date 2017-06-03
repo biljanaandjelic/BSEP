@@ -75,8 +75,14 @@ public class RacunController {
 		racun.setDatumOtvaranja(new Date());
 		racun.setStatus(true);
 		racun.setBank(bank);
-	
-		return new ResponseEntity<Racun>(repository.save(racun), HttpStatus.OK);
+		
+		try {
+			racun = repository.save(racun);
+		} catch (Exception e) {
+			return new ResponseEntity<Racun>(new Racun(new Long(-1), "Greska pri upisu u bazu!", false, null, null, null), HttpStatus.OK);
+		}
+		
+		return new ResponseEntity<Racun>(racun, HttpStatus.OK);
 	}
 	
 	@CustomAnnotation(value = "FILTER_ACCOUNT")
