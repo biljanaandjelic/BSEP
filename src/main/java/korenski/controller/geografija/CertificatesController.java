@@ -47,6 +47,8 @@ import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x500.style.IETFUtils;
 import org.bouncycastle.asn1.x509.BasicConstraints;
 import org.bouncycastle.asn1.x509.Extension;
+import org.bouncycastle.asn1.x509.GeneralName;
+import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
@@ -146,8 +148,9 @@ public class CertificatesController {
 		X509v3CertificateBuilder certGen;
 
 		certGen = new JcaX509v3CertificateBuilder(name, serial, startDate, endDate, name, pair.getPublic());
-
+		
 		certGen.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
+		certGen.addExtension(Extension.subjectAlternativeName, true, new GeneralNames(new GeneralName(GeneralName.rfc822Name, "localhost")));
 		
 		X509CertificateHolder certHolder = certGen.build(contentSigner);
 
