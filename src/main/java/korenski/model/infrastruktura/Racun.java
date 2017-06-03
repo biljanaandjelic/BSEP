@@ -1,20 +1,29 @@
 package korenski.model.infrastruktura;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import korenski.model.klijenti.Klijent;
 
 @Entity
 @Table(name="racun")
+@XmlRootElement()
 public class Racun {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,12 +47,17 @@ public class Racun {
 	
 	@NotNull
 	@ManyToOne
+	//@JoinColumn(referencedColumnName="klijent_id")
 	private Klijent klijent;
 	
 	@NotNull
 	@ManyToOne
 	private Bank bank;
 	
+	@OneToMany
+	private List<DnevnoStanjeRacuna> dnevnaStanjaRacuna;
+	
+	@XmlTransient
 	public Bank getBank() {
 		return bank;
 	}
@@ -56,6 +70,7 @@ public class Racun {
 		super();
 		// TODO Auto-generated constructor stub
 		this.stanje = 0;
+		this.dnevnaStanjaRacuna=new ArrayList<DnevnoStanjeRacuna>();
 	}
 
 	public Racun(Long id, String brojRacuna, boolean status, Date datumOtvaranja, Date datumDeaktivacije,
@@ -70,6 +85,7 @@ public class Racun {
 		this.stanje = 0;
 	}
 
+	@XmlTransient
 	public Long getId() {
 		return id;
 	}
@@ -109,7 +125,7 @@ public class Racun {
 	public void setDatumDeaktivacije(Date datumDeaktivacije) {
 		this.datumDeaktivacije = datumDeaktivacije;
 	}
-
+	@XmlTransient
 	public Klijent getKlijent() {
 		return klijent;
 	}
@@ -124,6 +140,15 @@ public class Racun {
 
 	public void setStanje(double stanje) {
 		this.stanje = stanje;
+	}
+	
+	@JsonIgnoreProperties({"racun","bank"})
+	public List<DnevnoStanjeRacuna> getDnevnaStanjaRacuna() {
+		return dnevnaStanjaRacuna;
+	}
+
+	public void setDnevnaStanjaRacuna(List<DnevnoStanjeRacuna> dnevnaStanjaRacuna) {
+		this.dnevnaStanjaRacuna = dnevnaStanjaRacuna;
 	}
 	
 	

@@ -1,6 +1,7 @@
 administrator.controller('MessagesController', function($scope, $http, $compile,$log){
 	$scope.message={};
 	$scope.messages=[];
+	$scope.messagesPomocni={};
 	var  State={
 		VIEW_EDIT: 0,
 		ADD : 1,
@@ -12,6 +13,7 @@ administrator.controller('MessagesController', function($scope, $http, $compile,
 		$log.log("ADD");
 		$scope.state=State.ADD;
 		$scope.message={};
+		$scope.messagePomocni={};
 	}
 	
 	this.searchClick=function(){
@@ -34,6 +36,7 @@ administrator.controller('MessagesController', function($scope, $http, $compile,
 		if($scope.state===State.VIEW_EDIT){
 			$log.log("First click");
 			$scope.message=$scope.messages[0];
+			$scope.messagePomocni=$scope.message;
 			//$scope.valutaId=selectedValuta.id;
 		//	$scope.valuta=selectedValuta;
 		
@@ -60,11 +63,12 @@ administrator.controller('MessagesController', function($scope, $http, $compile,
 	*/
 	this.prevClick=function(){
 		if($scope.state===State.VIEW_EDIT){
-			var temp=findIndexOfValuta($scope.message.id);
+			var temp=findIndexOfMessage($scope.message.id);
 			$log.log("Index selektovane stavke "+ temp);
 
 			if(temp!=-1 && temp!=0){
 				$scope.message=$scope.messages[temp-1];
+				$scope.messagePomocni=angular.copy($scope.message);
 			
 			}
 		}
@@ -74,7 +78,7 @@ administrator.controller('MessagesController', function($scope, $http, $compile,
 		nista se ne desava.
 	*/
 	
-	findIndexOfValuta=function(id){
+	findIndexOfMessage=function(id){
 		var temp=-1;
 		for (var i = 0; i < $scope.messages.length; i++) { 
 				if(angular.equals($scope.messages[i].id, id)){
@@ -88,6 +92,7 @@ administrator.controller('MessagesController', function($scope, $http, $compile,
 		if($scope.state===State.VIEW_EDIT){
 		
 			$scope.message=$scope.messages[$scope.messages.length-1];
+			$scope.messagePomocni=angular.copy($scope.message);
 			
 			
 		}
@@ -97,10 +102,12 @@ administrator.controller('MessagesController', function($scope, $http, $compile,
 			$log.log("Next valuta");
 		//	$log.log("Oznaka djelatnost "+ $scope.message+" "+ $scope.activity.name+" id "+$scope.activity.id);
 			
-			var temp=findIndexOfValuta($scope.message.id);
+			var temp=findIndexOfMessage($scope.message.id);
 			$log.log("Index selektovane stavke "+ temp);
+			$log.log("Id "+$scope.message.id)
 			if(temp!=-1 && temp!=$scope.messages.length){
 				$scope.message=$scope.messages[temp+1];
+				$scope.messagePomocni=angular.copy($scope.message);
 			
 			}
 		}
@@ -116,16 +123,22 @@ administrator.controller('MessagesController', function($scope, $http, $compile,
 			$http({
 				method: 'PUT',
 				url: path,
-				data: $scope.message
+				data: $scope.messagePomocni
 			}).then(
 			function successCallback(response){
 				
 				$scope.messages.push(response.data);
 				$scope.message={};
-				
+				$scope.messagePomocni={};
+				toastr.success('Uspijesno ste dodali poruku.');
 			},
 			function errorCallback(response){
 				$log.log("Greska-error");
+				if(response.status==400){
+					toastr.error('Unijeli ste pogresan format poruke. Ispravan format je MTXXX pri cemu je X cifra.');
+				}else if(response.status==500){
+					toastr.error('Doslo je do interne greske na serveru pokusajte ponovo.');
+				}
 			}
 			);
 		}else if($scope.state==State.VIEW_EDIT && check() ){
@@ -135,7 +148,7 @@ administrator.controller('MessagesController', function($scope, $http, $compile,
 			$http({
 				method: 'POST',
 				url: path,
-				data: $scope.message
+				data: $scope.messagePomocni
 			}).then(
 			function successCallback(response){
 				$log.log("Success");
@@ -156,9 +169,14 @@ administrator.controller('MessagesController', function($scope, $http, $compile,
 					
 					$scope.messages=response.data;
 					$scope.message={};
+					$scope.messagePomocni={};
 					
 				}, 
 				function errorCallback(response){
+					if(response.status==204){
+						$log.log("204");
+						toaster.info("Ne postoje poruke sa parametrima koje ste unijeli.");
+					}
 				}
 			);
 		} 
@@ -169,14 +187,14 @@ administrator.controller('MessagesController', function($scope, $http, $compile,
 	
 	var check=function(){
 			$log.log("Vrijednosti koje se provjeravaju "+ $scope.message.code );
-			if(angular.equals($scope.message, {})){
+			if(angular.equals($scope.messagePomocni, {})){
 				toastr.error('Ne mozete ostaviti polja prazna');
 				return false;
-			}else if(angular.isUndefined($scope.message.code)){
+			}else if(angular.isUndefined($scope.messagePomocni.code)){
 				
 				toastr.error('Oznaka  mora sadrzati tacno 5 karaktera');
 				return false;
-			}else if(!angular.equals($scope.message.code.trim().length, 5)){
+			}else if(!angular.equals($scope.messagePomocni.code.trim().length, 5)){
 				toastr.error('Oznaka mora da sadrzi 5 karaktera!');
 				return false;
 			}
@@ -193,6 +211,8 @@ administrator.controller('MessagesController', function($scope, $http, $compile,
 		
 		
 		$scope.message=message;
+		$scope.messagePomocni=angular.copy($scope.message);
+		$log.log("ID "+ $scope.message.id);
 	}
 	
 	
@@ -204,7 +224,7 @@ administrator.controller('MessagesController', function($scope, $http, $compile,
 			url: path
 		}).then(
 			function successCallback(response){
-				var index=findIndexOfValuta(response.data.id);
+				var index=findIndexOfMessage(response.data.id);
 				$log.log("Index stavke koja se brise je "+ index);
 				$scope.messages.splice(index,1);
 				$scope.message={};

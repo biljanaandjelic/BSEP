@@ -71,7 +71,23 @@ administrator.controller('RukovanjeKlijentima', function($scope, $http, $compile
 			return false;
 		}
 	}
-	
+	this.exportIzvoda=function(id){
+		var path="/exportKlijentiIzvod/"+id;
+		//$log.log("Path "+path);
+		$http({
+			
+			method: 'GET',
+			url: path
+		}).then(
+			function success(response){
+				//$log.log("Success: Rezzultat "+response.data.status);
+				toastr.success("Podaci o medjubankarskom prenosu su uspijesno eksportovani");
+			}, function error(response){
+			//	$log.log("Error: Rezzultat "+response.data.status);
+				toastr.error('Doslo je do interne greske na serveru. Pokusajte ponovo.');
+			}
+		);
+	}
 	this.commitClick = function(){
 		
 	
@@ -249,6 +265,7 @@ administrator.controller('RukovanjeKlijentima', function($scope, $http, $compile
 	        });
 			return;
 		}
+		
 		
 		
 	};

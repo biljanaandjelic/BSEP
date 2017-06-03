@@ -1,20 +1,26 @@
 package korenski.model.infrastruktura;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import korenski.model.sifrarnici.Message;
 
 @Entity
+@XmlRootElement()
 public class MedjubankarskiPrenos {
 	@Id
 	@GeneratedValue
@@ -32,13 +38,17 @@ public class MedjubankarskiPrenos {
 	@Column(nullable=false)
 	private double iznos;
 	
+	@OneToMany(fetch=FetchType.LAZY)	
+	private List<StavkaPrenosa> stavkePrenosa;
+	
 	public MedjubankarskiPrenos() {
 		super();
 		// TODO Auto-generated constructor stub
+		this.stavkePrenosa=new ArrayList<StavkaPrenosa>();
 	}
 
 	public MedjubankarskiPrenos(Long id, Bank bankaPrva, Bank bankaDruga, Message poruka, Timestamp datum,
-			double iznos) {
+			double iznos, List<StavkaPrenosa> stavkePrenosa) {
 		super();
 		this.id = id;
 		this.bankaPrva = bankaPrva;
@@ -46,8 +56,10 @@ public class MedjubankarskiPrenos {
 		this.poruka = poruka;
 		this.datum = datum;
 		this.iznos = iznos;
+		this.stavkePrenosa=stavkePrenosa;
 	}
 
+	@XmlTransient
 	public Long getId() {
 		return id;
 	}
@@ -95,7 +107,18 @@ public class MedjubankarskiPrenos {
 	public void setIznos(double iznos) {
 		this.iznos = iznos;
 	}
+	@JsonIgnoreProperties("medjubankarskiPrenos")
+	public List<StavkaPrenosa> getStavkePrenosa() {
+		return stavkePrenosa;
+	}
+
+	public void setStavkePrenosa(List<StavkaPrenosa> stavkePrenosa) {
+		this.stavkePrenosa = stavkePrenosa;
+	}
 	
+	public void addStavkaPrenosa(StavkaPrenosa stavkaPrenosa){
+		this.stavkePrenosa.add(stavkaPrenosa);
+	}
 	
 
 }
