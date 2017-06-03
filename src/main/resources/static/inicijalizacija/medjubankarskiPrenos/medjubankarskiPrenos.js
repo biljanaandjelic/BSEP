@@ -5,6 +5,7 @@ administrator.controller('MedjubankarskiPrenosController', function($scope, $htt
 	$scope.banke=[];
 	$scope.poruke=[];
 	$scope.banks=[];
+	$scope.banka={};
 	$scope.medjubankarskiPrenosDTO={};
 	var  State={
 		VIEW_EDIT: 0,
@@ -243,5 +244,19 @@ administrator.controller('MedjubankarskiPrenosController', function($scope, $htt
 			}
 		);
 		
+	}
+	
+	this.setSelectedBank=function(bank){
+		//$scope.medjubankarskiPrenosDTO.banka=bank;
+		$scope.banka=bank;
+	}
+	this.conf=function(){
+		$scope.medjubankarskiPrenosDTO.banka=angular.copy($scope.banka);
+		$log.log("Select bank: "+$scope.medjubankarskiPrenosDTO.banka.name);
+	}
+	this.dismis=function(){
+		$scope.medjubankarskiPrenosDTO.banka={};
+		$scope.bank={};
+		$log.log("Nista nije selektovano");
 	}
 });

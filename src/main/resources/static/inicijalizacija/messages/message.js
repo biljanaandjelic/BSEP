@@ -152,8 +152,9 @@ administrator.controller('MessagesController', function($scope, $http, $compile,
 			}).then(
 			function successCallback(response){
 				$log.log("Success");
-				var index=findIndexOfValuta($scope.message.id);
+				var index=findIndexOfMessage($scope.messagePomocni.id);
 				$scope.messages[index]=response.data;
+				//$scope.message=response.data;
 				
 			}, 
 			function errorCallback(response){

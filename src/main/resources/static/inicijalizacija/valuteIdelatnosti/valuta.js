@@ -126,7 +126,7 @@ administrator.controller('RukovanjeSifrarnikomValuta', function($scope, $http, $
 		Pronalazenje indeksa valute u kolekciji stavki koje se prikazuju 
 		na osnovu vrijednosti id.
 	*/
-	findIndexOfValuta=function(id){
+	var findIndexOfValuta=function(id){
 		var temp=-1;
 		for (var i = 0; i < $scope.sifrarnikValuta.length; i++) { 
 				if(angular.equals($scope.sifrarnikValuta[i].id, id)){
@@ -184,7 +184,7 @@ administrator.controller('RukovanjeSifrarnikomValuta', function($scope, $http, $
 			}).then(
 			function successCallback(response){
 				$log.log("Success");
-				var index=findIndexOfValuta($scope.valuta.id);
+				var index=findIndexOfValuta($scope.valutaPomocni.id);
 				$scope.sifrarnikValuta[index]=response.data;
 				
 			}, 

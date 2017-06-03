@@ -32,7 +32,7 @@ administrator.controller('HandleActivities', function($scope, $http, $compile,$l
 		}).then(
 			function successCallback(response){
 				
-				var index=findIndexOfValuta(response.data.id);
+				var index=findIndexOfDjelatnost(response.data.id);
 				$log.log("Index "+index);
 				$scope.activities.splice(index,1);
 				$scope.activity={};
@@ -89,7 +89,7 @@ administrator.controller('HandleActivities', function($scope, $http, $compile,$l
 	this.prevClick=function(){
 		if($scope.state===State.VIEW_EDIT){
 			$log.log("ID selektovan estavke "+ $scope.activity.id);
-			var temp=findIndexOfValuta($scope.activity.id);
+			var temp=findIndexOfDjelatnost($scope.activity.id);
 			$log.log("Index selektovane stavke "+ temp);
 
 			if(temp!=-1 && temp!=0){
@@ -108,7 +108,7 @@ administrator.controller('HandleActivities', function($scope, $http, $compile,$l
 			$log.log("Next valuta");
 			$log.log("Oznaka djelatnost "+ $scope.activity+" "+ $scope.activity.name+" id "+$scope.activity.id);
 			
-			var temp=findIndexOfValuta($scope.activity.id);
+			var temp=findIndexOfDjelatnost($scope.activity.id);
 			$log.log("Index selektovane stavke "+ temp);
 			if(temp!=-1 && temp!=$scope.activities.length){
 				$scope.activity=$scope.activities[temp+1];
@@ -121,7 +121,7 @@ administrator.controller('HandleActivities', function($scope, $http, $compile,$l
 		Pronalazenje indeksa valute u kolekciji stavki koje se prikazuju 
 		na osnovu vrijednosti id.
 	*/
-	var findIndexOfValuta=function(id){
+	var findIndexOfDjelatnost=function(id){
 		var temp=-1;
 		for (var i = 0; i < $scope.activities.length; i++) { 
 				if(angular.equals($scope.activities[i].id, id)){
@@ -181,7 +181,7 @@ administrator.controller('HandleActivities', function($scope, $http, $compile,$l
 			}).then(
 			function successCallback(response){
 				$log.log("Success");
-				var index=findIndexOfValuta($scope.activity.id);
+				var index=findIndexOfDjelatnost($scope.activity.id);
 				$scope.activities[index]=response.data;
 				
 			}, 

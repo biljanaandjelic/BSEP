@@ -65,13 +65,14 @@ public class ImportController {
 	 * @param request Context
 	 * @return
 	 * @throws Exception
-	 * @author Biljana i Teodora
+	 * @author  Teodora i Biljana
 	 */
-	@RequestMapping(value = "/importChosenXML", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> importChosenXML(@RequestBody String fileName, @Context HttpServletRequest request)
+	@RequestMapping(value = "/importChosenXML", method = RequestMethod.GET,  produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> importChosenXML( @Context HttpServletRequest request)
 			throws Exception {
 		AppLogger appLogger=AppLogger.getInstance();
 		Logger logger=appLogger.getLogger();
+		String fileName="Nalozi_primer.xml";
 		logger.log(Level.FINEST,"Entering  importChosenXML(fileName="+fileName+", request="+request+") ");
 		//logger.debug("Entering  importChosenXML(fileName="+fileName+", request="+request+") ");
 		JAXBContext context = JAXBContext.newInstance("korenski.model.nalog_za_prenos");
@@ -93,8 +94,7 @@ public class ImportController {
 		User user = (User) request.getSession().getAttribute("user");
 
 
-		java.lang.reflect.Method m = ImportController.class.getMethod("importChosenXML", String.class,
-				HttpServletRequest.class);
+		java.lang.reflect.Method m = ImportController.class.getMethod("importChosenXML", HttpServletRequest.class);
 	
 		
 	
