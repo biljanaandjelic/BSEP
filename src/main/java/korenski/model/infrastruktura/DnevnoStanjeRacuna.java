@@ -8,8 +8,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
+@XmlRootElement()
 public class DnevnoStanjeRacuna {
 	
 	@Id
@@ -100,7 +103,7 @@ public class DnevnoStanjeRacuna {
 		this.novoStanje = novoStanje;
 	}
 
-
+	@XmlTransient
 	public Long getId() {
 		return id;
 	}
@@ -110,7 +113,7 @@ public class DnevnoStanjeRacuna {
 		this.id = id;
 	}
 
-
+	@XmlTransient
 	public Racun getRacun() {
 		return racun;
 	}

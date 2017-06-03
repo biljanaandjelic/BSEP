@@ -3,7 +3,6 @@ package korenski.controller.businesslogic;
 import java.io.File;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -18,12 +17,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import korenski.model.infrastruktura.MedjubankarskiPrenos;
+import korenski.model.klijenti.Klijent;
 import korenski.repository.institutions.MedjubankarskiPrenosRepository;
+import korenski.repository.klijenti.KlijentRepository;
 
 @Controller
 public class ExportController {
 	@Autowired
 	MedjubankarskiPrenosRepository mbPrenosRepository;
+	@Autowired
+	KlijentRepository klientRepositiry;
 	
 	/**
 	 * Metoda koja vrsi eksport medjubankarskog prenosa u xml file.
@@ -56,4 +59,29 @@ public class ExportController {
 		
 	}
 
+	@RequestMapping(
+			value="/exportKlijentiIzvod/{id}",
+			method=RequestMethod.GET,
+			produces=MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> exportKlientIzvodi(@PathVariable("id") Long id, @Context HttpServletRequest request){
+		try{
+		//	MedjubankarskiPrenos foundMedjubankarskiPrenos=mbPrenosRepository.findOne(id);
+			Klijent foundKlijent=klientRepositiry.findOne(id);
+			File file = new File("./files/xmls/klijentIzvodi"+foundKlijent.getId().toString()+".xml");
+			JAXBContext jaxbContext = JAXBContext.newInstance(Klijent.class);
+			Marshaller jaxbMarshaller =  jaxbContext.createMarshaller();
+			
+			jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+			
+
+			jaxbMarshaller.marshal(foundKlijent, file);
+			return new ResponseEntity<String>("OK",HttpStatus.OK);
+		}catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			return new ResponseEntity<String>("Error", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		
+	}
 }

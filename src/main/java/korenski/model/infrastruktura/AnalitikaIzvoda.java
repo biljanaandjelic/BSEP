@@ -79,7 +79,7 @@ public class AnalitikaIzvoda {
 		this.hitno = hitno;
 		this.dnevnoStanjeRacuna = dnevnoStanjeRacuna;
 	}
-
+	@XmlTransient
 	public Long getId() {
 		return id;
 	}
@@ -215,7 +215,7 @@ public class AnalitikaIzvoda {
 	public void setHitno(boolean hitno) {
 		this.hitno = hitno;
 	}
-
+	@XmlTransient
 	public DnevnoStanjeRacuna getDnevnoStanjeRacuna() {
 		return dnevnoStanjeRacuna;
 	}

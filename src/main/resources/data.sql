@@ -251,3 +251,15 @@ insert into analitika_izvoda values ('6', '2017-05-29 00:00:00', '2017-05-29 00:
 insert into analitika_izvoda values ('7', '2017-05-30 00:00:00', '2017-05-30 00:00:00', '2017-05-30 00:00:00', '', TRUE, '1000', '97', '97', '123456789012345', '123456789012345', '', '123-9338670954849-69', '123-1726533787929-93', 'DIN', 'K', '', '4');
 insert into analitika_izvoda values ('8', '2017-05-30 00:00:00', '2017-05-30 00:00:00', '2017-05-30 00:00:00', '', FALSE, '500', '97', '97', '123456789012345', '123456789012345', '', '123-9338670954849-69', '123-1726533787929-93', 'DIN', 'K', '', '4');
 
+insert into activity values ('1','DJEL1', 'Djelatnost1');
+insert into activity values ('2','DJEL2', 'Djelatnost2');
+insert into activity values ('3','DJEL3', 'Djelatnost3');
+insert into activity values ('4','DJEL4', 'Djelatnost4');
+
+insert into valuta values ('1', 'DIN', 'Dinar');
+insert into valuta values ('2', 'BAM', 'Bosanska marka');
+insert into valuta values ('3', 'ALL', 'Lek');
+insert into valuta values ('4', 'USD', 'Americki dolar');
+insert into valuta values ('5', 'EUR', 'Euro');
+insert into valuta values ('6', 'JPY', 'YEN');
+

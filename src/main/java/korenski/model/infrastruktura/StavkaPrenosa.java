@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class StavkaPrenosa {
 	@Id
 	@GeneratedValue
-	@XmlTransient
+	
 	private Long id;
 	@ManyToOne(optional=false)
 	private AnalitikaIzvoda analitikaIzvoda;
@@ -33,7 +33,7 @@ public class StavkaPrenosa {
 		this.analitikaIzvoda = analitikaIzvoda;
 		this.medjubankarskiPrenos = medjubankarskiPrenos;
 	}
-
+	@XmlTransient
 	public Long getId() {
 		return id;
 	}
@@ -41,7 +41,7 @@ public class StavkaPrenosa {
 	public void setId(Long id) {
 		this.id = id;
 	}
-
+	
 	public AnalitikaIzvoda getAnalitikaIzvoda() {
 		return analitikaIzvoda;
 	}
@@ -51,6 +51,7 @@ public class StavkaPrenosa {
 	}
 
 	@JsonIgnoreProperties("stavkePrenosa")
+	@XmlTransient
 	public MedjubankarskiPrenos getMedjubankarskiPrenos() {
 		return medjubankarskiPrenos;
 	}

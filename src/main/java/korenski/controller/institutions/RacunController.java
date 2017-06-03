@@ -13,7 +13,7 @@ import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
-
+//import org.slf4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Context;
 
@@ -68,6 +68,7 @@ public class RacunController {
 		AppLogger appLogger=AppLogger.getInstance();
 		Logger logger=appLogger.getLogger();
 		logger.log(Level.FINEST,"Entering  noviRacun(klijent="+klijent.toString()+", request="+request+") ");
+		//logger.debug("Entering  noviRacun(klijent="+klijent.toString()+", request="+request+")");
 		Racun racun = new Racun();
 
 		User u = (User) request.getSession().getAttribute("user");
@@ -83,16 +84,23 @@ public class RacunController {
 		racun.setDatumOtvaranja(new Date());
 		racun.setStatus(true);
 		racun.setBank(bank);
+		
+		Racun savedRacun=repository.save(racun);
+		klijent.getRacuni().add(savedRacun);
+		klijentRepository.save(klijent);
+		
 		java.lang.reflect.Method m = RacunController.class.getMethod("zatvoriRacun", ZatvaranjePomocni.class,
 				HttpServletRequest.class);
 		String mime = m.getAnnotation(CustomAnnotation.class).value();
 		
 		String msg="USER "+u.getId().toString()+" "+mime+" "+brojRacuna+"\n";
-		logger.log(Level.INFO,msg);
+		logger.info(msg);
+		//logger.log(Level.INFO,msg);
 		System.out.println("FINEST ISPIS");
 		logger.log(Level.FINEST,"Leaving noviRacun(): "+ racun+"\n");
+		//logger.debug("Leaving noviRacun(): "+ racun+"\n");
 		System.out.println("FINEST ISPIS");
-		return new ResponseEntity<Racun>(repository.save(racun), HttpStatus.OK);
+		return new ResponseEntity<Racun>(savedRacun, HttpStatus.OK);
 	}
 
 	@CustomAnnotation(value = "FILTER_ACCOUNT")
@@ -157,6 +165,7 @@ public class RacunController {
 			@Context HttpServletRequest request) throws Exception {
 		AppLogger appLogger=AppLogger.getInstance();
 		Logger logger=appLogger.getLogger();
+		//Logger logger=appLogger.getLogger();
 		Racun racun = repository.findOne(pomocni.getId());
 
 		if (!racun.getStatus()) {
@@ -188,12 +197,13 @@ public class RacunController {
 		try {
 			racun = repository.save(racun);
 			logger.info("USER " + user.getId().toString() + " " + mime +" "+pomocni.getRacun());
+			logger.log(Level.WARNING, "BILJANA");
 		} catch (Exception e) {
 			
 			//logger.log(Level.,msg);
 			//logger.log(Level);
 			logger.log(Level.WARNING, msg);
-			
+	//		logger.warn(msg);
 			return new ResponseEntity<Racun>(
 					new Racun(new Long(-1), "Greska pri upisu u bazu!", false, current, current, null), HttpStatus.OK);
 		}

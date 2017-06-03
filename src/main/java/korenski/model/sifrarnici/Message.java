@@ -32,7 +32,7 @@ public class Message {
 		this.code = code;
 	}
 
-
+	@XmlTransient
 	public Long getId() {
 		return id;
 	}

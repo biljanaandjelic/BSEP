@@ -74,6 +74,10 @@ public class ValutaControler {
 			consumes=MediaType.APPLICATION_JSON_VALUE,
 			produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Valuta> updateValuta(@RequestBody Valuta valuta, @Context HttpServletRequest request){
+		Valuta foundValuta=valutaService.findValuta(valuta.getId());
+		if(foundValuta==null){
+			return new ResponseEntity<Valuta>(HttpStatus.BAD_REQUEST);
+		}
 		Valuta editedValuta=valutaService.updateValuta(valuta);
 		return new ResponseEntity<Valuta>(editedValuta,HttpStatus.OK);
 	}
@@ -163,11 +167,12 @@ public class ValutaControler {
 		
 		Set<Valuta> result=null;
 		try{
-			if(!code.equals("") && !name.equals("")){
+			if(!code.equals("undefined") && !name.equals("undefined")){
 				result=valutaService.findValutaByCodeAndName(code, name);
-			}else if(code.equals("")){
+			}else if(code.equals("undefined")){
 				result=valutaRepository.findByNameContainingIgnoreCase(name);
-			}else if(name.equals("")){
+			}else if(name.equals("undefined")){
+				result=valutaRepository.findByCodeContainingIgnoreCase(code);
 			}
 		}catch (Exception e) {
 			// TODO: handle exception

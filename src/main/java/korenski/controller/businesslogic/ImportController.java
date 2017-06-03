@@ -73,6 +73,7 @@ public class ImportController {
 		AppLogger appLogger=AppLogger.getInstance();
 		Logger logger=appLogger.getLogger();
 		logger.log(Level.FINEST,"Entering  importChosenXML(fileName="+fileName+", request="+request+") ");
+		//logger.debug("Entering  importChosenXML(fileName="+fileName+", request="+request+") ");
 		JAXBContext context = JAXBContext.newInstance("korenski.model.nalog_za_prenos");
 
 		// Unmarshaller je objekat zadužen za konverziju iz XML-a u objektni
@@ -133,7 +134,7 @@ public class ImportController {
 			}
 
 		}
-		logger.log(Level.FINEST,"Leaving importChosenXML(): "+"Sve ok!");
+	//	logger.debug("Leaving importChosenXML(): "+"Sve ok!");
 		return new ResponseEntity<String>("Sve ok!", HttpStatus.OK);
 	}
 

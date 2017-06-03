@@ -24,7 +24,6 @@ import korenski.model.sifrarnici.Message;
 public class MedjubankarskiPrenos {
 	@Id
 	@GeneratedValue
-	@XmlTransient
 	private Long id;
 	@ManyToOne(optional=false)
 	private Bank bankaPrva;
@@ -60,6 +59,7 @@ public class MedjubankarskiPrenos {
 		this.stavkePrenosa=stavkePrenosa;
 	}
 
+	@XmlTransient
 	public Long getId() {
 		return id;
 	}
