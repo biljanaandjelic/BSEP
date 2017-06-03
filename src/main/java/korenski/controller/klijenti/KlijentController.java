@@ -86,11 +86,12 @@ public class KlijentController {
 			produces = MediaType.APPLICATION_JSON_VALUE) //String id_string
 	public ResponseEntity<Klijent> obrisiKlijenta(@PathVariable("id") Long id , @Context HttpServletRequest request) throws Exception {
 		
+		Klijent klijent = repository.findOne(id);
+		
 		try {
-			Klijent klijent = repository.findOne(id);
 			repository.delete(klijent);
 		} catch (Exception e) {
-			return new ResponseEntity<Klijent>(new Klijent(new Long(-1), null, null, null, null, null, null, null), HttpStatus.OK);
+			return new ResponseEntity<Klijent>(new Klijent(new Long(-1), "Neuspesno brisanje! Moguce je da je odabrana stavka povezana sa drugim stavkama te ju je nemoguce obrisati.", null, null, null, null, null, null), HttpStatus.OK);
 		}
 		
 		return new ResponseEntity<Klijent>(new Klijent(), HttpStatus.OK);

@@ -344,8 +344,8 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
 		$http.delete('/obrisiPravnoLice/'+$scope.pravnoLice.id).
         then(function(response) {
         	
-        	if(response.data.id == -1){
-				toastr.error('Neuspesan unos!');
+        	if(response.data.jmbg !== null){
+        		toastr.error(response.data.jmbg);
 				return;
 			}
         	
@@ -466,8 +466,12 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
 			    data: klijent
 			}).
 			then(function mySucces(response) {
-				toastr.success("Racun uspesno aktiviran!");
-				$scope.$parent.$parent.opsti.addRacun();
+				if(response.data.id == -1){
+					toastr.error(response.data.brojRacuna);
+				}else{
+					toastr.success("Racun uspesno otvoren!");
+					$scope.$parent.$parent.opsti.addRacun();
+				}
 			});
 		}
 	}

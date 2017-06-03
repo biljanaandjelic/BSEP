@@ -39,6 +39,11 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.xml.XMLConstants;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 
 import org.bouncycastle.asn1.x500.RDN;
 import org.bouncycastle.asn1.x500.X500Name;
@@ -665,5 +670,27 @@ public class CertificatesController {
 		
 		ks.store(new FileOutputStream(filePathString), "test".toCharArray());
 		
+	}
+	
+	@RequestMapping(value = "/validateXML", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN)
+	public ResponseEntity<String> validateXML(@Context HttpServletRequest request) {
+		
+		String retVal;
+		
+		try
+	    {
+	        SchemaFactory factory = 
+	            SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+	        Schema schema = factory.newSchema(new StreamSource(new File("./files/xml_tests/Faktura.xsd")));
+	        Validator validator = schema.newValidator();
+	        validator.validate(new StreamSource(new File("./files/xml_tests/Faktura.xml")));
+	        retVal = "ok";
+	    }
+	    catch(Exception ex)
+	    {
+	        retVal = "notok";
+	    }
+		
+		return new ResponseEntity<String>(retVal, HttpStatus.OK);
 	}
 }

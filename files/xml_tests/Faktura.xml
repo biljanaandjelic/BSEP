@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Faktura xmlns="http://ftn.uns.ac.rs/faktura"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://ftn.uns.ac.rs/faktura file:/C:/Users/Korisnik/Documents/Faktura.xsd">
+    <Preduzece xsi:type="TFirma">
+        <Naziv>Mena consulting</Naziv>
+        <PIB>1234567890</PIB>
+        <Adresa>Nemam pojma 18</Adresa>
+    </Preduzece>
+    <Poslovni_partner xsi:type="TFirma">
+        <Naziv>Prava firma DOO</Naziv>
+        <PIB>0987654321</PIB>
+        <Adresa>Opet nemam pojma 19</Adresa>
+        <Telefon>987654321</Telefon>
+    </Poslovni_partner>
+    <Datum_fakture>2017-12-23T03:15:00</Datum_fakture>
+    <Broj_fakture>2011-RN-001</Broj_fakture>
+    <Datum_valute>2017-12-15T03:15:00</Datum_valute>
+    <Vrednost_bez_PDV>34314.19</Vrednost_bez_PDV>
+    <Iznos_PDV>2935.81</Iznos_PDV>
+    <Ukupan_iznos>37250.00</Ukupan_iznos>
+    <Rabat>211.87</Rabat>
+    <Stavka_fakture>
+        <Redni_broj>1</Redni_broj>
+        <Sifra>0000000001</Sifra>
+        <Naziv_artikla>FOTOKOPIR PAPIR A4, BELI, STANDARD, 500 LISTOVA</Naziv_artikla>
+        <Kolicina>5000</Kolicina>
+        <Cena_bez_PDV>423.73</Cena_bez_PDV>
+        <Rabat>10.00</Rabat>
+        <PDV>18</PDV>
+        <Iznos_PDV>343.22</Iznos_PDV>
+        <Vrednost_sa_PDV>2250.00</Vrednost_sa_PDV>
+    </Stavka_fakture>
+    <Stavka_fakture>
+        <Redni_broj>2</Redni_broj>
+        <Sifra>0000000002</Sifra>
+        <Naziv_artikla>NOTEBOOK RACUNAR</Naziv_artikla>
+        <Kolicina>1000</Kolicina>
+        <Cena_bez_PDV>32407.41</Cena_bez_PDV>
+        <Rabat>0.00</Rabat>
+        <PDV>8</PDV>
+        <Iznos_PDV>2592.59</Iznos_PDV>
+        <Vrednost_sa_PDV>35000.00</Vrednost_sa_PDV>
+    </Stavka_fakture>
+</Faktura>

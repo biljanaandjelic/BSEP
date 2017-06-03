@@ -80,11 +80,12 @@ public class PravnoLiceController {
 			produces = MediaType.APPLICATION_JSON_VALUE) //String id_string
 	public ResponseEntity<PravnoLice> obrisiPravnoLice(@PathVariable("id") Long id , @Context HttpServletRequest request) throws Exception {
 		
+		PravnoLice pravnoLice = repository.findOne(id);
+		
 		try {
-			PravnoLice pravnoLice = repository.findOne(id);
 			repository.delete(pravnoLice);
 		} catch (Exception e){
-			return new ResponseEntity<PravnoLice>(new PravnoLice(new Long(-1), null, null, null, null, null, null, null), HttpStatus.OK);
+			return new ResponseEntity<PravnoLice>(new PravnoLice(new Long(-1), "Neuspesno brisanje! Moguce je da je odabrana stavka povezana sa drugim stavkama te ju je nemoguce obrisati.", null, null, null, null, null, null), HttpStatus.OK);
 		}
 		return new ResponseEntity<PravnoLice>(new PravnoLice(), HttpStatus.OK);
 	}

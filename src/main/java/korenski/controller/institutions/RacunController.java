@@ -85,6 +85,7 @@ public class RacunController {
 		racun.setStatus(true);
 		racun.setBank(bank);
 		
+
 		Racun savedRacun=repository.save(racun);
 		klijent.getRacuni().add(savedRacun);
 		klijentRepository.save(klijent);
@@ -100,7 +101,16 @@ public class RacunController {
 		logger.log(Level.FINEST,"Leaving noviRacun(): "+ racun+"\n");
 		//logger.debug("Leaving noviRacun(): "+ racun+"\n");
 		System.out.println("FINEST ISPIS");
-		return new ResponseEntity<Racun>(savedRacun, HttpStatus.OK);
+	//	return new ResponseEntity<Racun>(savedRacun, HttpStatus.OK);
+
+		try {
+			racun = repository.save(racun);
+		} catch (Exception e) {
+			return new ResponseEntity<Racun>(new Racun(new Long(-1), "Greska pri upisu u bazu!", false, null, null, null), HttpStatus.OK);
+		}
+		
+		return new ResponseEntity<Racun>(racun, HttpStatus.OK);
+
 	}
 
 	@CustomAnnotation(value = "FILTER_ACCOUNT")

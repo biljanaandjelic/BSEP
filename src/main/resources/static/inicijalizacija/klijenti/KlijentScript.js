@@ -297,9 +297,9 @@ administrator.controller('RukovanjeKlijentima', function($scope, $http, $compile
 		$http.delete('/obrisiKlijenta/'+$scope.klijent.id).
         then(function(response) {
         	
-        	if(response.data.id == -1){
-				toastr.error('Neuspesan unos!');
-				return;
+        	if(response.data.jmbg !== null){
+        		toastr.error(response.data.jmbg);
+        		return;
 			}
         	
         	var temp = -1;
@@ -404,8 +404,12 @@ administrator.controller('RukovanjeKlijentima', function($scope, $http, $compile
 			    data: klijent
 			}).
 			then(function mySucces(response) {
-				toastr.success("Racun uspesno otvoren!");
-				$scope.$parent.$parent.opsti.addRacun();
+				if(response.data.id == -1){
+					toastr.error(response.data.brojRacuna);
+				}else{
+					toastr.success("Racun uspesno otvoren!");
+					$scope.$parent.$parent.opsti.addRacun();
+				}
 			});
 		}
 	}
