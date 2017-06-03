@@ -9,11 +9,15 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
+@XmlRootElement()
 public class AnalitikaIzvoda {
 	@Id
 	@GeneratedValue
+	@XmlTransient
 	private Long id;
 
 	@Column(nullable = false)
@@ -42,7 +46,7 @@ public class AnalitikaIzvoda {
 
 	private boolean hitno;
 	@ManyToOne(optional = false)
-
+	@XmlTransient
 	private DnevnoStanjeRacuna dnevnoStanjeRacuna;
 
 	public AnalitikaIzvoda() {
@@ -75,7 +79,7 @@ public class AnalitikaIzvoda {
 		this.hitno = hitno;
 		this.dnevnoStanjeRacuna = dnevnoStanjeRacuna;
 	}
-
+	@XmlTransient
 	public Long getId() {
 		return id;
 	}
@@ -211,7 +215,7 @@ public class AnalitikaIzvoda {
 	public void setHitno(boolean hitno) {
 		this.hitno = hitno;
 	}
-
+	@XmlTransient
 	public DnevnoStanjeRacuna getDnevnoStanjeRacuna() {
 		return dnevnoStanjeRacuna;
 	}

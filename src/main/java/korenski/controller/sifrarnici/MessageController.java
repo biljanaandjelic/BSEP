@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.ws.rs.core.Context;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,8 +19,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-
 
 import korenski.model.sifrarnici.Message;
 import korenski.repository.institutions.RacunRepository;
@@ -34,6 +34,15 @@ public class MessageController {
 
 	@RequestMapping(value = "/message", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Message> createMessage(@RequestBody Message message, @Context HttpServletRequest request) {
+		Logger logger = LoggerFactory.getLogger(MessageController.class);
+		System.out.println("****************************************");
+		System.out.println("SLF4J");
+		String name = "lordofthejars";
+		logger.info("Hello from Bar.");
+		logger.info("BILJANA");
+		logger.debug("In bar my name is {}.", name);
+		System.out.println("****************************************");
+
 		Message m = validityCheck(message);
 		if (m != null) {
 			return new ResponseEntity<Message>(HttpStatus.BAD_REQUEST);
@@ -48,7 +57,7 @@ public class MessageController {
 			new ResponseEntity<Message>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		if (racun != null) {
-			// System.out.println("Racun "+ racun.getBrojRacuna());
+			
 
 			System.out.println("Maxdate");
 		}
@@ -126,10 +135,10 @@ public class MessageController {
 
 	@RequestMapping(value = "/message/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Message> deleteMessage(@PathVariable("id") Long id, @Context HttpServletRequest request) {
-		Message messageForDelete=null;
-		try{
-		messageForDelete = messageService.findMessage(id);
-		}catch(Exception e){
+		Message messageForDelete = null;
+		try {
+			messageForDelete = messageService.findMessage(id);
+		} catch (Exception e) {
 			return new ResponseEntity<Message>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		if (messageForDelete != null) {

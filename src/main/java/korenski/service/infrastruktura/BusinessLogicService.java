@@ -1,6 +1,8 @@
 package korenski.service.infrastruktura;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -11,7 +13,11 @@ import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 
 import korenski.model.infrastruktura.AnalitikaIzvoda;
@@ -146,27 +152,7 @@ public class BusinessLogicService {
 	 * @author Biljana
 	 */
 	public void differentBanksTransfer(NalogZaPrenos nalog, Racun racunDuznika, String racunPoverioca) {
-//		 Logger logger = Logger.getLogger("MyLog");  
-//		    FileHandler fh;  
-//
-//		    try {  
-//
-//		       
-//		        fh = new FileHandler("./files/Logger/logFile.log");  
-//		        logger.addHandler(fh);
-//		        SimpleFormatter formatter = new SimpleFormatter();  
-//		        fh.setFormatter(formatter);  
-//
-//		       
-//		        logger.info("My first log");  
-//
-//		    } catch (SecurityException e) {  
-//		        e.printStackTrace();  
-//		    } catch (IOException e) {  
-//		        e.printStackTrace();  
-//		    }  
-//
-//		    logger.info("Hi How r u?");  
+
 			DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
 			Date today = new Date();
@@ -221,6 +207,7 @@ public class BusinessLogicService {
 		try{
 			 dnevnoStanjeRepository.save(dnevnoStanjeDuznika);
 			 analitikaDuznika=analitikaIzvodaRepository.save(analitikaDuznika);
+			
 			 racunDuznika.setStanje(racunDuznika.getStanje()-nalog.getPodaciOPlacanju().getIznos());;
 			 racunRepository.save(racunDuznika);
 			
@@ -262,9 +249,14 @@ public class BusinessLogicService {
 		stavkaPrenosa.setAnalitikaIzvoda(analitikaDuznika);
 		
 		try{
+			
 			mBRepository.save(latestMBPrenos);
 			stavkaPrenosa.setStavkaPrenosa(latestMBPrenos);
 			stavkaPrenosa=sPRepository.save(stavkaPrenosa);
+			latestMBPrenos.addStavkaPrenosa(stavkaPrenosa);
+			mBRepository.save(latestMBPrenos);
+			
+
 		}catch(Exception e){
 			return;
 		}

@@ -141,6 +141,7 @@ public class OCSPResponder {
 			name= ((Employee)user.getSubject()).getName();
 		}
 		bank=user.getBank();
+		alias="CERT-"+alias;
 		OCSPRequest ocspReq = generateOcspRequest(bank, alias, name);
 		if (ocspReq != null) {
 			OCSPResponse ocspResp = new OCSPResponse(OCSPResponseStatus.SUCCESSFUL);

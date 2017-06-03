@@ -171,11 +171,11 @@ public class ActivityController {
 		/*result.add(activityService.findActivityByCode(code));
 		result.add(activityService.findActivityByName(name));*/
 		try{
-			if(!code.equals("") && !name.equals("")){
+			if(!code.equals("undefined") && !name.equals("undefined")){
 				result=activityService.findActivityByCodeAndName(code, name);
-			}else if(code.equals("")){
+			}else if(code.equals("undefined")){
 				result=activityRepository.findByNameContainingIgnoreCase(name);
-			}else if(name.equals("")){
+			}else if(name.equals("undefined")){
 				result=activityRepository.findByCodeContainingIgnoreCase(code);
 			}
 		}catch (Exception e) {

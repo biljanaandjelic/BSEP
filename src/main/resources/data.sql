@@ -220,7 +220,7 @@ insert into klijent values ('adresa', 'mail3@kkk.kkk', TRUE, 'Ime3', '4518545121
 insert into klijent values ('Adresa1', 'ime3@prezime.com', TRUE, 'Ime', '0000000000000', 'Prezime', '123452788', '15', '2', '2');
 insert into klijent values ('Adresa1', 'ime4@prezime.com', TRUE, 'Ime', '0000000000000', 'Prezime', '123452788', '16', '3', '3');
 
-insert into racun values ('1', '123-1726533787929-93', '2017-04-30 19:05:00', '2013-02-15 19:05:00', '0', FALSE, '1', '12');
+insert into racun values ('1', '123-1726533787929-93', '2017-04-30 19:05:00', '2013-02-15 19:05:00', '30000', FALSE, '1', '12');
 insert into racun values ('2', '123-9338670954849-69', NULL, '2013-01-15 19:05:00', '20000', TRUE, '1', '12');
 insert into racun values ('3', '123-8880775775674-13', null, '2013-05-10 19:05:00', '12000', TRUE, '1', '13');
 insert into racun values ('4', '123-7184821064803-82', null, '2013-05-07 19:05:00', '12000', TRUE, '1', '13');
@@ -250,4 +250,16 @@ insert into analitika_izvoda values ('6', '2017-05-29 00:00:00', '2017-05-29 00:
 
 insert into analitika_izvoda values ('7', '2017-05-30 00:00:00', '2017-05-30 00:00:00', '2017-05-30 00:00:00', '', TRUE, '1000', '97', '97', '123456789012345', '123456789012345', '', '123-9338670954849-69', '123-1726533787929-93', 'DIN', 'K', '', '4');
 insert into analitika_izvoda values ('8', '2017-05-30 00:00:00', '2017-05-30 00:00:00', '2017-05-30 00:00:00', '', FALSE, '500', '97', '97', '123456789012345', '123456789012345', '', '123-9338670954849-69', '123-1726533787929-93', 'DIN', 'K', '', '4');
+
+insert into activity values ('1','DJEL1', 'Djelatnost1');
+insert into activity values ('2','DJEL2', 'Djelatnost2');
+insert into activity values ('3','DJEL3', 'Djelatnost3');
+insert into activity values ('4','DJEL4', 'Djelatnost4');
+
+insert into valuta values ('1', 'DIN', 'Dinar');
+insert into valuta values ('2', 'BAM', 'Bosanska marka');
+insert into valuta values ('3', 'ALL', 'Lek');
+insert into valuta values ('4', 'USD', 'Americki dolar');
+insert into valuta values ('5', 'EUR', 'Euro');
+insert into valuta values ('6', 'JPY', 'YEN');
 
