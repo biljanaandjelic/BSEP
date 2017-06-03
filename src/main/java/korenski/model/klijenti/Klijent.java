@@ -1,6 +1,6 @@
 package korenski.model.klijenti;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -37,7 +37,10 @@ import korenski.model.infrastruktura.Racun;
 @XmlSeeAlso({Racun.class, Bank.class})
 public class Klijent extends Subject{
 	
-	
+//	@Id
+//	@GeneratedValue
+	//@Column(name="id")
+//	private Long id;
 	@Column(nullable = false, length = 13)
 	@Pattern(regexp = "[0-9]{13}", message = "Oznaka JMBG-a mora imati 13 cifara.")
 	//@XmlTransient
@@ -94,8 +97,8 @@ public class Klijent extends Subject{
 	//@XmlElement(name="bank")
 	private Bank bank;
 	
-	@Column(name="racuni")
-	@OneToMany(fetch=FetchType.LAZY)
+	///@Column(name="racuni")
+	@OneToMany(mappedBy="klijent", fetch=FetchType.LAZY)
 	//@XmlElement(name="racuni")
 	private List<Racun> racuni;
 	
@@ -118,7 +121,7 @@ public class Klijent extends Subject{
 	}
 
 	@JsonIgnoreProperties({"klijent"})
-	public Collection<Racun> getRacuni() {
+	public List<Racun> getRacuni() {
 		return racuni;
 	}
 
@@ -142,6 +145,7 @@ public class Klijent extends Subject{
 	public Klijent() {
 		super();
 		// TODO Auto-generated constructor stub
+		this.racuni=new ArrayList<Racun>();
 	}
 
 	

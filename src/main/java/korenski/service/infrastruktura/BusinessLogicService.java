@@ -69,6 +69,7 @@ public class BusinessLogicService {
 		
 		if(dnevnoStanjeDuznika == null){
 			dnevnoStanjeDuznika = new DnevnoStanjeRacuna(todayWithZeroTime,racunDuznika.getStanje(),0,0,racunDuznika.getStanje(),racunDuznika);
+			racunDuznika.getDnevnaStanjaRacuna().add(dnevnoStanjeDuznika);
 			try{
 				dnevnoStanjeRepository.save(dnevnoStanjeDuznika);
 			}catch (Exception e) {
@@ -76,9 +77,11 @@ public class BusinessLogicService {
 				return;
 			}
 		}
+	
 		
 		if(dnevnoStanjePoverioca == null){
 			dnevnoStanjePoverioca=new DnevnoStanjeRacuna(new Date(),racunPoverioca.getStanje(),0,0,racunPoverioca.getStanje(),racunPoverioca);
+			racunPoverioca.getDnevnaStanjaRacuna().add(dnevnoStanjePoverioca);
 			try{
 				dnevnoStanjeRepository.save(dnevnoStanjePoverioca);
 			}catch (Exception e) {
@@ -167,6 +170,7 @@ public class BusinessLogicService {
 		
 		if(dnevnoStanjeDuznika==null){
 			dnevnoStanjeDuznika = new DnevnoStanjeRacuna(todayWithZeroTime,racunDuznika.getStanje(),0,0,racunDuznika.getStanje(),racunDuznika);
+			racunDuznika.getDnevnaStanjaRacuna().add(dnevnoStanjeDuznika);
 			try{
 				dnevnoStanjeRepository.save(dnevnoStanjeDuznika);
 			}catch (Exception e) {
@@ -174,6 +178,7 @@ public class BusinessLogicService {
 				return;
 			}
 		}
+		
 		String code=racunPoverioca.substring(0, 3);
 		
 		Bank bankaDruga=bankRepository.findByCode(code);

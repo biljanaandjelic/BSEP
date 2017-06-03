@@ -85,31 +85,58 @@ public class RacunController {
 		racun.setStatus(true);
 		racun.setBank(bank);
 		
-
-		Racun savedRacun=repository.save(racun);
-		klijent.getRacuni().add(savedRacun);
-		klijentRepository.save(klijent);
-		
-		java.lang.reflect.Method m = RacunController.class.getMethod("zatvoriRacun", ZatvaranjePomocni.class,
-				HttpServletRequest.class);
-		String mime = m.getAnnotation(CustomAnnotation.class).value();
-		
-		String msg="USER "+u.getId().toString()+" "+mime+" "+brojRacuna+"\n";
-		logger.info(msg);
-		//logger.log(Level.INFO,msg);
-		System.out.println("FINEST ISPIS");
-		logger.log(Level.FINEST,"Leaving noviRacun(): "+ racun+"\n");
-		//logger.debug("Leaving noviRacun(): "+ racun+"\n");
-		System.out.println("FINEST ISPIS");
-	//	return new ResponseEntity<Racun>(savedRacun, HttpStatus.OK);
-
+//
+//<<<<<<< HEAD
+//		Racun savedRacun=repository.save(racun);
+//		klijent.getRacuni().add(savedRacun);
+//		klijentRepository.save(klijent);
+//		
+//		java.lang.reflect.Method m = RacunController.class.getMethod("zatvoriRacun", ZatvaranjePomocni.class,
+//				HttpServletRequest.class);
+//		String mime = m.getAnnotation(CustomAnnotation.class).value();
+//		
+//		String msg="USER "+u.getId().toString()+" "+mime+" "+brojRacuna+"\n";
+//		logger.info(msg);
+//		//logger.log(Level.INFO,msg);
+//		System.out.println("FINEST ISPIS");
+//		logger.log(Level.FINEST,"Leaving noviRacun(): "+ racun+"\n");
+//		//logger.debug("Leaving noviRacun(): "+ racun+"\n");
+//		System.out.println("FINEST ISPIS");
+//	//	return new ResponseEntity<Racun>(savedRacun, HttpStatus.OK);
+//
+//		try {
+//			racun = repository.save(racun);
+//		} catch (Exception e) {
+//			return new ResponseEntity<Racun>(new Racun(new Long(-1), "Greska pri upisu u bazu!", false, null, null, null), HttpStatus.OK);
+//		}
+//		
+//		return new ResponseEntity<Racun>(racun, HttpStatus.OK);
+//
+//=======
 		try {
+			Klijent foundKlijent=klijentRepository.findOne(klijent.getId());
 			racun = repository.save(racun);
+			foundKlijent.getRacuni().add(racun);
+			klijentRepository.save(foundKlijent);
+			java.lang.reflect.Method m = RacunController.class.getMethod("zatvoriRacun", ZatvaranjePomocni.class,
+					HttpServletRequest.class);
+			String mime = m.getAnnotation(CustomAnnotation.class).value();
+
+			String msg = "USER " + u.getId().toString() + " " + mime + " " + brojRacuna + "\n";
+			logger.info(msg);
+			// logger.log(Level.INFO,msg);
+			System.out.println("FINEST ISPIS");
+			logger.log(Level.FINEST, "Leaving noviRacun(): " + racun + "\n");
+			// logger.debug("Leaving noviRacun(): "+ racun+"\n");
+			System.out.println("FINEST ISPIS");
 		} catch (Exception e) {
+			e.printStackTrace();
 			return new ResponseEntity<Racun>(new Racun(new Long(-1), "Greska pri upisu u bazu!", false, null, null, null), HttpStatus.OK);
 		}
 		
 		return new ResponseEntity<Racun>(racun, HttpStatus.OK);
+
+
 
 	}
 

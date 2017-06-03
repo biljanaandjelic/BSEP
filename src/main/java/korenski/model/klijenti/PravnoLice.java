@@ -50,6 +50,7 @@ public class PravnoLice extends Klijent {
 
 	public PravnoLice() {
 		super();
+		
 		// TODO Auto-generated constructor stub
 	}
 

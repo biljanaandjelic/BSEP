@@ -236,3 +236,105 @@ WARNING: BILJANA
 FINEST: Entering  noviRacun(klijent=korenski.model.klijenti.Klijent@95282f7, request=org.apache.catalina.connector.RequestFacade@190ab805) 
 јун 03, 2017 2:32:40 PM korenski.controller.institutions.RacunController noviRacun
 FINEST: Entering  noviRacun(klijent=korenski.model.klijenti.Klijent@780c91fd, request=org.apache.catalina.connector.RequestFacade@190ab805) 
+јун 03, 2017 11:52:23 PM korenski.controller.institutions.RacunController noviRacun
+FINEST: Entering  noviRacun(klijent=korenski.model.klijenti.Klijent@5c10a7af, request=org.apache.catalina.connector.RequestFacade@1d3c7fec) 
+јун 03, 2017 11:52:24 PM korenski.controller.institutions.RacunController noviRacun
+INFO: USER 1 DEACTIVATE_ACCOUNT 123-6159904060534-39
+
+јун 03, 2017 11:52:24 PM korenski.controller.institutions.RacunController noviRacun
+FINEST: Leaving noviRacun(): korenski.model.infrastruktura.Racun@23c656dd
+
+јун 03, 2017 11:52:25 PM korenski.controller.institutions.RacunController noviRacun
+FINEST: Entering  noviRacun(klijent=korenski.model.klijenti.Klijent@449c61f2, request=org.apache.catalina.connector.RequestFacade@1d3c7fec) 
+јун 03, 2017 11:52:26 PM korenski.controller.institutions.RacunController noviRacun
+INFO: USER 1 DEACTIVATE_ACCOUNT 123-1623877099310-49
+
+јун 03, 2017 11:52:26 PM korenski.controller.institutions.RacunController noviRacun
+FINEST: Leaving noviRacun(): korenski.model.infrastruktura.Racun@842928a
+
+јун 03, 2017 11:52:42 PM korenski.controller.institutions.RacunController noviRacun
+FINEST: Entering  noviRacun(klijent=korenski.model.klijenti.Klijent@615dae7, request=org.apache.catalina.connector.RequestFacade@1d3c7fec) 
+јун 03, 2017 11:52:42 PM korenski.controller.institutions.RacunController noviRacun
+INFO: USER 1 DEACTIVATE_ACCOUNT 123-6258551073273-8
+
+јун 03, 2017 11:52:42 PM korenski.controller.institutions.RacunController noviRacun
+FINEST: Leaving noviRacun(): korenski.model.infrastruktura.Racun@5ff18b2a
+
+јун 03, 2017 11:53:04 PM korenski.controller.institutions.RacunController noviRacun
+FINEST: Entering  noviRacun(klijent=korenski.model.klijenti.Klijent@4d2c64fa, request=org.apache.catalina.connector.RequestFacade@1d3c7fec) 
+јун 03, 2017 11:53:04 PM korenski.controller.institutions.RacunController noviRacun
+INFO: USER 1 DEACTIVATE_ACCOUNT 123-7533898626821-54
+
+јун 03, 2017 11:53:04 PM korenski.controller.institutions.RacunController noviRacun
+FINEST: Leaving noviRacun(): korenski.model.infrastruktura.Racun@3005348b
+
+јун 03, 2017 11:54:40 PM korenski.controller.institutions.RacunController noviRacun
+FINEST: Entering  noviRacun(klijent=korenski.model.klijenti.Klijent@35275694, request=org.apache.catalina.connector.RequestFacade@1d3c7fec) 
+јун 03, 2017 11:55:04 PM korenski.controller.institutions.RacunController noviRacun
+FINEST: Entering  noviRacun(klijent=korenski.model.klijenti.Klijent@2b179341, request=org.apache.catalina.connector.RequestFacade@3ca479db) 
+јун 03, 2017 11:56:01 PM korenski.controller.institutions.RacunController noviRacun
+FINEST: Entering  noviRacun(klijent=korenski.model.klijenti.Klijent@7e7ee5e2, request=org.apache.catalina.connector.RequestFacade@3ca479db) 
+јун 03, 2017 11:56:22 PM korenski.controller.institutions.RacunController noviRacun
+FINEST: Entering  noviRacun(klijent=korenski.model.klijenti.Klijent@752af4b8, request=org.apache.catalina.connector.RequestFacade@236e8696) 
+јун 03, 2017 11:56:49 PM korenski.controller.institutions.RacunController noviRacun
+FINEST: Entering  noviRacun(klijent=korenski.model.klijenti.Klijent@2d2cc145, request=org.apache.catalina.connector.RequestFacade@236e8696) 
+јун 04, 2017 12:32:25 AM korenski.controller.institutions.RacunController noviRacun
+FINEST: Entering  noviRacun(klijent=korenski.model.klijenti.Klijent@35477a70, request=org.apache.catalina.connector.RequestFacade@58cb67c) 
+јун 04, 2017 12:32:25 AM korenski.controller.institutions.RacunController noviRacun
+INFO: USER 1 DEACTIVATE_ACCOUNT 123-8374966843679-46
+
+јун 04, 2017 12:32:25 AM korenski.controller.institutions.RacunController noviRacun
+FINEST: Leaving noviRacun(): korenski.model.infrastruktura.Racun@567f0018
+
+јун 04, 2017 12:32:27 AM korenski.controller.institutions.RacunController noviRacun
+FINEST: Entering  noviRacun(klijent=korenski.model.klijenti.Klijent@f84f049, request=org.apache.catalina.connector.RequestFacade@58cb67c) 
+јун 04, 2017 12:32:27 AM korenski.controller.institutions.RacunController noviRacun
+INFO: USER 1 DEACTIVATE_ACCOUNT 123-5285536567599-32
+
+јун 04, 2017 12:32:27 AM korenski.controller.institutions.RacunController noviRacun
+FINEST: Leaving noviRacun(): korenski.model.infrastruktura.Racun@40551c4
+
+јун 04, 2017 12:32:29 AM korenski.controller.institutions.RacunController noviRacun
+FINEST: Entering  noviRacun(klijent=korenski.model.klijenti.Klijent@1d4febe4, request=org.apache.catalina.connector.RequestFacade@58cb67c) 
+јун 04, 2017 12:32:29 AM korenski.controller.institutions.RacunController noviRacun
+INFO: USER 1 DEACTIVATE_ACCOUNT 123-2010677553967-98
+
+јун 04, 2017 12:32:29 AM korenski.controller.institutions.RacunController noviRacun
+FINEST: Leaving noviRacun(): korenski.model.infrastruktura.Racun@7108a286
+
+јун 04, 2017 12:32:30 AM korenski.controller.institutions.RacunController noviRacun
+FINEST: Entering  noviRacun(klijent=korenski.model.klijenti.Klijent@77aa6f9e, request=org.apache.catalina.connector.RequestFacade@58cb67c) 
+јун 04, 2017 12:32:31 AM korenski.controller.institutions.RacunController noviRacun
+INFO: USER 1 DEACTIVATE_ACCOUNT 123-0296483313152-24
+
+јун 04, 2017 12:32:31 AM korenski.controller.institutions.RacunController noviRacun
+FINEST: Leaving noviRacun(): korenski.model.infrastruktura.Racun@1b0c3f24
+
+јун 04, 2017 12:34:25 AM korenski.controller.institutions.RacunController noviRacun
+FINEST: Entering  noviRacun(klijent=korenski.model.klijenti.Klijent@3334517c, request=org.apache.catalina.connector.RequestFacade@58cb67c) 
+јун 04, 2017 12:34:35 AM korenski.controller.institutions.RacunController noviRacun
+FINEST: Entering  noviRacun(klijent=korenski.model.klijenti.Klijent@31d72ab4, request=org.apache.catalina.connector.RequestFacade@1409abb7) 
+јун 04, 2017 12:40:25 AM korenski.controller.institutions.RacunController noviRacun
+FINEST: Entering  noviRacun(klijent=korenski.model.klijenti.Klijent@7f401822, request=org.apache.catalina.connector.RequestFacade@4b20255d) 
+јун 04, 2017 12:40:25 AM korenski.controller.institutions.RacunController noviRacun
+INFO: USER 1 DEACTIVATE_ACCOUNT 123-9040936485614-36
+
+јун 04, 2017 12:40:25 AM korenski.controller.institutions.RacunController noviRacun
+FINEST: Leaving noviRacun(): korenski.model.infrastruktura.Racun@3ee08316
+
+јун 04, 2017 12:40:27 AM korenski.controller.institutions.RacunController noviRacun
+FINEST: Entering  noviRacun(klijent=korenski.model.klijenti.Klijent@34ae6d21, request=org.apache.catalina.connector.RequestFacade@4b20255d) 
+јун 04, 2017 12:40:27 AM korenski.controller.institutions.RacunController noviRacun
+INFO: USER 1 DEACTIVATE_ACCOUNT 123-9915300869116-46
+
+јун 04, 2017 12:40:27 AM korenski.controller.institutions.RacunController noviRacun
+FINEST: Leaving noviRacun(): korenski.model.infrastruktura.Racun@8a196c0
+
+јун 04, 2017 12:42:13 AM korenski.controller.institutions.RacunController noviRacun
+FINEST: Entering  noviRacun(klijent=korenski.model.klijenti.Klijent@3b5da31d, request=org.apache.catalina.connector.RequestFacade@4b20255d) 
+јун 04, 2017 12:42:13 AM korenski.controller.institutions.RacunController noviRacun
+INFO: USER 1 DEACTIVATE_ACCOUNT 123-7341763046876-61
+
+јун 04, 2017 12:42:13 AM korenski.controller.institutions.RacunController noviRacun
+FINEST: Leaving noviRacun(): korenski.model.infrastruktura.Racun@3eea41e8
+
