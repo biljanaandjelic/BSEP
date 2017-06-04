@@ -75,7 +75,7 @@ public class ValutaControler {
 		return new ResponseEntity<Valuta>(valuta, HttpStatus.OK);
 	}
 
-	
+	@CustomAnnotation(value = "FIND_ONE_VALUTE")
 	@RequestMapping(
 			value="/findValue/{id}",
 			method=RequestMethod.GET,
@@ -88,6 +88,8 @@ public class ValutaControler {
 		}
 		return new ResponseEntity<Valuta>(HttpStatus.OK);
 	}
+	
+	@CustomAnnotation(value = "FIND_VALUTE_BY_CODE")
 	@RequestMapping(
 			value="/findValueByCode/{code}",
 			method=RequestMethod.GET,

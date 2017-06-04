@@ -1,7 +1,7 @@
 
 
 
-administratorBanke.controller('RukovanjeKorisnicima', function($scope, $http, $compile){
+administratorBanke.controller('RukovanjePravnimKorisnicima', function($scope, $http, $compile){
 	
 	$scope.lozinka1 = "";
 	$scope.banka = {};
@@ -22,7 +22,7 @@ administratorBanke.controller('RukovanjeKorisnicima', function($scope, $http, $c
 	
 	$scope.init = function(){
 		
-		$http.get('/allUsers').
+		$http.get('/allLegalUsers').
         then(function(response) {
         	$scope.korisnici = response.data;
         	
@@ -31,10 +31,19 @@ administratorBanke.controller('RukovanjeKorisnicima', function($scope, $http, $c
 		$http.get('/allRoles').
         then(function(response) {
         	$scope.sveRole = response.data;
-        	
+        	var temp = -1;
+			for (var i = 0; i < $scope.sveRole.length; i++) { 
+			    if(angular.equals($scope.sveRole[i].name, 'LEGAL')){
+			    	temp = i;
+			    	break;
+			    }
+			}
+			
+			$scope.rola = $scope.sveRole[temp];
+			
         });
 		
-		$http.get('/sviZaposleni').
+		$http.get('/svaPravnaLica').
         then(function(response) {
         	$scope.sviZaposleni = response.data;
         	
@@ -42,8 +51,8 @@ administratorBanke.controller('RukovanjeKorisnicima', function($scope, $http, $c
 		
 	};
 	
-	this.nadjiZaposlene = function(){
-		$http.get('/sviZaposleni').
+	this.nadjiPravnaLica = function(){
+		$http.get('/svaPravnaLica').
         then(function(response) {
         	$scope.sviZaposleni = response.data;
         	
@@ -61,7 +70,7 @@ administratorBanke.controller('RukovanjeKorisnicima', function($scope, $http, $c
 	
 	this.refresh = function(){
 		
-		$http.get('/allUsers').
+		$http.get('/allLegalUsers').
         then(function(response) {
         	$scope.korisnici = response.data;
         	
@@ -74,7 +83,7 @@ administratorBanke.controller('RukovanjeKorisnicima', function($scope, $http, $c
 		$scope.rezim =1;
 		$scope.korisnik = {};
 		$scope.banka = {};
-		$scope.rola = {};
+		
 	};
 	
 	this.searchClick = function(){
@@ -120,7 +129,7 @@ administratorBanke.controller('RukovanjeKorisnicima', function($scope, $http, $c
 			
 			$http({
     		    method: 'POST',
-    		    url: '/newUser',
+    		    url: '/newLegalUser',
     		    data: $scope.korisnik
     		}).
     		then(function mySucces(response) {
@@ -138,7 +147,7 @@ administratorBanke.controller('RukovanjeKorisnicima', function($scope, $http, $c
     				
     				$scope.korisnik = {};
     				$scope.zaposleni = {};
-    				$scope.rola = {};
+    				//$scope.rola = {};
     				$scope.promenjen = false;
     		});
       
@@ -219,7 +228,7 @@ administratorBanke.controller('RukovanjeKorisnicima', function($scope, $http, $c
 			
 			$scope.korisnik = {};
 			$scope.zaposleni = {};
-			$scope.rola = {};
+			//$scope.rola = {};
 		}
 		$scope.promenjen = false;
 	};
@@ -431,6 +440,7 @@ administratorBanke.directive('ngConfirmClick', [
             }
         };
 }])
+
 
 
 administratorBanke.filter('stringRezima', function() {

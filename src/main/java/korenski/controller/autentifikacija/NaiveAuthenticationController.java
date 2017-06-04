@@ -75,16 +75,44 @@ public class NaiveAuthenticationController {
 				}else{
 					request.getSession().setAttribute("user", user);
 					
-//					if(!user.isChangedFirstPassword()){
-//						loginObject.setId(-5);
-//						//loginObject.setUrl("http://localhost:8080/authentification/change.html");
-//						request.getRequestDispatcher("/authentification/change.html").forward(request, response);
-//					}
+					if(!user.isChangedFirstPassword()){
+						loginObject.setId(-5);
+						
+						String url = "";
+						String scheme = request.getScheme();
+						String host = request.getServerName();
+						int port = request.getServerPort();
+						url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/authentification/change.html");
+						
+						loginObject.setUrl(url);
+						return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
+						//request.getRequestDispatcher("/authentification/change.html").forward(request, response);
+					}else{
+						if(user.getRole().getName().equals("ADMINISTRATOR_BANK")){
+							
+							String url = "";
+							String scheme = request.getScheme();
+							String host = request.getServerName();
+							int port = request.getServerPort();
+							url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/adminResources/AdminPage.html");
+							loginObject.setId(-5);
+							loginObject.setUrl(url);
+							return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
+						}else if(user.getRole().getName().equals("COUNTER_OFFICER") ||
+								 user.getRole().getName().equals("MANAGER")){
+							
+							
+							String url = "";
+							String scheme = request.getScheme();
+							String host = request.getServerName();
+							int port = request.getServerPort();
+							url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/inicijalizacija/InitPage.html");
+							loginObject.setId(-5);
+							loginObject.setUrl(url);
+							return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
+						}
+					}
 					
-					Cookie myCookie =new Cookie("XSRF-TOKEN", "MYPRECIOUS");
-					response.addCookie(myCookie);
-					
-					System.out.println("XSRF-TOKEN vrednost je "+ "MYPRECIOUS");
 					
 					return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
 				}
@@ -133,8 +161,18 @@ public class NaiveAuthenticationController {
 		Cookie myCookie =new Cookie("XSRF-TOKEN", null);
 		response.addCookie(myCookie);
 		
+		
+		user = new User();
+		String url = "";
+		String scheme = request.getScheme();
+		String host = request.getServerName();
+		int port = request.getServerPort();
+		url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/authentification/login.html");
+		
+		
+		user.setUsername(url);
 		request.getSession().invalidate();
-		return new ResponseEntity<User>(new User(), HttpStatus.OK);
+		return new ResponseEntity<User>(user, HttpStatus.OK);
 		
 		
 	}

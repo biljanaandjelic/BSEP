@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import korenski.intercepting.CustomAnnotation;
 import korenski.model.autorizacija.User;
 import korenski.model.infrastruktura.Bank;
 import korenski.model.infrastruktura.Racun;
@@ -44,7 +45,7 @@ public class ImportController {
 	@Autowired
 	BusinessLogicService blService;
 	
-	
+	@CustomAnnotation(value = "IMPORT_FROM_XML")
 	@RequestMapping(
 			value = "/importChosenXML",
 			method = RequestMethod.POST,

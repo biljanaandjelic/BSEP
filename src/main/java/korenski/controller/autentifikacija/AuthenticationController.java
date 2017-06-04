@@ -213,7 +213,7 @@ public class AuthenticationController {
 	RoleRepository roleRepository;
 
 //	@RequestMapping(
-//			value = "/login",
+//			value = "/special/loginSubject",
 //			method = RequestMethod.POST,
 //			consumes = MediaType.APPLICATION_JSON_VALUE,
 //			produces = MediaType.APPLICATION_JSON_VALUE)
@@ -249,7 +249,38 @@ public class AuthenticationController {
 //					
 //					if(!user.isChangedFirstPassword()){
 //						loginObject.setId(-5);
-//						loginObject.setUrl("http://localhost:8080/authentification/change.html");
+//						String url = "";
+//						String scheme = request.getScheme();
+//						String host = request.getServerName();
+//						int port = request.getServerPort();
+//						url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/authentification/change.html");
+//						
+//						loginObject.setUrl(url);
+//						return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
+//					}else{
+//						if(user.getRole().getName().equals("ADMINISTRATOR_BANK")){
+//							
+//							String url = "";
+//							String scheme = request.getScheme();
+//							String host = request.getServerName();
+//							int port = request.getServerPort();
+//							url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/adminResources/AdminPage.html");
+//							loginObject.setId(-5);
+//							loginObject.setUrl(url);
+//							return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
+//						}else if(user.getRole().getName().equals("COUNTER_OFFICER") ||
+//								 user.getRole().getName().equals("MANAGER")){
+//							
+//							
+//							String url = "";
+//							String scheme = request.getScheme();
+//							String host = request.getServerName();
+//							int port = request.getServerPort();
+//							url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/inicijalizacija/InitPage.html");
+//							loginObject.setId(-5);
+//							loginObject.setUrl(url);
+//							return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
+//						}
 //					}
 //					
 //					return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);

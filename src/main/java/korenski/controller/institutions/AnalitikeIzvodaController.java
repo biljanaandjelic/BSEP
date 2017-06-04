@@ -195,6 +195,7 @@ public class AnalitikeIzvodaController {
 				,HttpStatus.OK);
 	}
 
+	@CustomAnnotation(value = "FIND_ANALYTICS_BY_DAILY_STATE")
 	@RequestMapping(
 			value = "/filtrirajAnalitikePoStanju/{stanje}",
 			method = RequestMethod.GET,

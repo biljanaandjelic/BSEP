@@ -140,8 +140,6 @@ public class User {
 		this.subject = subject;
 		this.changedFirstPassword = false;
 	}
-
-
 	
 	
 	public Long getId() {

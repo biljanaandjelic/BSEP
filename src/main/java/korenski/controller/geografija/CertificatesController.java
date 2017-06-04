@@ -53,7 +53,6 @@ import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
-import org.bouncycastle.cert.ocsp.OCSPReq;
 import org.bouncycastle.crypto.params.RSAKeyParameters;
 import org.bouncycastle.crypto.util.PublicKeyFactory;
 import org.bouncycastle.jce.PrincipalUtil;
@@ -74,8 +73,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.fasterxml.jackson.annotation.JsonFormat.Value;
+
 import korenski.DTOs.CertificateDTO;
 import korenski.DTOs.CertificateRequestDTO;
+import korenski.intercepting.CustomAnnotation;
 import korenski.model.autorizacija.User;
 import korenski.model.dto.CertificateInfo;
 import korenski.model.dto.CertificateInfo.CertStatus;
@@ -103,6 +105,7 @@ public class CertificatesController {
 	
 	private KeyStore ks;
 
+	@CustomAnnotation(value = "GENERATE_CERTIFICATE")
 	@RequestMapping(value = "/genCertificate", method = RequestMethod.POST, produces = MediaType.TEXT_PLAIN)
 	public ResponseEntity<String> genCertificate(@RequestBody CertificateDTO dto, @Context HttpServletRequest request)
 			throws KeyStoreException, NoSuchAlgorithmException, CertificateException, FileNotFoundException,
@@ -211,6 +214,7 @@ public class CertificatesController {
 		return new ResponseEntity<String>("ok", HttpStatus.OK);
 	}
 	
+	@CustomAnnotation(value = "GENERATE_CERTIFICATE_REQUEST")
 	@RequestMapping(value = "/genCertificateRequest", method = RequestMethod.POST, produces = MediaType.TEXT_PLAIN)
 	public ResponseEntity<String> genCertificateRequest(@RequestBody CertificateDTO dto, @Context HttpServletRequest httpRequest)
 			throws KeyStoreException, NoSuchAlgorithmException, CertificateException, FileNotFoundException,
@@ -292,6 +296,7 @@ public class CertificatesController {
 		return new ResponseEntity<String>("ok", HttpStatus.OK);
 	}
 	
+	@CustomAnnotation(value = "GET_CERTIFICATE_REQUESTS")
 	@RequestMapping(value = "/getCertificateRequests", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON)
 	public ResponseEntity<Collection<CertificateRequestDTO>> getCertificateRequests(@Context HttpServletRequest httpRequest) throws IOException{
 		
@@ -343,6 +348,7 @@ public class CertificatesController {
 		return new ResponseEntity<Collection<CertificateRequestDTO>>(retVal, HttpStatus.OK);
 	}
 	
+	@CustomAnnotation(value = "MAKE_CERTIFICATE")
 	@RequestMapping(value = "/makeCertificate/{id}", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN)
 	public ResponseEntity<String> makeCertificate(@PathVariable("id") int id, @Context HttpServletRequest httpRequest) throws IOException, KeyStoreException, NoSuchProviderException, NoSuchAlgorithmException, CertificateException, InvalidKeySpecException, UnrecoverableKeyException, OperatorCreationException{
 		
@@ -449,6 +455,7 @@ public class CertificatesController {
 		return new ResponseEntity<String>("ok", HttpStatus.OK);
 	}
 	
+	@CustomAnnotation(value = "FIND_CERTIFICATE_BY_ALIAS")
 	@RequestMapping(value = "/certificate/{alias}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON)
 	public ResponseEntity<CertificateDTO> findCertificateDTO(@PathVariable("alias") String alias)
 			throws KeyStoreException, NoSuchProviderException {
@@ -552,6 +559,7 @@ public class CertificatesController {
 	 * 
 	 * @param serialNumber
 	 */
+	@CustomAnnotation(value = "REVOKE_CERTIFICATE")
 	@RequestMapping(value = "/revokeCertificate/{alias}", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN)
 	public ResponseEntity<String> revokeCertificate(@PathVariable("alias") String alias) {
 
@@ -584,6 +592,7 @@ public class CertificatesController {
 	 * @return
 	 * @author Biljana
 	 */
+	@CustomAnnotation(value = "PROCESS_REVOKE_REQUEST")
 	@RequestMapping(value = "/revokeRequest/{id}/{type}", method = RequestMethod.DELETE, produces = MediaType.TEXT_PLAIN)
 	public ResponseEntity<String> processRevokeRequest(@PathVariable Long id, @PathVariable String type,
 			@Context HttpServletRequest request) {
@@ -631,6 +640,7 @@ public class CertificatesController {
 	 * @return
 	 * @author Biljana
 	 */
+	@CustomAnnotation(value = "GET_REVOKE_REQUEST")
 	@RequestMapping(value = "/revokeRequest", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON)
 	public ResponseEntity<Set<RevokeRequest>> revokeRequest(@Context HttpServletRequest request) {
 		User loginUser = (User) request.getSession().getAttribute("user");
@@ -657,6 +667,7 @@ public class CertificatesController {
 	 * @return
 	 * @author Biljana
 	 */
+	@CustomAnnotation(value = "SAVE_REVOKE_REQUEST")
 	@RequestMapping(value = "/revokeRequest", method = RequestMethod.PUT,
 			// consumes=MediaType.APPLICATION_JSON,
 			produces = MediaType.TEXT_PLAIN)

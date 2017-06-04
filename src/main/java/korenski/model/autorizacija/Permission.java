@@ -20,7 +20,7 @@ public class Permission {
 	private Long id;
 	
 	@Column(unique = true, nullable = false)
-	@Size(max = 30)
+	@Size(max = 40)
 	@NotEmpty
 	private String name;
 

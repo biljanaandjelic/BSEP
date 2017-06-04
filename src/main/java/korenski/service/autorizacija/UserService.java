@@ -134,7 +134,7 @@ public class UserService {
 		long difference = tempTime - creationDate;
 		
 		// ako je proslo vise od 2 sata onda lozinka je istekla
-		if ( difference > 2400000){
+		if ( difference > 7200000){
 			return true;
 		}else{// u suprotnom je validna
 			return false;

@@ -59,6 +59,7 @@ public class PravnoLiceController {
 		try {
 			pl = repository.save(pravnoLice);
 		} catch (Exception e){
+			e.printStackTrace();
 			return new ResponseEntity<PravnoLice>(new PravnoLice(new Long(-1), null, null, null, null, null, null, null), HttpStatus.OK);
 		}
 		return new ResponseEntity<PravnoLice>(pl, HttpStatus.OK);

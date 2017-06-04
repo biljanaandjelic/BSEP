@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import korenski.intercepting.CustomAnnotation;
 import korenski.model.sifrarnici.Message;
 import korenski.service.sifrarnici.MessageService;
 
@@ -23,7 +24,7 @@ public class MessageController {
 	@Autowired
 	MessageService messageService;
 	
-	
+	@CustomAnnotation(value = "INSERT_MESSAGE")
 	@RequestMapping(
 			value="/message",
 			method=RequestMethod.PUT,
@@ -40,7 +41,7 @@ public class MessageController {
 		
 	}
 	
-	
+	@CustomAnnotation(value = "UPDATE_MESSAGE")
 	@RequestMapping(
 			value="/message",
 			method=RequestMethod.POST,
@@ -56,7 +57,7 @@ public class MessageController {
 		}
 		
 	}
-	
+	@CustomAnnotation(value = "FIND_ALL_MESSAGE")
 	@RequestMapping(
 			value="/messages",
 			method=RequestMethod.GET,
@@ -69,6 +70,8 @@ public class MessageController {
 		}
 		return new ResponseEntity<Set<Message>>(HttpStatus.NO_CONTENT);
 	}
+	
+	@CustomAnnotation(value = "FIND_MESSAGE_BY_CODE")
 	@RequestMapping(
 			value="/messageByCode/{code}",
 			method=RequestMethod.GET,
@@ -82,7 +85,7 @@ public class MessageController {
 		return new ResponseEntity<Message>(HttpStatus.NO_CONTENT);
 		
 	}
-	
+	@CustomAnnotation(value = "FIND_ONE_MESSAGE")
 	@RequestMapping(
 			value="/message/{id}",
 			method=RequestMethod.GET,
@@ -96,6 +99,8 @@ public class MessageController {
 		return new ResponseEntity<Message>(HttpStatus.NO_CONTENT);
 		
 	}
+	
+	@CustomAnnotation(value = "DELETE_MESSAGE")
 	@RequestMapping(
 			value="/message/{id}",
 			method=RequestMethod.DELETE,

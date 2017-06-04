@@ -63,7 +63,7 @@ public class ActivityController {
 	 * @param request
 	 * @return
 	 */
-	
+	@CustomAnnotation(value = "FIND_ONE_ACTIVITY")
 	@RequestMapping(
 			value="/activity/{id}",
 			method=RequestMethod.GET,

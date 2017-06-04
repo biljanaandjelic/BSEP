@@ -5,7 +5,6 @@ import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Transactional;
 import javax.ws.rs.core.Context;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +18,17 @@ import korenski.model.autorizacija.Permission;
 import korenski.model.autorizacija.Role;
 import korenski.model.autorizacija.User;
 import korenski.repository.autorizacija.RoleRepository;
+import korenski.repository.autorizacija.UserRepository;
+import korenski.service.autorizacija.UserServiceClass;
 
 @Component
 public class AuthorizationInterceptor implements HandlerInterceptor  {
 
 	@Autowired
 	RoleRepository roleRepository;
+	@Autowired
+	UserRepository userRepository;
+	
 	
 	@Override
 	public boolean preHandle(@Context HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -41,28 +45,43 @@ public class AuthorizationInterceptor implements HandlerInterceptor  {
 		
 		System.out.println("Vrednost tokena u sesiji je "+sessionTokenValue);
 		
-//		if(tokenValue == null){
-//			return false;
-//		}
-//		
-//		System.out.println("Ima token");
-//		
-//		
-//		if(!tokenValue.equals(sessionTokenValue)){
-//			return false;
-//		}
-//		
-//		System.out.println("Poklapa se token");
-//		
+		if(tokenValue == null){
+			return false;
+		}
+		
+		System.out.println("Ima token");
+		
+		
+		if(!tokenValue.equals(sessionTokenValue)){
+			return false;
+		}
+		
+		System.out.println("Poklapa se token");
+		
 		
 		User user = (User) request.getSession().getAttribute("user");
 		
 		if(user == null){
+			System.out.println("Nema ulogovanog korisnika");
 			return false;
 		}
 		
 		
-		System.out.println("Ima ulogovanog korisnika");
+		if(userRepository != null){
+
+			User userFromDB = userRepository.findOne(user.getId());
+			
+			System.out.println("Ima ulogovanog korisnika");
+			
+			if(userFromDB == null){
+				System.out.println("Ulogovani korisnik ne postoji u bazi");
+				return false;
+			}
+			
+			System.out.println("Ulogovani korisnik postoji u bazi");
+			
+			
+		}
 		
 		
 		Role role = user.getRole();
@@ -96,6 +115,8 @@ public class AuthorizationInterceptor implements HandlerInterceptor  {
 				return true;
 			}
 		}
+		
+		System.out.println("NEMA PERMISIJE");
 		
 		return false;
 	}

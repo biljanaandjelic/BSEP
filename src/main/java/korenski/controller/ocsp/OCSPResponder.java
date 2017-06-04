@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import korenski.intercepting.CustomAnnotation;
 import korenski.model.autorizacija.User;
 import korenski.model.dto.CertificateInfo;
 import korenski.model.dto.CertificateInfo.CertStatus;
@@ -123,6 +124,7 @@ public class OCSPResponder {
 	 * @return
 	 * @author Biljana
 	 */
+	@CustomAnnotation(value = "OCSP_RESPONSE")
 	@RequestMapping(value = "/ocspResponse/{alias}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
 	public ResponseEntity<OCSPResponse> processOcspRequest( @PathVariable String alias,
 			@Context HttpServletRequest request) {

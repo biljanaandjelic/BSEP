@@ -1,68 +1,13 @@
-var menjanje = angular.module('menjanje', []);
 
-menjanje.service('tokenService', function(){
-	var token = "";
-	
-	var setToken = function(vrednost){
-		token = vrednost;
-	}
-	
-	var getToken = function(){
-		return token;
-	}
-
-	return {
-		setToken : setToken,
-		getToken : getToken
-	};
-	
-});
-
-menjanje.factory('httpRequestInterceptor',['tokenService', function (tokenService) {
-	
-		
-	  return {
-	    request: function (config) {
-	    	var t = tokenService.getToken();
-	      config.headers['X-XSRF-Token'] = t;
-	       return config;
-	    }
-	  };
-	}]);
-//'$httpProvider', 'tokenService', '$http', 
-menjanje.config(function ($httpProvider) {
-	
-	
-	$httpProvider.interceptors.push('httpRequestInterceptor');
-	});
-
-
-
-
-
-menjanje.controller('IzmenaCtrl', [ '$window', '$scope', '$http', '$compile', 'tokenService', 
-		function($window, $scope, $http, $compile, tokenService) {
+administratorBanke.controller('IzmenaCtrl', [ '$window', '$scope', '$http', '$compile', 
+		function($window, $scope, $http, $compile) {
 
 			$scope.userToChange = {}
 
 			
 			$scope.lozinka1 = "";
 			
-			$scope.init = function(){
-				
-				
-				$http.get('/special/getSafeToken').
-				then(function mySucces(response) {
-					
-					
-					if(angular.equals(response.data.name, 'OHNO')){
-						$window.location.href=response.data.value;
-					}
-					
-					tokenService.setToken(response.data.value);
-				});
 			
-			};
 			
 			this.logoff = function(){
 				
@@ -115,7 +60,7 @@ menjanje.controller('IzmenaCtrl', [ '$window', '$scope', '$http', '$compile', 't
 
 		} ]);
 
-menjanje.directive("passwordVerify", function() {
+administratorBanke.directive("passwordVerify", function() {
 	   return {
 		      require: "ngModel",
 		      scope: {

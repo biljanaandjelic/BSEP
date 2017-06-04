@@ -102,6 +102,7 @@ public class DnevnaStanjaController {
 		return new ResponseEntity<Collection<DnevnoStanjeRacuna>>(repository.filter(bank.getId(), filter.getRacun(), pocetak, kraj), HttpStatus.OK);
 	}
 	
+	@CustomAnnotation(value = "FIND_DAILY_STATE_BY_ACCOUNT")
 	@RequestMapping(
 			value = "/filtrirajStanjaPoRacunu/{racun}",
 			method = RequestMethod.GET,
