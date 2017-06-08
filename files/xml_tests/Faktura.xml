@@ -6,6 +6,7 @@
         <Naziv>Mena consulting</Naziv>
         <PIB>1234567890</PIB>
         <Adresa>Nemam pojma 18</Adresa>
+		<Telefon>987654321</Telefon>
     </Preduzece>
     <Poslovni_partner xsi:type="TFirma">
         <Naziv>Prava firma DOO</Naziv>

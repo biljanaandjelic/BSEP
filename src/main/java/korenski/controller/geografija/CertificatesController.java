@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.StringWriter;
 import java.math.BigInteger;
 import java.security.KeyFactory;
@@ -45,6 +46,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
+import org.bouncycastle.asn1.ASN1OutputStream;
 import org.bouncycastle.asn1.x500.RDN;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
@@ -70,7 +72,9 @@ import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 import org.bouncycastle.pkcs.jcajce.JcaPKCS10CertificationRequestBuilder;
+import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemReader;
+import org.bouncycastle.util.io.pem.PemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -111,6 +115,9 @@ public class CertificatesController {
 			throws KeyStoreException, NoSuchAlgorithmException, CertificateException, FileNotFoundException,
 			IOException, NoSuchProviderException, OperatorCreationException, ParseException {
 		
+		System.out.println(((User)request.getSession().getAttribute("user")));
+		System.out.println(((User)request.getSession().getAttribute("user")).getBank());
+		System.out.println(((User)request.getSession().getAttribute("user")).getBank().getSwiftCode());
 		String filePathString = "./files/KEYSTORE-" + ((User)request.getSession().getAttribute("user")).getBank().getSwiftCode() + ".jks";
 		
 		if (ks == null) {
@@ -240,7 +247,16 @@ public class CertificatesController {
 		}
 		num++;
 		
-		File f = new File("./files/CSR"+bankSwiftCode+"/CSR"+num+".csr");
+		int cnt = 1;
+		while(true){
+			File f = new File("./files/CSR"+bankSwiftCode+"/CSR-"+dto.uid + "-" +cnt+".csr");
+			if(!f.exists()){
+				break;
+			}
+			cnt++;
+		}
+		
+		File f = new File("./files/CSR"+bankSwiftCode+"/CSR-"+dto.uid + "-" +cnt+".csr");
 		BufferedWriter w = new BufferedWriter(new FileWriter(f.getPath()));
 		StringWriter sw = new StringWriter();
 		JcaPEMWriter pemWriter = new JcaPEMWriter(sw);
@@ -260,7 +276,7 @@ public class CertificatesController {
 		
 		getKeyStore("./files/KEYSTORE-" + dto.uid + ".jks");
 		
-		int cnt = 1;
+		cnt = 1;
 		while(true){
 			if(!ks.isKeyEntry("KEY-" + cnt)){
 				ks.setKeyEntry("KEY-" + cnt, pair.getPrivate(), "test".toCharArray(), new Certificate[] { (certificate) });
@@ -306,7 +322,7 @@ public class CertificatesController {
 			
 			CertificateRequestDTO dto = new CertificateRequestDTO();
 			
-			dto.setId(++cnt);
+			dto.setId(f.getName().split("-")[1] + "-" + f.getName().split("-")[2]);
 			dto.setCn((IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.CN)[0].getFirst().getValue())));
 			dto.setSurname((IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.SURNAME)[0].getFirst().getValue())));
 			dto.setGivenName((IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.GIVENNAME)[0].getFirst().getValue())));
@@ -326,7 +342,7 @@ public class CertificatesController {
 	}
 	
 	@RequestMapping(value = "/makeCertificate/{id}", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN)
-	public ResponseEntity<String> makeCertificate(@PathVariable("id") int id, @Context HttpServletRequest httpRequest) throws IOException, KeyStoreException, NoSuchProviderException, NoSuchAlgorithmException, CertificateException, InvalidKeySpecException, UnrecoverableKeyException, OperatorCreationException{
+	public ResponseEntity<String> makeCertificate(@PathVariable("id") String id, @Context HttpServletRequest httpRequest) throws IOException, KeyStoreException, NoSuchProviderException, NoSuchAlgorithmException, CertificateException, InvalidKeySpecException, UnrecoverableKeyException, OperatorCreationException{
 		
 		User u = (User)httpRequest.getSession().getAttribute("user");
 		String bankSwiftCode;
@@ -340,7 +356,7 @@ public class CertificatesController {
 			return null;
 		}
 		
-		File f = new File("./files/CSR"+bankSwiftCode+"/CSR"+id+".csr");
+		File f = new File("./files/CSR"+bankSwiftCode+"/CSR-"+id + ".csr");
 		
 		BufferedReader r = new BufferedReader(new FileReader(f.getPath()));
 		PemReader pemReader = new PemReader(r);
@@ -447,6 +463,40 @@ public class CertificatesController {
 		
 		return new ResponseEntity<String>("ok", HttpStatus.OK);
 	}
+	
+	@RequestMapping(value = "/exportCertificate/{alias}", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN)
+	public ResponseEntity<String> exportCertificate(@PathVariable("alias") String alias, @Context HttpServletRequest httpRequest) throws KeyStoreException, NoSuchProviderException, NoSuchAlgorithmException, CertificateException, FileNotFoundException, IOException{
+		
+		String filePathString = "./files/KEYSTORE-" + alias.split("-")[1] + ".jks";
+		
+		if (ks == null) {
+			ks = KeyStore.getInstance("BKS", "BC");
+		}
+
+		getKeyStore(filePathString);
+		
+		X509Certificate cert = (X509Certificate)ks.getCertificate(alias);
+		X500Name x500name = new JcaX509CertificateHolder(cert).getSubject();
+		RDN cn = x500name.getRDNs(BCStyle.CN)[0];
+		
+		File f = new File("./files/" + cn.getFirst().getValue() + ".cer");
+		BufferedWriter w = new BufferedWriter(new FileWriter(f.getPath()));
+		
+		StringWriter writer = new StringWriter();
+		PemWriter pemWriter = new PemWriter(writer);
+		pemWriter.writeObject(new PemObject("CERTIFICATE", cert.getEncoded()));
+		
+		pemWriter.close();
+		writer.close();
+		w.write(writer.toString());
+		w.flush();
+		w.close();
+		
+		saveKeyStore(filePathString);
+		
+		return new ResponseEntity<String>("ok", HttpStatus.OK);
+	}
+	
 	/**
 	 * Metodu zamjeniti....
 	 * @param alias
