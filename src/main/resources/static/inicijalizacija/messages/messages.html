@@ -53,13 +53,15 @@
 		</div>
 		<div class="panel panel-info">
 		<!---| stringRezima-->
-			<p> <h4>Rezim za {{state }}</h4></p>
+
+			<p> <h4>Rezim za {{state | stringRezima}}</h4></p>
+
 		</div>
 		
 	  <div class="panel panel-default">
 	   		<div class="panel-body">
 	   			<div>
-		   			<p>Sifra poruke: <input type="text" ng-model="message.code" required autofocus maxlength="5"></p>
+		   			<p>Sifra poruke: <input type="text" ng-model="messagePomocni.code" required autofocus maxlength="5"></p>
 		   		
 		   		
 	   			<div class="container" id="dugmici">

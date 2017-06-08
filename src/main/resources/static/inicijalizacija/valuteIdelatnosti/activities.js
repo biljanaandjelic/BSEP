@@ -2,6 +2,7 @@ administrator.controller('HandleActivities', function($scope, $http, $compile,$l
 	$scope.activities=[];
 	$scope.activity={};
 	$scope.valutaId=-1;
+	$scope.activityPomocni={};
 	var states=[];
 	
 	var  State={
@@ -23,13 +24,16 @@ administrator.controller('HandleActivities', function($scope, $http, $compile,$l
 	this.deleteClick=function(){
 		$log.log("DELETE CLICK--ACTIVITIES");
 		var path='/activity/'+ $scope.activity.id;
-
+		$log.log("ID djelatnosti "+$scope.activity.id);
+		$log.log("PATH "+path);
 		$http({
 			method: 'DELETE',
 			url: path
 		}).then(
 			function successCallback(response){
-				var index=findIndexOfValuta(response.data.id);
+				
+				var index=findIndexOfDjelatnost(response.data.id);
+				$log.log("Index "+index);
 				$scope.activities.splice(index,1);
 				$scope.activity={};
 				
@@ -85,11 +89,12 @@ administrator.controller('HandleActivities', function($scope, $http, $compile,$l
 	this.prevClick=function(){
 		if($scope.state===State.VIEW_EDIT){
 			$log.log("ID selektovan estavke "+ $scope.activity.id);
-			var temp=findIndexOfValuta($scope.activity.id);
+			var temp=findIndexOfDjelatnost($scope.activity.id);
 			$log.log("Index selektovane stavke "+ temp);
 
 			if(temp!=-1 && temp!=0){
 				$scope.activity=$scope.activities[temp-1];
+				$scope.activityPomocni=angular.copy($scope.activity);
 			
 			}
 		}
@@ -103,10 +108,11 @@ administrator.controller('HandleActivities', function($scope, $http, $compile,$l
 			$log.log("Next valuta");
 			$log.log("Oznaka djelatnost "+ $scope.activity+" "+ $scope.activity.name+" id "+$scope.activity.id);
 			
-			var temp=findIndexOfValuta($scope.activity.id);
+			var temp=findIndexOfDjelatnost($scope.activity.id);
 			$log.log("Index selektovane stavke "+ temp);
 			if(temp!=-1 && temp!=$scope.activities.length){
 				$scope.activity=$scope.activities[temp+1];
+				$scope.activityPomocni=angular.copy($scope.activity);
 			
 			}
 		}
@@ -115,7 +121,7 @@ administrator.controller('HandleActivities', function($scope, $http, $compile,$l
 		Pronalazenje indeksa valute u kolekciji stavki koje se prikazuju 
 		na osnovu vrijednosti id.
 	*/
-	findIndexOfValuta=function(id){
+	var findIndexOfDjelatnost=function(id){
 		var temp=-1;
 		for (var i = 0; i < $scope.activities.length; i++) { 
 				if(angular.equals($scope.activities[i].id, id)){
@@ -129,6 +135,7 @@ administrator.controller('HandleActivities', function($scope, $http, $compile,$l
 		if($scope.state===State.VIEW_EDIT){
 		
 			$scope.activity=$scope.activities[$scope.activities.length-1];
+			$scope.activityPomocni=angular.copy($scope.activity);
 			
 			
 		}
@@ -137,6 +144,7 @@ administrator.controller('HandleActivities', function($scope, $http, $compile,$l
 		
 		
 		$scope.activity=activity;
+		$scope.activityPomocni=angular.copy($scope.activity);
 	}
 	this.commitClick=function(){
 		
@@ -149,12 +157,13 @@ administrator.controller('HandleActivities', function($scope, $http, $compile,$l
 			$http({
 				method: 'PUT',
 				url: path,
-				data: $scope.activity
+				data: $scope.activityPomocni
 			}).then(
 			function successCallback(response){
 				
 				$scope.activities.push(response.data);
 				$scope.activity={};
+				$scope.activityPomocni={};
 				
 			},
 			function errorCallback(response){
@@ -168,11 +177,11 @@ administrator.controller('HandleActivities', function($scope, $http, $compile,$l
 			$http({
 				method: 'POST',
 				url: path,
-				data: $scope.activity
+				data: $scope.activityPomocni
 			}).then(
 			function successCallback(response){
 				$log.log("Success");
-				var index=findIndexOfValuta($scope.activity.id);
+				var index=findIndexOfDjelatnost($scope.activity.id);
 				$scope.activities[index]=response.data;
 				
 			}, 
@@ -189,6 +198,7 @@ administrator.controller('HandleActivities', function($scope, $http, $compile,$l
 					
 					$scope.activities=response.data;
 					$scope.activity={};
+					$scope.activityPomocni={};
 					
 				}, 
 				function errorCallback(response){
@@ -206,17 +216,17 @@ administrator.controller('HandleActivities', function($scope, $http, $compile,$l
 	*/
 	var check=function(){
 			$log.log("Vrijednosti koje se provjeravaju "+ $scope.activity.code +" "+ $scope.activity.name);
-			if(angular.equals($scope.activity, {})){
+			if(angular.equals($scope.activityPomocni, {})){
 				toastr.error('Ne mozete ostaviti polja prazna');
 				return false;
-			}else if(angular.isUndefined($scope.activity.code)){
+			}else if(angular.isUndefined($scope.activityPomocni.code)){
 				
 				toastr.error('Oznaka  mora sadrzati tacno 5 karaktera');
 				return false;
-			}else if(!angular.equals($scope.activity.code.trim().length, 5)){
+			}else if(!angular.equals($scope.activityPomocni.code.trim().length, 5)){
 				toastr.error('Oznaka mora da sadrzi 5 karaktera!');
 				return false;
-			}else if(angular.isUndefined($scope.activity.name)){
+			}else if(angular.isUndefined($scope.activityPomocni.name)){
 				toastr.error('Naziv mora biti zadat!');
 				return  false;
 			}

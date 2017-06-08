@@ -17,7 +17,7 @@ public interface MedjubankarskiPrenosRepository extends CrudRepository<Medjubank
 	public void delete(Long id);
 	public Set<MedjubankarskiPrenos> findByBankaPrva(Bank banka);
 	public Set<MedjubankarskiPrenos> findAll();
-	@Query("select max(m.datum) from MedjubankarskiPrenos m where m.poruka!='MT103' and m.bankaPrva=?1 and m.bankaDruga=?2 ")
+	@Query("select max(m.datum) from MedjubankarskiPrenos m where m.poruka!='2' and m.bankaPrva=?1 and m.bankaDruga=?2 ")
 	public Date findMaxDate(Bank banka1, Bank banka2);
 	@Query("select m from MedjubankarskiPrenos m where m.datum=?1")
 	public MedjubankarskiPrenos findLatestMedjubankarskiPrenos(Date maxDate);

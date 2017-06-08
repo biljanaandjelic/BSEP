@@ -145,6 +145,26 @@ administrator.controller('Opsti', function($scope, $http, $compile, $timeout, $r
 		$scope.$broadcast('filterPoStavkamaPrenosa', medjubankarskiPrenos); // going down!
 	};
 	
+	this.importXMLFile=function(){
+		//$http.post('/importChosenXML', scope[ attrs.name ][0].name).
+		//	then(function mySucces(response) {
+				
+				//$scope.$emit('novaStanja');
+				
+		//	});
+		$http({
+			method: 'GET',
+			url: '/importChosenXML'
+		}).then(
+			function success(response){
+				toastr.success("Uspijesan import naloga");
+			},
+			function error(response){
+				
+			}
+		);
+	}
+	
 });
 
 administrator.directive("filelistBind", function($http) {

@@ -586,7 +586,23 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
 		$scope.selektovanaRadnaDelatnost = {};
 		
 	}
-	
+		this.exportIzvoda=function(id){
+		var path="/exportKlijentiIzvod/"+id;
+		//$log.log("Path "+path);
+		$http({
+			
+			method: 'GET',
+			url: path
+		}).then(
+			function success(response){
+				//$log.log("Success: Rezzultat "+response.data.status);
+				toastr.success("Podaci o medjubankarskom prenosu su uspijesno eksportovani");
+			}, function error(response){
+			//	$log.log("Error: Rezzultat "+response.data.status);
+				toastr.error('Doslo je do interne greske na serveru. Pokusajte ponovo.');
+			}
+		);
+	}
 	this.nextFormClick = function(){
 		
 		$scope.$parent.$parent.opsti.tabClick7(7, $scope.pravnoLice);
