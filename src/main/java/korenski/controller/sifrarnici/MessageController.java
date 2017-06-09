@@ -34,14 +34,14 @@ public class MessageController {
 
 	@RequestMapping(value = "/message", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Message> createMessage(@RequestBody Message message, @Context HttpServletRequest request) {
-		Logger logger = LoggerFactory.getLogger(MessageController.class);
-		System.out.println("****************************************");
-		System.out.println("SLF4J");
-		String name = "lordofthejars";
-		logger.info("Hello from Bar.");
-		logger.info("BILJANA");
-		logger.debug("In bar my name is {}.", name);
-		System.out.println("****************************************");
+//		Logger logger = LoggerFactory.getLogger(MessageController.class);
+//		System.out.println("****************************************");
+//		System.out.println("SLF4J");
+//		String name = "lordofthejars";
+//		logger.info("Hello from Bar.");
+//		logger.info("BILJANA");
+//		logger.debug("In bar my name is {}.", name);
+//		System.out.println("****************************************");
 
 		Message m = validityCheck(message);
 		if (m != null) {

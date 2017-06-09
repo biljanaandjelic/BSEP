@@ -96,7 +96,7 @@ public class AnalitikeIzvodaController {
 			pocetakAnalitika = new java.sql.Date(d.getTime());
 			System.out.println("Pocetak " + pocetakAnalitika.toString());
 			Date current = new Date();
-			krajAnalitika = new java.sql.Date(current.getTime()+ TimeUnit.DAYS.toMillis(1));
+			krajAnalitika = new java.sql.Date(current.getTime());
 			System.out.println("Kraj " + krajAnalitika.toString());
 		}
 
@@ -109,7 +109,7 @@ public class AnalitikeIzvodaController {
 		if (filter.getPocetakAnalitika() != null && filter.getKrajAnalitika() == null) {
 			pocetakAnalitika = new java.sql.Date(filter.getPocetakAnalitika().getTime());
 			Date current = new Date();
-			krajAnalitika = new java.sql.Date(current.getTime()+ TimeUnit.DAYS.toMillis(1));
+			krajAnalitika = new java.sql.Date(current.getTime());
 		}
 
 		if (filter.getPocetakAnalitika() != null && filter.getKrajAnalitika() != null) {
@@ -126,7 +126,7 @@ public class AnalitikeIzvodaController {
 			pocetakNalog = new java.sql.Date(d.getTime());
 			System.out.println("Pocetak " + pocetakNalog.toString());
 			Date current = new Date();
-			krajNalog = new java.sql.Date(current.getTime()+ TimeUnit.DAYS.toMillis(1));
+			krajNalog = new java.sql.Date(current.getTime());
 			System.out.println("Kraj " + krajNalog.toString());
 		}
 
@@ -139,7 +139,7 @@ public class AnalitikeIzvodaController {
 		if (filter.getPocetakNalog() != null && filter.getKrajNalog() == null) {
 			pocetakNalog = new java.sql.Date(filter.getPocetakNalog().getTime());
 			Date current = new Date();
-			krajNalog = new java.sql.Date(current.getTime()+ TimeUnit.DAYS.toMillis(1));
+			krajNalog = new java.sql.Date(current.getTime());
 		}
 
 		if (filter.getPocetakNalog() != null && filter.getKrajNalog() != null) {
@@ -156,7 +156,7 @@ public class AnalitikeIzvodaController {
 			pocetakValuta = new java.sql.Date(d.getTime());
 			System.out.println("Pocetak " + pocetakValuta.toString());
 			Date current = new Date();
-			krajValuta = new java.sql.Date(current.getTime() + TimeUnit.DAYS.toMillis(1));
+			krajValuta = new java.sql.Date(current.getTime());
 			System.out.println("Kraj " + krajValuta.toString());
 		}
 
@@ -169,7 +169,7 @@ public class AnalitikeIzvodaController {
 		if (filter.getPocetakValuta() != null && filter.getKrajValuta() == null) {
 			pocetakValuta = new java.sql.Date(filter.getPocetakValuta().getTime());
 			Date current = new Date();
-			krajValuta = new java.sql.Date(current.getTime() + TimeUnit.DAYS.toMillis(1));
+			krajValuta = new java.sql.Date(current.getTime());
 		}
 
 		if (filter.getPocetakValuta() != null && filter.getKrajValuta() != null) {

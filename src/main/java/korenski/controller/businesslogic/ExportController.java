@@ -50,6 +50,8 @@ public class ExportController {
 			
 
 			jaxbMarshaller.marshal(foundMedjubankarskiPrenos, file);
+			foundMedjubankarskiPrenos.setSend(true);
+			mbPrenosRepository.save(foundMedjubankarskiPrenos);
 			return new ResponseEntity<String>("OK",HttpStatus.OK);
 		}catch (Exception e) {
 			// TODO: handle exception

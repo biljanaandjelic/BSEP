@@ -30,7 +30,7 @@
 		        </thead>
 		        <tbody>
 			        <tr ng-repeat="analitika in analitike track by analitika.id" ng-click="rai.setSelected(analitika)"
-			         ng-class="{selected: analiika.id === idSelektovaneAnalitike}" >
+			         ng-class="{selected: analitika.id === idSelektovaneAnalitike}" >
 			        	<td>{{analitika.datumAnalitike | date : "MM/dd/yyyy 'at' h:mma"}}</td>
 			        	<td>{{analitika.datumNaloga | date : "MM/dd/yyyy 'at' h:mma"}}</td>
 						<td>{{analitika.datumValute | date : "MM/dd/yyyy 'at' h:mma"}}</td>

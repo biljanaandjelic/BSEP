@@ -34,6 +34,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -392,17 +393,33 @@ public class CertificatesController {
 		
 		if(u.getRole().getId().equals(new Long(1))){
 			certGen.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
+			Set<CertificateInfo> certs=certificateIDService.findCertInfoByAlias(bankSwiftCode);
+			CertificateInfo ca=null;
+			if(certs.size()!=0){
+				 for (Iterator<CertificateInfo> it =certs.iterator(); it.hasNext(); ) {
+
+					 ca=it.next();
+				    }
+			}
 			certificateInfo=new CertificateInfo(serial,CertStatus.GOOD,null,null,"",Type.Bank);
 			certificateInfo.setBank(((User)httpRequest.getSession().getAttribute("user")).getBank());
 			//certificateInfo.setAlias("CERT-"+IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()));
-			CertificateInfo ca=certificateIDService.findByAlias("CERT-"+((User)httpRequest.getSession().getAttribute("user")).getBank().getSwiftCode());
+			//CertificateInfo ca=certificateIDService.findByAlias("CERT-"+((User)httpRequest.getSession().getAttribute("user")).getBank().getSwiftCode());
 			certificateInfo.setCa(ca);
 		}else if(u.getRole().getId().equals(new Long(2))){
 			certGen.addExtension(Extension.basicConstraints, true, new BasicConstraints(false));
 			certificateInfo=new CertificateInfo(serial,CertStatus.GOOD,null,null,"",Type.Company);
 			certificateInfo.setBank(((User)httpRequest.getSession().getAttribute("user")).getBank());
 			//certificateInfo.setAlias("CERT-"+IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()));
-			CertificateInfo ca=certificateIDService.findByAlias("CERT-"+((User)httpRequest.getSession().getAttribute("user")).getBank().getSwiftCode());
+			Set<CertificateInfo> certs=certificateIDService.findCertInfoByAlias(bankSwiftCode);
+			CertificateInfo ca=null;
+			if(certs.size()!=0){
+				 for (Iterator<CertificateInfo> it =certs.iterator(); it.hasNext(); ) {
+				  
+					 ca=it.next();
+				    }
+			}
+			//CertificateInfo ca=certificateIDService.findByAlias("CERT-"+((User)httpRequest.getSession().getAttribute("user")).getBank().getSwiftCode());
 			certificateInfo.setCa(ca);
 		}else{
 			return null;

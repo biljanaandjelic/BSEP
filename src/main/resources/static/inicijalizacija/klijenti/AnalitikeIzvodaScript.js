@@ -132,20 +132,14 @@ administrator.controller('RukovanjeAnalitikamaIzvoda', function($scope, $http, $
 	}
 	
 	this.firstClick = function(){
-		
-		if(!$scope.nultoStanje()){
-			return;
-		}
-		
+	
 		
 		$scope.idSelektovaneAnalitike = $scope.analitike[0].id;
 	};
 
 	this.prevClick = function(){
 		
-		if(!$scope.nultoStanje()){
-			return;
-		}
+		
 		
 		var temp = -1;
 		for (var i = 0; i < $scope.analitike.length; i++) { 
@@ -165,9 +159,7 @@ administrator.controller('RukovanjeAnalitikamaIzvoda', function($scope, $http, $
 	
 
 	this.nextClick = function(){
-		if(!$scope.nultoStanje()){
-			return;
-		}
+		
 		
 		var temp = -1;
 		for (var i = 0; i < $scope.analitike.length; i++) { 
@@ -187,9 +179,7 @@ administrator.controller('RukovanjeAnalitikamaIzvoda', function($scope, $http, $
 	
 
 	this.lastClick = function(){
-		if(!$scope.nultoStanje()){
-			return;
-		}
+		
 		
 		$scope.idSelektovaneAnalitike = $scope.analitike[$scope.analitike.length-1].id;
 	};

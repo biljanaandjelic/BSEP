@@ -6,15 +6,21 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+//import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Context;
+import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 
-//import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 //import ch.qos.logback.classic.Level;
 import korenski.controller.institutions.RacunController;
 import korenski.controller.institutions.pomocni.ZatvaranjePomocni;
+import korenski.controller.sifrarnici.MessageController;
 import korenski.intercepting.CustomAnnotation;
 import korenski.logger.AppLogger;
 import korenski.model.autorizacija.User;
@@ -70,11 +77,12 @@ public class ImportController {
 	@RequestMapping(value = "/importChosenXML", method = RequestMethod.GET,  produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> importChosenXML( @Context HttpServletRequest request)
 			throws Exception {
-		AppLogger appLogger=AppLogger.getInstance();
-		Logger logger=appLogger.getLogger();
+//		if(!validateXML()){
+//			return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+//		}
 		String fileName="Nalozi_primer.xml";
-		logger.log(Level.FINEST,"Entering  importChosenXML(fileName="+fileName+", request="+request+") ");
-		//logger.debug("Entering  importChosenXML(fileName="+fileName+", request="+request+") ");
+		Logger logger = LoggerFactory.getLogger(ImportController.class);
+
 		JAXBContext context = JAXBContext.newInstance("korenski.model.nalog_za_prenos");
 
 		// Unmarshaller je objekat zadužen za konverziju iz XML-a u objektni
@@ -121,14 +129,26 @@ public class ImportController {
 
 			if (duznik != null && poverilac != null && duznik.getStanje() >= nalog.getPodaciOPlacanju().getIznos()) {
 				System.out.println("Racuni su iz iste banke!");
-				blService.sameBankTransfer(nalog, duznik, poverilac);
-				logger.info("USER: " + user.getId().toString() +" PERMISIJA " + " INERNI " + duznik.getBrojRacuna()+" "+ poverilac.getBrojRacuna()+" "+nalog.getPodaciOPlacanju().getIznos());
-
+				try{
+					blService.sameBankTransfer(nalog, duznik, poverilac);
+				}catch(Exception e ){
+					return new ResponseEntity<String>("Wrong",HttpStatus.INTERNAL_SERVER_ERROR);
+				}
+				
+				logger.info("User {} Permisija interna tranasakcija duznik: {} poverilac: {} iznos: {} ", user.getId().toString(), duznik.getBrojRacuna(), poverilac.getBrojRacuna(), nalog.getPodaciOPlacanju().getIznos());;
 			} else if (duznik != null && poverilac == null
 					&& duznik.getStanje() >= nalog.getPodaciOPlacanju().getIznos()) {
 				System.out.println("Racuni su iz razlicitih banaka");
+				try{
 				blService.differentBanksTransfer(nalog, duznik, racunPoverioca);
-				logger.info("USER " + user.getId().toString() +" PERMISIJA " + " Medjubankarski "+duznik.getBrojRacuna()+" "+ racunPoverioca+" "+ nalog.getPodaciOPlacanju().getIznos());
+				}catch (Exception e) {
+					// TODO: handle exception
+					return new ResponseEntity<String>("Wrong",HttpStatus.INTERNAL_SERVER_ERROR);
+				}
+				//logger.info("USER " + user.getId().toString() +" PERMISIJA " + " Medjubankarski "+duznik.getBrojRacuna()+" "+ racunPoverioca+" "+ nalog.getPodaciOPlacanju().getIznos());
+
+				
+				logger.info("User {} Permisija medjubankarska transakcija duznik: {} poverilac: {} iznos: {}  hitno: {}",user.getId().toString(), duznik.getBrojRacuna(), racunPoverioca,nalog.getPodaciOPlacanju().getIznos(),nalog.getHitno() );
 			} else {
 				continue;
 			}
@@ -203,6 +223,30 @@ public class ImportController {
 		System.out.println("\t\t\t\t Poziv na broj " + poziv);
 		System.out.println("\t\t\t\t Broj racuna " + brojRacuna);
 
+	}
+	
+	//@RequestMapping(value = "/validateXML", method = RequestMethod.GET, produces=MediaType.TEXT_PLAIN)
+	//@Context HttpServletRequest request
+	public boolean validateXML() {
+		
+		String retVal;
+		
+		try
+	    {
+	        SchemaFactory factory = 
+	            SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+	        Schema schema = factory.newSchema(new StreamSource(new File("./files/xml_tests/Faktura.xsd")));
+	        Validator validator = schema.newValidator();
+	        validator.validate(new StreamSource(new File("./files/xml_tests/Faktura.xml")));
+	        retVal = "ok";
+	    }
+	    catch(Exception ex)
+	    {
+	        retVal = "notok";
+	        return false;
+	    }
+		
+		return true;
 	}
 
 }

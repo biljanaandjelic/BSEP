@@ -160,13 +160,17 @@ administrator.controller('Opsti', function($scope, $http, $compile, $timeout, $r
 				toastr.success("Uspijesan import naloga");
 			},
 			function error(response){
-				
+				if(response.status==500){
+					toastr.error("Doslo je do interne greske na serveru. Pokusajte ponovo");
+				}else{
+					toastr.success("Uspijesan import naloga");
+				}
 			}
 		);
 	}
 	
 });
-
+/*
 administrator.directive("filelistBind", function($http) {
 	  return function( scope, elm, attrs ) {
 	    elm.bind("change", function( evt ) {
@@ -185,3 +189,4 @@ administrator.directive("filelistBind", function($http) {
 	    });
 	  };
 	});
+*/

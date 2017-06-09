@@ -165,9 +165,7 @@ administrator.controller('MedjubankarskiPrenosController', function($scope, $htt
 			$scope.medjubankarskiPrenosDTO.poruka={};
 		} */
 		//$scope.medjubankarskiPrenosDTO.poruka={};
-	//	$log.log("Banka "+$scope.medjubankarskiPrenosDTO.banka.name);
-	//	$log.log("Poruka "+$scope.medjubankarskiPrenosDTO.poruka.code);
-	//	$log.log("Iznos1 "+$scope.medjubankarskiPrenosDTO.iznos1);
+
 		 if($scope.state==State.SEARCH){
 			var path="/medjubankarskiPrenosi";
 			$http({
@@ -226,8 +224,18 @@ administrator.controller('MedjubankarskiPrenosController', function($scope, $htt
 		
 	};
 	
-	this.exportMedjubankarskiPrenos=function(id){
+	this.sakrijExport = function(paket){
 		
+		if(!paket.send && angular.equals(paket.stavkePrenosa.length, 4)){
+			return true;
+		}
+		
+		
+		return false;
+	};
+	
+	this.exportMedjubankarskiPrenos=function(id,itemStatus){
+		itemStatus=true;
 		var path="/exportMedjubankarskiPrenos/"+id;
 		$log.log("Path "+path);
 		$http({
@@ -236,11 +244,30 @@ administrator.controller('MedjubankarskiPrenosController', function($scope, $htt
 			url: path
 		}).then(
 			function success(response){
-				$log.log("Success: Rezzultat "+response.data.status);
+				//$log.log("Success: Rezzultat "+response.data.status);
 				toastr.success("Podaci o medjubankarskom prenosu su uspijesno eksportovani");
+				for(var i=0; i<$scope.medjubankarskiPrenosi.length; i++){
+					if(medjubankarskiPrenosi[i].id==id){
+						medjubankarskiPrenosi[i].send=true;
+						break;
+					}
+				}
+				itemStatus=true;
 			}, function error(response){
-				$log.log("Error: Rezzultat "+response.data.status);
-				toastr.error('Doslo je do interne greske na serveru. Pokusajte ponovo.');
+				//$log.log("Error: Rezzultat "+response.data.status);
+				if(response.status==500){
+					toastr.error('Doslo je do interne greske na serveru. Pokusajte ponovo.');
+				}else{
+					toastr.success("Podaci o medjubankarskom prenosu su uspijesno eksportovani");
+					itemStatus=true;
+					for(var i=0; i<$scope.medjubankarskiPrenosi.length; i++){
+					if($scope.medjubankarskiPrenosi[i].id==id){
+						$scope.medjubankarskiPrenosi[i].send=true;
+						break;
+					}
+				}
+				}
+				
 			}
 		);
 		

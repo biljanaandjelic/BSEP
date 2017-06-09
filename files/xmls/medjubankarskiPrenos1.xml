@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<medjubankarskiPrenos>
+    <bankaDruga>
+        <code>234</code>
+        <name>Druga banka</name>
+        <swiftCode>21345678</swiftCode>
+    </bankaDruga>
+    <bankaPrva>
+        <code>123</code>
+        <name>Prva banka</name>
+        <swiftCode>12345678</swiftCode>
+    </bankaPrva>
+    <iznos>1500.23</iznos>
+    <poruka>
+        <code>MT102</code>
+    </poruka>
+    <stavkePrenosa>
+        <analitikaIzvoda>
+            <datumAnalitike>2017-06-06T21:18:50+02:00</datumAnalitike>
+            <datumNaloga>2018-08-27T00:25:03+02:00</datumNaloga>
+            <datumValute>2018-08-27T00:25:03+02:00</datumValute>
+            <duznik>Travnicka 17, Kula</duznik>
+            <hitno>false</hitno>
+            <iznos>1500.23</iznos>
+            <modelDrugi>97</modelDrugi>
+            <modelPrvi>97</modelPrvi>
+            <pozivNaBrojDrugi>321456789032145</pozivNaBrojDrugi>
+            <pozivNaBrojPrvi>123456789012345</pozivNaBrojPrvi>
+            <primalac>Ne znam adresu ftna</primalac>
+            <racunDrugi>234-6355718718680-9</racunDrugi>
+            <racunPrvi>123-9338670954849-69</racunPrvi>
+            <sifraValute>Din</sifraValute>
+            <smer>T</smer>
+            <svrhaPlacanja>Prijava ispita</svrhaPlacanja>
+        </analitikaIzvoda>
+    </stavkePrenosa>
+</medjubankarskiPrenos>

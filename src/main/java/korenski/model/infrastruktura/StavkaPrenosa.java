@@ -41,7 +41,7 @@ public class StavkaPrenosa {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
+	@JsonIgnoreProperties("dnevnoStanjeRacuna")
 	public AnalitikaIzvoda getAnalitikaIzvoda() {
 		return analitikaIzvoda;
 	}

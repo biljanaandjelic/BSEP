@@ -10,10 +10,11 @@ import java.util.HashMap;
 import java.util.Properties;
 import java.util.Random;
 import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import java.util.logging.SimpleFormatter;
-//import org.slf4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Context;
 
@@ -36,6 +37,7 @@ import korenski.model.infrastruktura.Bank;
 import korenski.model.infrastruktura.Racun;
 import korenski.model.infrastruktura.ZatvaranjeRacuna;
 import korenski.model.klijenti.Klijent;
+import korenski.model.klijenti.PravnoLice;
 import korenski.repository.institutions.BankRepository;
 import korenski.repository.institutions.RacunRepository;
 import korenski.repository.institutions.ZatvaranjeRacunaRepository;
@@ -65,10 +67,7 @@ public class RacunController {
 	@RequestMapping(value = "/noviRacun", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Racun> noviRacun(@RequestBody Klijent klijent, @Context HttpServletRequest request)
 			throws Exception {
-		AppLogger appLogger=AppLogger.getInstance();
-		Logger logger=appLogger.getLogger();
-		logger.log(Level.FINEST,"Entering  noviRacun(klijent="+klijent.toString()+", request="+request+") ");
-		//logger.debug("Entering  noviRacun(klijent="+klijent.toString()+", request="+request+")");
+		Logger logger=LoggerFactory.getLogger(RacunController.class);
 		Racun racun = new Racun();
 
 		User u = (User) request.getSession().getAttribute("user");
@@ -85,49 +84,23 @@ public class RacunController {
 		racun.setStatus(true);
 		racun.setBank(bank);
 		
-//
-//<<<<<<< HEAD
-//		Racun savedRacun=repository.save(racun);
-//		klijent.getRacuni().add(savedRacun);
-//		klijentRepository.save(klijent);
-//		
-//		java.lang.reflect.Method m = RacunController.class.getMethod("zatvoriRacun", ZatvaranjePomocni.class,
-//				HttpServletRequest.class);
-//		String mime = m.getAnnotation(CustomAnnotation.class).value();
-//		
-//		String msg="USER "+u.getId().toString()+" "+mime+" "+brojRacuna+"\n";
-//		logger.info(msg);
-//		//logger.log(Level.INFO,msg);
-//		System.out.println("FINEST ISPIS");
-//		logger.log(Level.FINEST,"Leaving noviRacun(): "+ racun+"\n");
-//		//logger.debug("Leaving noviRacun(): "+ racun+"\n");
-//		System.out.println("FINEST ISPIS");
-//	//	return new ResponseEntity<Racun>(savedRacun, HttpStatus.OK);
-//
-//		try {
-//			racun = repository.save(racun);
-//		} catch (Exception e) {
-//			return new ResponseEntity<Racun>(new Racun(new Long(-1), "Greska pri upisu u bazu!", false, null, null, null), HttpStatus.OK);
-//		}
-//		
-//		return new ResponseEntity<Racun>(racun, HttpStatus.OK);
-//
-//=======
+
 		try {
 			Klijent foundKlijent=klijentRepository.findOne(klijent.getId());
 			racun = repository.save(racun);
 			foundKlijent.getRacuni().add(racun);
 			klijentRepository.save(foundKlijent);
-			java.lang.reflect.Method m = RacunController.class.getMethod("zatvoriRacun", ZatvaranjePomocni.class,
+			java.lang.reflect.Method m = RacunController.class.getMethod("noviRacun", Klijent.class,
 					HttpServletRequest.class);
 			String mime = m.getAnnotation(CustomAnnotation.class).value();
 
-			String msg = "USER " + u.getId().toString() + " " + mime + " " + brojRacuna + "\n";
-			logger.info(msg);
-			// logger.log(Level.INFO,msg);
+	
 			System.out.println("FINEST ISPIS");
-			logger.log(Level.FINEST, "Leaving noviRacun(): " + racun + "\n");
-			// logger.debug("Leaving noviRacun(): "+ racun+"\n");
+	
+			if(klijent instanceof PravnoLice)
+				logger.info("User {} {} tip: {} broj ziroracuna {}", u.getId().toString(), mime, "pravno lice", brojRacuna);
+			else
+				logger.info("User {} {} tip: {} broj ziroracuna {}", u.getId().toString(), mime, "fizicko lice", brojRacuna);
 			System.out.println("FINEST ISPIS");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -200,9 +173,7 @@ public class RacunController {
 	@RequestMapping(value = "/zatvoriRacun", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Racun> zatvoriRacun(@RequestBody ZatvaranjePomocni pomocni,
 			@Context HttpServletRequest request) throws Exception {
-		AppLogger appLogger=AppLogger.getInstance();
-		Logger logger=appLogger.getLogger();
-		//Logger logger=appLogger.getLogger();
+		logger=LoggerFactory.getLogger(RacunController.class);
 		Racun racun = repository.findOne(pomocni.getId());
 
 		if (!racun.getStatus()) {
@@ -233,14 +204,14 @@ public class RacunController {
 		String msg="USER "+user.getId().toString()+" "+mime+" "+pomocni.getRacun();
 		try {
 			racun = repository.save(racun);
-			logger.info("USER " + user.getId().toString() + " " + mime +" "+pomocni.getRacun());
-			logger.log(Level.WARNING, "BILJANA");
+		
+			if(racun.getKlijent() instanceof PravnoLice)
+				logger.info("User {} {} tip: {} broj ziroracuna {}", user.getId().toString(), mime, "pravno lice", racun.getBrojRacuna());
+			else
+				logger.info("User {} {} tip: {} broj ziroracuna {}", user.getId().toString(), mime, "fizicko lice", racun.getBrojRacuna());
 		} catch (Exception e) {
 			
-			//logger.log(Level.,msg);
-			//logger.log(Level);
-			logger.log(Level.WARNING, msg);
-	//		logger.warn(msg);
+		
 			return new ResponseEntity<Racun>(
 					new Racun(new Long(-1), "Greska pri upisu u bazu!", false, current, current, null), HttpStatus.OK);
 		}

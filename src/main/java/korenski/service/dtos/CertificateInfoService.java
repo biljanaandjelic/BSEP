@@ -57,4 +57,8 @@ public class CertificateInfoService {
 	public CertificateInfo findCertificateBySerialNumberAndBank(BigInteger serialNumber, Bank bank){
 		return certificateIDRepository.findBySerialNumberAndBank(serialNumber, bank);
 	}
+	
+	public Set<CertificateInfo> findCertInfoByAlias(String alias){
+		return certificateIDRepository.findByAliasContainingIgnoreCase(alias);
+	}
 }

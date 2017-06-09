@@ -599,7 +599,12 @@ administrator.controller('RukovanjePravnimLicima', function($scope, $http, $comp
 				toastr.success("Podaci o medjubankarskom prenosu su uspijesno eksportovani");
 			}, function error(response){
 			//	$log.log("Error: Rezzultat "+response.data.status);
-				toastr.error('Doslo je do interne greske na serveru. Pokusajte ponovo.');
+				//toastr.error('Doslo je do interne greske na serveru. Pokusajte ponovo.');
+				if(response.status==500){
+					toastr.error('Doslo je do interne greske na serveru. Pokusajte ponovo.');
+				}else{
+					toastr.success("Podaci o medjubankarskom prenosu su uspijesno eksportovani");
+				}
 			}
 		);
 	}

@@ -19,6 +19,8 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Context;
@@ -280,8 +282,17 @@ public class OCSPResponder {
 				KeyStore ks = getKeyStore(path);
 				if (ks != null) {
 
-					PrivateKey key = (PrivateKey) ks.getKey("KEY", "test".toCharArray());
-					Certificate cert = ks.getCertificate("CERT-" + ca.getBank().getSwiftCode());
+					PrivateKey key = (PrivateKey) ks.getKey("KEY-1", "test".toCharArray());
+//					Set<CertificateInfo> certs=certificateInfoService.findCertInfoByAlias(ca.get);
+//					CertificateInfo ca=null;
+//					if(certs.size()!=0){
+//						 for (Iterator<CertificateInfo> it =certs.iterator(); it.hasNext(); ) {
+//						  
+//							 ca=it.next();
+//						    }
+//					}
+			//		Certificate cert = ks.getCertificate("CERT-" + ca.getBank().getSwiftCode());
+					Certificate cert = ks.getCertificate(ca.getAlias());
 					return new CAData(cert, key);
 				}
 			} catch (KeyStoreException | NoSuchProviderException | NoSuchAlgorithmException | CertificateException

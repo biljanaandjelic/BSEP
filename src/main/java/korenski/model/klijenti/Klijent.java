@@ -120,7 +120,7 @@ public class Klijent extends Subject{
 		this.fizickoLice = fizickoLice;
 	}
 
-	@JsonIgnoreProperties({"klijent"})
+	//@JsonIgnoreProperties({"klijent"})
 	public List<Racun> getRacuni() {
 		return racuni;
 	}

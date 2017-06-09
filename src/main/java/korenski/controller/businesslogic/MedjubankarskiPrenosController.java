@@ -33,16 +33,20 @@ public class MedjubankarskiPrenosController {
 			produces=MediaType.APPLICATION_JSON_VALUE
 			)
 	public ResponseEntity<Set<MedjubankarskiPrenos>> findAllMedjubankarskePrenose(@Context HttpServletRequest request){
+		System.out.println("**********************************************");
 		System.out.println("Filtriranje medjubankarskog prenosa");
 		User user=(User) request.getSession().getAttribute("user");
 		Set<MedjubankarskiPrenos> medjubankarskiPrenosi=medjubankarskiPrenosRepository.findByBankaPrva(user.getBank());
 		if(medjubankarskiPrenosi!=null){
-			System.out.println("Pronadjen su zapisi kojima odgovara uslov");
+			System.out.println("Pronadjen su zapisi kojima odgovara uslov "+medjubankarskiPrenosi.size());
+			System.out.println("**********************************************");
 			return new ResponseEntity<Set<MedjubankarskiPrenos>>(medjubankarskiPrenosi, HttpStatus.OK);
 		}else{
 			System.out.println("Nije pronadjen nijedan medjubankarski prenos koji odgovara datom upitu");
+			System.out.println("**********************************************");
 			return new ResponseEntity<Set<MedjubankarskiPrenos>>(HttpStatus.NO_CONTENT);
 		}
+	
 		
 	}
 	@RequestMapping(
