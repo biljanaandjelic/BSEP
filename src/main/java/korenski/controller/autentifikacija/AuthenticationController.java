@@ -212,90 +212,90 @@ public class AuthenticationController {
 	@Autowired
 	RoleRepository roleRepository;
 
-//	@RequestMapping(
-//			value = "/special/loginSubject",
-//			method = RequestMethod.POST,
-//			consumes = MediaType.APPLICATION_JSON_VALUE,
-//			produces = MediaType.APPLICATION_JSON_VALUE)
-//	public ResponseEntity<LoginObject> loginUser(@RequestBody LoginObject loginObject , @Context HttpServletRequest request) throws Exception {
-//		
-//		User userFromSession  = (User) request.getSession().getAttribute("user");
-//		
-//		if(userFromSession != null){
-//			loginObject.setId(-2);
-//			return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
-//		}
-//		
-//		User user = null;
-//		try {
-//			user = repository.findByUsername(loginObject.getUsername());
-//			
-//			boolean expired = userService.checkPasswordExpiration(user);
-//			
-//			if(expired){
-//				loginObject.setId(-4);
-//				return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
-//			}
-//			
-//			if(user != null){
-//			
-//				boolean valid = userService.authenticate(loginObject.getPassword(), user.getPassword(), user.getSalt());
-//				
-//				if(!valid){
-//					loginObject.setId(-1);
-//					return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
-//				}else{
-//					request.getSession().setAttribute("user", user);
-//					
-//					if(!user.isChangedFirstPassword()){
-//						loginObject.setId(-5);
-//						String url = "";
-//						String scheme = request.getScheme();
-//						String host = request.getServerName();
-//						int port = request.getServerPort();
-//						url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/authentification/change.html");
-//						
-//						loginObject.setUrl(url);
-//						return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
-//					}else{
-//						if(user.getRole().getName().equals("ADMINISTRATOR_BANK")){
-//							
-//							String url = "";
-//							String scheme = request.getScheme();
-//							String host = request.getServerName();
-//							int port = request.getServerPort();
-//							url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/adminResources/AdminPage.html");
-//							loginObject.setId(-5);
-//							loginObject.setUrl(url);
-//							return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
-//						}else if(user.getRole().getName().equals("COUNTER_OFFICER") ||
-//								 user.getRole().getName().equals("MANAGER")){
-//							
-//							
-//							String url = "";
-//							String scheme = request.getScheme();
-//							String host = request.getServerName();
-//							int port = request.getServerPort();
-//							url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/inicijalizacija/InitPage.html");
-//							loginObject.setId(-5);
-//							loginObject.setUrl(url);
-//							return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
-//						}
-//					}
-//					
-//					return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
-//				}
-//			}else{
-//				loginObject.setId(-1);
-//				return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
-//			}
-//		} catch (Exception e) {
-//			loginObject.setId(-3);
-//			return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
-//		}
-//	
-//		//return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
-//	}
+	@RequestMapping(
+			value = "/special/loginSubject",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<LoginObject> loginUser(@RequestBody LoginObject loginObject , @Context HttpServletRequest request) throws Exception {
+		
+		User userFromSession  = (User) request.getSession().getAttribute("user");
+		
+		if(userFromSession != null){
+			loginObject.setId(-2);
+			return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
+		}
+		
+		User user = null;
+		try {
+			user = repository.findByUsername(loginObject.getUsername());
+			
+			boolean expired = userService.checkPasswordExpiration(user);
+			
+			if(expired){
+				loginObject.setId(-4);
+				return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
+			}
+			
+			if(user != null){
+			
+				boolean valid = userService.authenticate(loginObject.getPassword(), user.getPassword(), user.getSalt());
+				
+				if(!valid){
+					loginObject.setId(-1);
+					return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
+				}else{
+					request.getSession().setAttribute("user", user);
+					
+					if(!user.isChangedFirstPassword()){
+						loginObject.setId(-5);
+						String url = "";
+						String scheme = request.getScheme();
+						String host = request.getServerName();
+						int port = request.getServerPort();
+						url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/authentification/change.html");
+						
+						loginObject.setUrl(url);
+						return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
+					}else{
+						if(user.getRole().getName().equals("ADMINISTRATOR_BANK")){
+							
+							String url = "";
+							String scheme = request.getScheme();
+							String host = request.getServerName();
+							int port = request.getServerPort();
+							url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/adminResources/AdminPage.html");
+							loginObject.setId(-5);
+							loginObject.setUrl(url);
+							return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
+						}else if(user.getRole().getName().equals("COUNTER_OFFICER") ||
+								 user.getRole().getName().equals("MANAGER")){
+							
+							
+							String url = "";
+							String scheme = request.getScheme();
+							String host = request.getServerName();
+							int port = request.getServerPort();
+							url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/inicijalizacija/InitPage.html");
+							loginObject.setId(-5);
+							loginObject.setUrl(url);
+							return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
+						}
+					}
+					
+					return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
+				}
+			}else{
+				loginObject.setId(-1);
+				return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			loginObject.setId(-3);
+			return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
+		}
+	
+		//return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
+	}
 
 
 	@RequestMapping(

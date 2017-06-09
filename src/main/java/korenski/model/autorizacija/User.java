@@ -53,8 +53,8 @@ public class User {
 	//@Size(min=8, max = 25)
 	//@Pattern(regexp = "[\\w]{8,25}")
 	//@NotEmpty
-	private String password;
-	//private byte[] password;
+	//private String password;
+	private byte[] password;
 
 	//@Column(nullable = false, length=64)
 	@Column(nullable = true, length=64)
@@ -101,33 +101,33 @@ public class User {
 
 
 
-//	public User(Long id, String username, String email, byte[] password, Role role,
-//			Bank bank, Date creationTime, Subject subject) {
-//		super();
-//		this.id = id;
-//		this.username = username;
-//		this.email = email;
-//		this.password = password;
-//		this.role = role;
-//		this.bank = bank;
-//		this.subject = subject;
-//		this.creationTime = creationTime;
-//		this.changedFirstPassword = false;
-//	}
-//
-//	public User(String username, String email, byte[] password, Role role, Bank bank, Date creationTime, Subject subject) {
-//		super();
-//		this.username = username;
-//		this.email = email;
-//		this.password = password;
-//		this.subject = subject;
-//		this.role = role;
-//		this.bank = bank;
-//		this.creationTime = creationTime;
-//		this.changedFirstPassword = false;
-//	}
+	public User(Long id, String username, String email, byte[] password, Role role,
+			Bank bank, Date creationTime, Subject subject) {
+		super();
+		this.id = id;
+		this.username = username;
+		this.email = email;
+		this.password = password;
+		this.role = role;
+		this.bank = bank;
+		this.subject = subject;
+		this.creationTime = creationTime;
+		this.changedFirstPassword = false;
+	}
 
-	
+	public User(String username, String email, byte[] password, Role role, Bank bank, Date creationTime, Subject subject) {
+		super();
+		this.username = username;
+		this.email = email;
+		this.password = password;
+		this.subject = subject;
+		this.role = role;
+		this.bank = bank;
+		this.creationTime = creationTime;
+		this.changedFirstPassword = false;
+	}
+
+	/*
 	public User(String username, String email, String password, Date creationTime,
 			Role role, Bank bank, Subject subject) {
 		super();
@@ -139,7 +139,7 @@ public class User {
 		this.bank = bank;
 		this.subject = subject;
 		this.changedFirstPassword = false;
-	}
+	}*/
 	
 	
 	public Long getId() {
@@ -168,23 +168,23 @@ public class User {
 		this.email = email;
 	}
 
-//	public byte[] getPassword() {
-//		return password;
-//	}
-//
-//	public void setPassword(byte[] password) {
-//		this.password = password;
-//	}
+	public byte[] getPassword() {
+		return password;
+	}
+
+	public void setPassword(byte[] password) {
+		this.password = password;
+	}
 
 	
-
+/*
 	public String getPassword() {
 		return password;
 	}
 
 	public void setPassword(String password) {
 		this.password = password;
-	}
+	}*/
 
 	public Subject getSubject() {
 		return subject;

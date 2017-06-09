@@ -52,149 +52,6 @@ public class UserController {
 	@Autowired
 	RoleRepository roleRepository;
 	
-//	@CustomAnnotation(value = "INSERT_USER")
-//	@RequestMapping(
-//			value = "/newUser",
-//			method = RequestMethod.POST,
-//			consumes = MediaType.APPLICATION_JSON_VALUE,
-//			produces = MediaType.APPLICATION_JSON_VALUE)
-//	public ResponseEntity<User> newUser(@RequestBody User user , @Context HttpServletRequest request) throws Exception {
-//		
-//
-//		if(!userService.checkInput(user)){
-//			return new ResponseEntity<User>(new User(new Long(-1), null, null, null, null, null, null, null), HttpStatus.OK);
-//		}
-//		
-//		String pass = userService.generatePassword();
-//		
-//		System.out.println("============================================Generated pass " + pass +" size : "+pass.length());
-//		
-//		User sessionUser = (User) request.getSession().getAttribute("user");
-//		Bank bank = bankRepository.findOne(sessionUser.getBank().getId());
-//		
-//		User rle;
-//		try {
-//			
-//			userService.sendPassToUser(pass, user);
-//			user = userService.handleThePassword(user, pass);
-//			
-//			
-//			user.setBank(bank);
-//			Employee employee = employeeRepository.findOne(user.getSubject().getId());
-//			user.setSubject(employee);
-//			Date current = new Date();
-//			
-//			user.setCreationTime(new java.sql.Date(current.getTime()));
-//			
-//			User validity = validityCheck(user);
-//			if(validity != null){
-//				return new ResponseEntity<User>(validity, HttpStatus.OK);
-//			}
-//			rle = repository.save(user);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			rle = new User(new Long(-1), "Greska pri upisu u bazu!", null, null, null, null, null, null);
-//		}
-//	
-//		return new ResponseEntity<User>(rle, HttpStatus.OK);
-//	}
-//	
-//	
-//	@CustomAnnotation(value = "INSERT_USER")
-//	@RequestMapping(
-//			value = "/newLegalUser",
-//			method = RequestMethod.POST,
-//			consumes = MediaType.APPLICATION_JSON_VALUE,
-//			produces = MediaType.APPLICATION_JSON_VALUE)
-//	public ResponseEntity<User> newLegalUser(@RequestBody User user , @Context HttpServletRequest request) throws Exception {
-//		
-//
-//		if(!userService.checkInput(user)){
-//			return new ResponseEntity<User>(new User(new Long(-1), null, null, null, null, null, null, null), HttpStatus.OK);
-//		}
-//		
-//		String pass = userService.generatePassword();
-//		
-//		System.out.println("============================================Generated pass " + pass +" size : "+pass.length());
-//		
-//		User sessionUser = (User) request.getSession().getAttribute("user");
-//		Bank bank = bankRepository.findOne(sessionUser.getBank().getId());
-//		
-//		User rle;
-//		try {
-//			
-//			userService.sendPassToUser(pass, user);
-//			user = userService.handleThePassword(user, pass);
-//			
-//			
-//			user.setBank(bank);
-//			PravnoLice pravno = pravnoRepository.findOne(user.getSubject().getId());
-//			user.setSubject(pravno);
-//			Date current = new Date();
-//			
-//			user.setCreationTime(new java.sql.Date(current.getTime()));
-//			
-//			User validity = validityCheck(user);
-//			if(validity != null){
-//				return new ResponseEntity<User>(validity, HttpStatus.OK);
-//			}
-//			rle = repository.save(user);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			rle = new User(new Long(-1), "Greska pri upisu u bazu!", null, null, null, null, null, null);
-//		}
-//	
-//		return new ResponseEntity<User>(rle, HttpStatus.OK);
-//	}
-//	
-//	
-//	@RequestMapping(
-//			value = "/special/newUser",
-//			method = RequestMethod.POST,
-//			consumes = MediaType.APPLICATION_JSON_VALUE,
-//			produces = MediaType.APPLICATION_JSON_VALUE)
-//	public ResponseEntity<User> newUser2(@RequestBody User user , @Context HttpServletRequest request) throws Exception {
-//		
-//
-//		if(!userService.checkInput(user)){
-//			return new ResponseEntity<User>(new User(new Long(-1), null, null, null, null, null, null, null), HttpStatus.OK);
-//		}
-//		
-//		String pass = userService.generatePassword();
-//		
-//		System.out.println("============================================Generated pass " + pass +" size : "+pass.length());
-//		
-//		//User sessionUser = (User) request.getSession().getAttribute("user");
-//		Bank bank = bankRepository.findOne(user.getBank().getId());
-//		
-//		User rle;
-//		try {
-//			
-//			//userService.sendPassToUser(pass, user);
-//			user = userService.handleThePassword(user, pass);
-//			
-//			
-//			user.setBank(bank);
-//			Employee employee = employeeRepository.findOne(user.getSubject().getId());
-//			user.setSubject(employee);
-//			Date current = new Date();
-//			
-//			user.setCreationTime(new java.sql.Date(current.getTime()));
-//			
-//			User validity = validityCheck(user);
-//			if(validity != null){
-//				return new ResponseEntity<User>(validity, HttpStatus.OK);
-//			}
-//			rle = repository.save(user);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			rle = new User(new Long(-1), "Greska pri upisu u bazu!", null, null, null, null, null, null);
-//		}
-//	
-//		return new ResponseEntity<User>(rle, HttpStatus.OK);
-//	}
-	
-	
 	@CustomAnnotation(value = "INSERT_USER")
 	@RequestMapping(
 			value = "/newUser",
@@ -204,34 +61,183 @@ public class UserController {
 	public ResponseEntity<User> newUser(@RequestBody User user , @Context HttpServletRequest request) throws Exception {
 		
 
+		if(!userService.checkInput(user)){
+			return new ResponseEntity<User>(new User(new Long(-1), null, null, null, null, null, null, null), HttpStatus.OK);
+		}
 		
+		String pass = userService.generatePassword();
 		
+		System.out.println("============================================Generated pass " + pass +" size : "+pass.length());
 		
 		User sessionUser = (User) request.getSession().getAttribute("user");
 		Bank bank = bankRepository.findOne(sessionUser.getBank().getId());
 		
 		User rle;
 		try {
+			
+			userService.sendPassToUser(pass, user);
+			user = userService.handleThePassword(user, pass);
+			
+			
 			user.setBank(bank);
 			Employee employee = employeeRepository.findOne(user.getSubject().getId());
 			user.setSubject(employee);
 			Date current = new Date();
-			user.setPassword("password");
+			
 			user.setCreationTime(new java.sql.Date(current.getTime()));
 			
 			User validity = validityCheck(user);
 			if(validity != null){
 				return new ResponseEntity<User>(validity, HttpStatus.OK);
 			}
-			
 			rle = repository.save(user);
 		} catch (Exception e) {
 			e.printStackTrace();
-			rle = new User("Greska pri upisu u bazu!", null, null, null, null, null, null);
+			rle = new User(new Long(-1), "Greska pri upisu u bazu!", null, null, null, null, null, null);
 		}
 	
 		return new ResponseEntity<User>(rle, HttpStatus.OK);
 	}
+	
+	
+	@CustomAnnotation(value = "INSERT_USER")
+	@RequestMapping(
+			value = "/newLegalUser",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<User> newLegalUser(@RequestBody User user , @Context HttpServletRequest request) throws Exception {
+		
+
+		if(!userService.checkInput(user)){
+			return new ResponseEntity<User>(new User(new Long(-1), null, null, null, null, null, null, null), HttpStatus.OK);
+		}
+		
+		String pass = userService.generatePassword();
+		
+		System.out.println("============================================Generated pass " + pass +" size : "+pass.length());
+		
+		User sessionUser = (User) request.getSession().getAttribute("user");
+		Bank bank = bankRepository.findOne(sessionUser.getBank().getId());
+		
+		User rle;
+		try {
+			
+			userService.sendPassToUser(pass, user);
+			user = userService.handleThePassword(user, pass);
+			
+			
+			user.setBank(bank);
+			PravnoLice pravno = pravnoRepository.findOne(user.getSubject().getId());
+			user.setSubject(pravno);
+			Date current = new Date();
+			
+			user.setCreationTime(new java.sql.Date(current.getTime()));
+			
+			User validity = validityCheck(user);
+			if(validity != null){
+				return new ResponseEntity<User>(validity, HttpStatus.OK);
+			}
+			rle = repository.save(user);
+		} catch (Exception e) {
+			e.printStackTrace();
+			rle = new User(new Long(-1), "Greska pri upisu u bazu!", null, null, null, null, null, null);
+		}
+	
+		return new ResponseEntity<User>(rle, HttpStatus.OK);
+	}
+	
+	
+	@RequestMapping(
+			value = "/special/newUser",
+			method = RequestMethod.GET,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<User> newUser2(@Context HttpServletRequest request) throws Exception {
+		
+
+//		if(!userService.checkInput(user)){
+//			return new ResponseEntity<User>(new User(new Long(-1), null, null, null, null, null, null, null), HttpStatus.OK);
+//		}
+//		
+		String pass = userService.generatePassword();
+		
+		System.out.println("============================================Generated pass " + pass +" size : "+pass.length());
+		
+		//User sessionUser = (User) request.getSession().getAttribute("user");
+		Bank bank = bankRepository.findOne(new Long(1));
+		
+		User user = new User();
+		user.setUsername("mojkorisnik");
+		user.setChangedFirstPassword(false);
+		user.setRole(roleRepository.findOne(new Long(1)));
+		user.setEmail("nkikk@kkk.kkk");
+		
+		User rle;
+		try {
+			
+			//userService.sendPassToUser(pass, user);
+			user = userService.handleThePassword(user, pass);
+			
+			
+			user.setBank(bank);
+			Employee employee = employeeRepository.findOne(new Long(11));
+			user.setSubject(employee);
+			Date current = new Date();
+			
+			user.setCreationTime(new java.sql.Date(current.getTime()));
+			
+			User validity = validityCheck(user);
+			if(validity != null){
+				return new ResponseEntity<User>(validity, HttpStatus.OK);
+			}
+			rle = repository.save(user);
+		} catch (Exception e) {
+			e.printStackTrace();
+			rle = new User(new Long(-1), "Greska pri upisu u bazu!", null, null, null, null, null, null);
+		}
+	
+		return new ResponseEntity<User>(rle, HttpStatus.OK);
+	}
+	
+	
+//	@CustomAnnotation(value = "INSERT_USER")
+//	@RequestMapping(
+//			value = "/newUser",
+//			method = RequestMethod.POST,
+//			consumes = MediaType.APPLICATION_JSON_VALUE,
+//			produces = MediaType.APPLICATION_JSON_VALUE)
+//	public ResponseEntity<User> newUser(@RequestBody User user , @Context HttpServletRequest request) throws Exception {
+//		
+//
+//		
+//		
+//		
+//		User sessionUser = (User) request.getSession().getAttribute("user");
+//		Bank bank = bankRepository.findOne(sessionUser.getBank().getId());
+//		
+//		User rle;
+//		try {
+//			user.setBank(bank);
+//			Employee employee = employeeRepository.findOne(user.getSubject().getId());
+//			user.setSubject(employee);
+//			Date current = new Date();
+//			user.setPassword("password");
+//			user.setCreationTime(new java.sql.Date(current.getTime()));
+//			
+//			User validity = validityCheck(user);
+//			if(validity != null){
+//				return new ResponseEntity<User>(validity, HttpStatus.OK);
+//			}
+//			
+//			rle = repository.save(user);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			rle = new User("Greska pri upisu u bazu!", null, null, null, null, null, null);
+//		}
+//	
+//		return new ResponseEntity<User>(rle, HttpStatus.OK);
+//	}
 	
 	@CustomAnnotation(value = "DELETE_USER")
 	@RequestMapping(
@@ -322,80 +328,80 @@ public class UserController {
 	}
 	
 	
-//	@CustomAnnotation(value = "PASSWORD_CHANGE_USER")
-//	@RequestMapping(
-//			value = "/passwordChange",
-//			method = RequestMethod.POST,
-//			consumes = MediaType.APPLICATION_JSON_VALUE,
-//			produces = MediaType.APPLICATION_JSON_VALUE)
-//	public ResponseEntity<User> passwordChange(@RequestBody PasswordChanging data , @Context HttpServletRequest request, HttpServletResponse response) throws Exception {
-//		
-//		User userfromsession = (User) request.getSession().getAttribute("user");
-//		
-//		User user = null;
-//		
-//		if(userfromsession == null){
-//			String url = "";
-//			String scheme = request.getScheme();
-//			String host = request.getServerName();
-//			int port = request.getServerPort();
-//			url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/authentification/login.html");
-//			user = new User();
-//			user.setId(new Long(-5));
-//			user.setUsername(url);
-//			return  new ResponseEntity<User>(user, HttpStatus.OK);
-//		}
-//		
-//		if(!userfromsession.getUsername().equals(data.getUsername())){
-//			//posalji poruku da se ne podudaraju ulogovani korisnik i uneti podaci
-//			user = new User();
-//			user.setId(new Long(-2));
-//			new ResponseEntity<User>(user, HttpStatus.OK);
-//		}
-//
-//		
-//		
-//		try {
-//			user = repository.findByUsername(data.getUsername());
-//			boolean valid = userService.authenticate(data.getPassword(), user.getPassword(), user.getSalt());
-//			
-//			if(!valid){
-//				user.setId(new Long(-1));
-//				return new ResponseEntity<User>(user, HttpStatus.OK);
-//			}else{
-//				
-//				
-//				user = userService.handleThePassword(user, data.getNewPassword());
-//				
-//				if(!user.isChangedFirstPassword()){
-//					user.setChangedFirstPassword(true);
-//				}
-//				user = repository.save(user);
-//				
-//				
-//				
-//				String url = "";
-//				String scheme = request.getScheme();
-//				String host = request.getServerName();
-//				int port = request.getServerPort();
-//				url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/authentification/login.html");
-//				user = new User();
-//				user.setId(new Long(-5));
-//				user.setUsername(url);
-//				
-//				request.getSession().setAttribute("user", null);
-//				
-//				request.getSession().invalidate();
-//				return new ResponseEntity<User>(user, HttpStatus.OK);
-//			}
-//		} catch (Exception e) {
-//			return new ResponseEntity<User>(user, HttpStatus.OK);
-//		}
-//		
-//		//return new ResponseEntity<String>("Ulogovan!", HttpStatus.OK);
-//		
-//		
-//	}
+	@CustomAnnotation(value = "PASSWORD_CHANGE_USER")
+	@RequestMapping(
+			value = "/passwordChange",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<User> passwordChange(@RequestBody PasswordChanging data , @Context HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		User userfromsession = (User) request.getSession().getAttribute("user");
+		
+		User user = null;
+		
+		if(userfromsession == null){
+			String url = "";
+			String scheme = request.getScheme();
+			String host = request.getServerName();
+			int port = request.getServerPort();
+			url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/authentification/login.html");
+			user = new User();
+			user.setId(new Long(-5));
+			user.setUsername(url);
+			return  new ResponseEntity<User>(user, HttpStatus.OK);
+		}
+		
+		if(!userfromsession.getUsername().equals(data.getUsername())){
+			//posalji poruku da se ne podudaraju ulogovani korisnik i uneti podaci
+			user = new User();
+			user.setId(new Long(-2));
+			new ResponseEntity<User>(user, HttpStatus.OK);
+		}
+
+		
+		
+		try {
+			user = repository.findByUsername(data.getUsername());
+			boolean valid = userService.authenticate(data.getPassword(), user.getPassword(), user.getSalt());
+			
+			if(!valid){
+				user.setId(new Long(-1));
+				return new ResponseEntity<User>(user, HttpStatus.OK);
+			}else{
+				
+				
+				user = userService.handleThePassword(user, data.getNewPassword());
+				
+				if(!user.isChangedFirstPassword()){
+					user.setChangedFirstPassword(true);
+				}
+				user = repository.save(user);
+				
+				
+				
+				String url = "";
+				String scheme = request.getScheme();
+				String host = request.getServerName();
+				int port = request.getServerPort();
+				url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/authentification/login.html");
+				user = new User();
+				user.setId(new Long(-5));
+				user.setUsername(url);
+				
+				request.getSession().setAttribute("user", null);
+				
+				request.getSession().invalidate();
+				return new ResponseEntity<User>(user, HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			return new ResponseEntity<User>(user, HttpStatus.OK);
+		}
+		
+		//return new ResponseEntity<String>("Ulogovan!", HttpStatus.OK);
+		
+		
+	}
 /*	
 	@RequestMapping(
 			value = "/logoff",
@@ -414,7 +420,7 @@ public class UserController {
 	}
 	
 	*/
-	
+	/*
 	@CustomAnnotation(value = "PASSWORD_CHANGE_USER")
 	@RequestMapping(
 			value = "/passwordChange",
@@ -482,7 +488,7 @@ public class UserController {
 		
 	}
 	
-	
+	*/
 	public User validityCheck(User user){
 		Set<ConstraintViolation<User>> violations = ValidatorSingleton.getInstance().getValidator().validate(user);
 		

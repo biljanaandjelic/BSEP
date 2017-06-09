@@ -72,19 +72,19 @@ public class UserService {
 		
 	}
 	
-//	public User handleThePassword(User user, String generatedPass){
-//		
-//		byte[] salt = generateSalt();
-//		
-//		byte[] hashedPass = hashPassword(generatedPass, salt);
-//		
-//		//String hashedPassString =hashedPass.toString();
-//		
-//		user.setSalt(salt);
-//		user.setPassword(hashedPass);
-//		
-//		return user;
-//	}
+	public User handleThePassword(User user, String generatedPass){
+		
+		byte[] salt = generateSalt();
+		
+		byte[] hashedPass = hashPassword(generatedPass, salt);
+		
+		//String hashedPassString =hashedPass.toString();
+		
+		user.setSalt(salt);
+		user.setPassword(hashedPass);
+		
+		return user;
+	}
 
 	private byte[] hashPassword(String password, byte[] salt) {
 		
