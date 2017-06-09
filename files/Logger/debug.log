@@ -291,3 +291,81 @@
 [INFO ]2017-06-09 21:52:54 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Ne
 [INFO ]2017-06-09 21:52:55 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Ne
 [INFO ]2017-06-09 21:52:56 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Da
+[INFO ]2017-06-09 23:33:31 korenski.MtbApplication - Starting MtbApplication on DESKTOP-70A4T8A with PID 5680 (started by Tea in D:\My stuff\NoviRepozitorijum)
+[DEBUG]2017-06-09 23:33:31 korenski.MtbApplication - Running with Spring Boot v1.4.1.RELEASE, Spring v4.3.3.RELEASE
+[INFO ]2017-06-09 23:33:31 korenski.MtbApplication - No active profile set, falling back to default profiles: default
+[INFO ]2017-06-09 23:33:47 korenski.MtbApplication - Started MtbApplication in 16.132 seconds (JVM running for 16.91)
+[INFO ]2017-06-09 23:34:02 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-1726533787929-93 poverilac: 840-1234567890123-28 iznos: 15.23  hitno: Ne
+[INFO ]2017-06-09 23:34:02 k.c.businesslogic.ImportController - User 1 Permisija interna tranasakcija duznik: 123-9338670954849-69 poverilac: 123-8880775775674-13 iznos: 150.23 
+[INFO ]2017-06-09 23:34:03 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 234-6355718718680-9 iznos: 1500.23  hitno: Ne
+[INFO ]2017-06-09 23:34:04 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 1200.0  hitno: Ne
+[INFO ]2017-06-09 23:34:04 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 8000.0  hitno: Ne
+[INFO ]2017-06-09 23:34:04 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Ne
+[INFO ]2017-06-09 23:34:04 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Ne
+[INFO ]2017-06-09 23:34:05 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Ne
+[INFO ]2017-06-09 23:34:06 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Da
+[INFO ]2017-06-09 23:37:52 korenski.MtbApplication - Starting MtbApplication on DESKTOP-70A4T8A with PID 324 (started by Tea in D:\My stuff\NoviRepozitorijum)
+[DEBUG]2017-06-09 23:37:52 korenski.MtbApplication - Running with Spring Boot v1.4.1.RELEASE, Spring v4.3.3.RELEASE
+[INFO ]2017-06-09 23:37:52 korenski.MtbApplication - No active profile set, falling back to default profiles: default
+[INFO ]2017-06-09 23:38:08 korenski.MtbApplication - Started MtbApplication in 16.231 seconds (JVM running for 16.92)
+[INFO ]2017-06-09 23:38:43 k.c.institutions.RacunController - User 1 DEACTIVATE_ACCOUNT tip: fizicko lice broj ziroracuna 123-9338670954849-69
+[INFO ]2017-06-09 23:46:31 korenski.MtbApplication - Starting MtbApplication on DESKTOP-70A4T8A with PID 2880 (started by Tea in D:\My stuff\NoviRepozitorijum)
+[DEBUG]2017-06-09 23:46:31 korenski.MtbApplication - Running with Spring Boot v1.4.1.RELEASE, Spring v4.3.3.RELEASE
+[INFO ]2017-06-09 23:46:31 korenski.MtbApplication - No active profile set, falling back to default profiles: default
+[INFO ]2017-06-09 23:46:47 korenski.MtbApplication - Started MtbApplication in 15.858 seconds (JVM running for 16.556)
+[INFO ]2017-06-09 23:47:47 k.c.institutions.RacunController - User 1 DEACTIVATE_ACCOUNT tip: fizicko lice broj ziroracuna 123-9338670954849-69
+[INFO ]2017-06-09 23:48:09 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-1726533787929-93 poverilac: 840-1234567890123-28 iznos: 15.23  hitno: Ne
+[INFO ]2017-06-09 23:48:53 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-1726533787929-93 poverilac: 840-1234567890123-28 iznos: 15.23  hitno: Ne
+[INFO ]2017-06-09 23:48:54 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Ne
+[INFO ]2017-06-09 23:52:10 korenski.MtbApplication - Starting MtbApplication on DESKTOP-70A4T8A with PID 11416 (started by Tea in D:\My stuff\NoviRepozitorijum)
+[DEBUG]2017-06-09 23:52:10 korenski.MtbApplication - Running with Spring Boot v1.4.1.RELEASE, Spring v4.3.3.RELEASE
+[INFO ]2017-06-09 23:52:10 korenski.MtbApplication - No active profile set, falling back to default profiles: default
+[INFO ]2017-06-09 23:52:25 korenski.MtbApplication - Started MtbApplication in 15.482 seconds (JVM running for 16.165)
+[INFO ]2017-06-09 23:53:10 k.c.institutions.RacunController - User 1 DEACTIVATE_ACCOUNT tip: fizicko lice broj ziroracuna 123-9338670954849-69
+[INFO ]2017-06-09 23:55:05 korenski.MtbApplication - Starting MtbApplication on DESKTOP-70A4T8A with PID 8276 (started by Tea in D:\My stuff\NoviRepozitorijum)
+[DEBUG]2017-06-09 23:55:05 korenski.MtbApplication - Running with Spring Boot v1.4.1.RELEASE, Spring v4.3.3.RELEASE
+[INFO ]2017-06-09 23:55:05 korenski.MtbApplication - No active profile set, falling back to default profiles: default
+[INFO ]2017-06-09 23:55:22 korenski.MtbApplication - Started MtbApplication in 17.059 seconds (JVM running for 18.319)
+[INFO ]2017-06-09 23:57:02 k.c.institutions.RacunController - User 1 DEACTIVATE_ACCOUNT tip: fizicko lice broj ziroracuna 123-7184821064803-82
+[INFO ]2017-06-09 23:57:23 k.c.businesslogic.ImportController - User 1 Permisija interna tranasakcija duznik: 123-9338670954849-69 poverilac: 123-8880775775674-13 iznos: 150.23 
+[INFO ]2017-06-09 23:57:24 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 234-6355718718680-9 iznos: 1500.23  hitno: Ne
+[INFO ]2017-06-09 23:57:25 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 1200.0  hitno: Ne
+[INFO ]2017-06-09 23:57:25 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 8000.0  hitno: Ne
+[INFO ]2017-06-09 23:57:26 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Ne
+[INFO ]2017-06-09 23:57:26 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Ne
+[INFO ]2017-06-09 23:57:27 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Ne
+[INFO ]2017-06-09 23:57:28 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Da
+[INFO ]2017-06-10 00:11:00 korenski.MtbApplication - Starting MtbApplication on DESKTOP-70A4T8A with PID 11672 (started by Tea in D:\My stuff\NoviRepozitorijum)
+[DEBUG]2017-06-10 00:11:00 korenski.MtbApplication - Running with Spring Boot v1.4.1.RELEASE, Spring v4.3.3.RELEASE
+[INFO ]2017-06-10 00:11:00 korenski.MtbApplication - No active profile set, falling back to default profiles: default
+[INFO ]2017-06-10 00:11:15 korenski.MtbApplication - Started MtbApplication in 15.62 seconds (JVM running for 16.558)
+[INFO ]2017-06-10 00:11:37 k.c.businesslogic.ImportController - User 1 Permisija interna tranasakcija duznik: 123-9338670954849-69 poverilac: 123-8880775775674-13 iznos: 150.23 
+[INFO ]2017-06-10 00:11:38 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 234-6355718718680-9 iznos: 1500.23  hitno: Ne
+[INFO ]2017-06-10 00:11:39 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 1200.0  hitno: Ne
+[INFO ]2017-06-10 00:11:39 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 8000.0  hitno: Ne
+[INFO ]2017-06-10 00:11:39 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Ne
+[INFO ]2017-06-10 00:11:39 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Ne
+[INFO ]2017-06-10 00:11:40 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Ne
+[INFO ]2017-06-10 00:11:41 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Da
+[INFO ]2017-06-10 00:13:59 korenski.MtbApplication - Starting MtbApplication on DESKTOP-70A4T8A with PID 14092 (started by Tea in D:\My stuff\NoviRepozitorijum)
+[DEBUG]2017-06-10 00:13:59 korenski.MtbApplication - Running with Spring Boot v1.4.1.RELEASE, Spring v4.3.3.RELEASE
+[INFO ]2017-06-10 00:13:59 korenski.MtbApplication - No active profile set, falling back to default profiles: default
+[INFO ]2017-06-10 00:14:14 korenski.MtbApplication - Started MtbApplication in 15.382 seconds (JVM running for 16.083)
+[INFO ]2017-06-10 00:14:27 k.c.businesslogic.ImportController - User 1 Permisija interna tranasakcija duznik: 123-9338670954849-69 poverilac: 123-8880775775674-13 iznos: 150.23 
+[INFO ]2017-06-10 00:14:28 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 234-6355718718680-9 iznos: 1500.23  hitno: Ne
+[INFO ]2017-06-10 00:14:29 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 1200.0  hitno: Ne
+[INFO ]2017-06-10 00:14:29 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 8000.0  hitno: Ne
+[INFO ]2017-06-10 00:14:29 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Ne
+[INFO ]2017-06-10 00:14:29 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Ne
+[INFO ]2017-06-10 00:14:30 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Ne
+[INFO ]2017-06-10 00:14:31 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Da
+[INFO ]2017-06-10 00:15:59 korenski.MtbApplication - Starting MtbApplication on DESKTOP-70A4T8A with PID 6248 (started by Tea in D:\My stuff\NoviRepozitorijum)
+[DEBUG]2017-06-10 00:15:59 korenski.MtbApplication - Running with Spring Boot v1.4.1.RELEASE, Spring v4.3.3.RELEASE
+[INFO ]2017-06-10 00:15:59 korenski.MtbApplication - No active profile set, falling back to default profiles: default
+[INFO ]2017-06-10 00:16:16 korenski.MtbApplication - Started MtbApplication in 16.716 seconds (JVM running for 17.592)
+[INFO ]2017-06-10 00:18:55 korenski.MtbApplication - Starting MtbApplication on DESKTOP-70A4T8A with PID 5824 (started by Tea in D:\My stuff\NoviRepozitorijum)
+[DEBUG]2017-06-10 00:18:55 korenski.MtbApplication - Running with Spring Boot v1.4.1.RELEASE, Spring v4.3.3.RELEASE
+[INFO ]2017-06-10 00:18:55 korenski.MtbApplication - No active profile set, falling back to default profiles: default
+[INFO ]2017-06-10 00:19:10 korenski.MtbApplication - Started MtbApplication in 15.699 seconds (JVM running for 16.551)
+[INFO ]2017-06-10 00:19:32 k.c.institutions.RacunController - User 1 DEACTIVATE_ACCOUNT tip: fizicko lice broj ziroracuna 123-7184821064803-82
+[INFO ]2017-06-10 00:21:00 k.c.institutions.RacunController - User 1 DEACTIVATE_ACCOUNT tip: fizicko lice broj ziroracuna 123-9338670954849-69

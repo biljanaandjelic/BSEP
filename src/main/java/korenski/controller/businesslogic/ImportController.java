@@ -121,15 +121,15 @@ public class ImportController {
 			String racunDuznika = podaciDuznika.getBrojRacuna();
 			String racunPoverioca = podaciPoverioca.getBrojRacuna();
 
-			Racun duznik = racunRepository.findByBankAndBrojRacunaAndStatusTrue(bank, racunDuznika);
-			Racun poverilac = racunRepository.findByBankAndBrojRacunaAndStatusTrue(bank, racunPoverioca);
+			Racun duznik = racunRepository.findByBankAndBrojRacuna(bank, racunDuznika);
+			Racun poverilac = racunRepository.findByBankAndBrojRacuna(bank, racunPoverioca);
 
 			if (duznik == null && poverilac == null) {
 				System.out.println("Nije moja banka");
 				continue;
 			}
-
-			if (duznik != null && poverilac != null && duznik.getStanje() >= nalog.getPodaciOPlacanju().getIznos()) {
+			
+			if (duznik != null && poverilac != null && duznik.getStanje() >= nalog.getPodaciOPlacanju().getIznos() && duznik.getStatus() && poverilac.getStatus()) {
 				System.out.println("Racuni su iz iste banke!");
 				try{
 					blService.sameBankTransfer(nalog, duznik, poverilac);
@@ -141,7 +141,7 @@ public class ImportController {
 				//logger.info("USER {} " + user.getId().toString() +" PERMISIJA " + " INERNI " + duznik.getBrojRacuna()+" "+ poverilac.getBrojRacuna()+" "+nalog.getPodaciOPlacanju().getIznos());
 				logger.info("User {} Permisija interna tranasakcija duznik: {} poverilac: {} iznos: {} ", user.getId().toString(), duznik.getBrojRacuna(), poverilac.getBrojRacuna(), nalog.getPodaciOPlacanju().getIznos());;
 			} else if (duznik != null && poverilac == null
-					&& duznik.getStanje() >= nalog.getPodaciOPlacanju().getIznos()) {
+					&& duznik.getStanje() >= nalog.getPodaciOPlacanju().getIznos()  && duznik.getStatus()) {
 				System.out.println("Racuni su iz razlicitih banaka");
 				try{
 				blService.differentBanksTransfer(nalog, duznik, racunPoverioca);
@@ -154,7 +154,7 @@ public class ImportController {
 
 				
 				logger.info("User {} Permisija medjubankarska transakcija duznik: {} poverilac: {} iznos: {}  hitno: {}",user.getId().toString(), duznik.getBrojRacuna(), racunPoverioca,nalog.getPodaciOPlacanju().getIznos(),nalog.getHitno() );
-			} else if(duznik == null && poverilac != null){// uplata iz druge banke
+			} else if(duznik == null && poverilac != null  && poverilac.getStatus() ){// uplata iz druge banke
 				System.out.println("Uplata iz druge banke!");
 				try{
 				blService.otherBankPayment(nalog,  poverilac);
@@ -163,15 +163,15 @@ public class ImportController {
 					return new ResponseEntity<String>("Wrong",HttpStatus.INTERNAL_SERVER_ERROR);
 				}
 			}
-			}else if(podaciDuznika!=null && podaciPoverioca==null){
+			}else if(podaciDuznika!=null && podaciPoverioca==null ){
 				//islata
 
 				String racunDuznika = podaciDuznika.getBrojRacuna();
 			//	String racunPoverioca = podaciPoverioca.getBrojRacuna();
 
-				Racun duznik = racunRepository.findByBankAndBrojRacunaAndStatusTrue(bank, racunDuznika);
+				Racun duznik = racunRepository.findByBankAndBrojRacuna(bank, racunDuznika);
 			//	Racun poverilac = racunRepository.findByBankAndBrojRacunaAndStatusTrue(bank, racunPoverioca);
-				if(duznik!=null){
+				if(duznik!=null && duznik.getStatus()){
 					blService.isplata(nalog, duznik);
 				}
 				
@@ -181,8 +181,8 @@ public class ImportController {
 				String racunPoverioca = podaciPoverioca.getBrojRacuna();
 
 			
-				Racun poverilac = racunRepository.findByBankAndBrojRacunaAndStatusTrue(bank, racunPoverioca);
-				if(poverilac!=null){
+				Racun poverilac = racunRepository.findByBankAndBrojRacuna(bank, racunPoverioca);
+				if(poverilac!=null && poverilac.getStatus()){
 					blService.uplata(nalog,poverilac);
 				}
 			}

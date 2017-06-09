@@ -139,6 +139,13 @@ public class BusinessLogicService {
 			dnevnoStanjeDuznika.getAnalitike().add(analitikaDuznika);
 			dnevnoStanjeRepository.save(dnevnoStanjeDuznika);
 
+			
+			racunDuznika.setStanje(racunDuznika.getStanje()-nalog.getPodaciOPlacanju().getIznos());
+			racunPoverioca.setStanje(racunPoverioca.getStanje()+nalog.getPodaciOPlacanju().getIznos());
+			
+			racunRepository.save(racunDuznika);
+			racunRepository.save(racunPoverioca);
+			
 			analitikaPoverioca=analitikaIzvodaRepository.save(analitikaPoverioca);
 			dnevnoStanjePoverioca.setNovoStanje(dnevnoStanjePoverioca.getNovoStanje() + analitikaPoverioca.getIznos());
 			dnevnoStanjePoverioca
@@ -356,6 +363,10 @@ public class BusinessLogicService {
 		
 		try {
 			
+			racunPoverioca.setStanje(racunPoverioca.getStanje()+nalog.getPodaciOPlacanju().getIznos());
+			
+			racunRepository.save(racunPoverioca);
+			
 			analitikaPoverioca=analitikaIzvodaRepository.save(analitikaPoverioca);
 			dnevnoStanjePoverioca.setNovoStanje(dnevnoStanjePoverioca.getNovoStanje() + analitikaPoverioca.getIznos());
 			dnevnoStanjePoverioca
@@ -419,6 +430,10 @@ public class BusinessLogicService {
 					dnevnoStanjePoverioca);
 			
 			try {
+				
+				racunPoverioca.setStanje(racunPoverioca.getStanje()+nalog.getPodaciOPlacanju().getIznos());
+				
+				racunRepository.save(racunPoverioca);
 				
 				analitikaPoverioca=analitikaIzvodaRepository.save(analitikaPoverioca);
 				dnevnoStanjePoverioca.setNovoStanje(dnevnoStanjePoverioca.getNovoStanje() + analitikaPoverioca.getIznos());
@@ -515,6 +530,11 @@ public class BusinessLogicService {
 		// }
 
 		try {
+			
+			racunDuznika.setStanje(racunDuznika.getStanje()-nalog.getPodaciOPlacanju().getIznos());
+			
+			racunRepository.save(racunDuznika);
+			
 			analitikaDuznika=analitikaIzvodaRepository.save(analitikaDuznika);
 			dnevnoStanjeDuznika.setNovoStanje(dnevnoStanjeDuznika.getNovoStanje() - analitikaDuznika.getIznos());
 			dnevnoStanjeDuznika.setPrometNaTeret(dnevnoStanjeDuznika.getPrometNaTeret() + analitikaDuznika.getIznos());

@@ -11,6 +11,7 @@
 		                <th><span >IME KLIJENTA</span></th>
 		                <th><span >PREZIME KLIJENTA</span></th>
 		                <th><span >STATUS</span></th>
+		                <th><span >STANJE</span></th>
 		                <th>DATUM OTVARANJA</th>
 		                <th>DATUM DEAKTIVACIJE</th>
 		            </tr>
@@ -22,6 +23,7 @@
 			        	<td>{{racun.klijent.ime}}</td>
 						<td>{{racun.klijent.prezime}}</td>
 						<td>{{rr.getStatusRacuna(racun.status)}}</td>
+						<td>{{racun.stanje}}</td>
 						<td>{{racun.datumOtvaranja | date : "MM/dd/yyyy 'at' h:mma"}}</td>
 						<td>{{racun.datumDeaktivacije | date : "MM/dd/yyyy 'at' h:mma"}}</td>
 						<td><input type="button" value="Zatvori racun" ng-show = "rr.checkStatus(racun)" ng-click = "rr.nadjiRacun(racun)" data-toggle="modal" data-target="#dijalogZatvaranje"/></td>
