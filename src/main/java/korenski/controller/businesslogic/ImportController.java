@@ -116,6 +116,8 @@ public class ImportController {
 			TFinansijskiPodaci podaciDuznika = nalog.getPodaciOPlacanju().getFinansijskiPodaciDuznik();
 			TFinansijskiPodaci podaciPoverioca = nalog.getPodaciOPlacanju().getFinansijskiPodaciPoverilac();
 
+			if(podaciDuznika!=null && podaciPoverioca!=null){
+			
 			String racunDuznika = podaciDuznika.getBrojRacuna();
 			String racunPoverioca = podaciPoverioca.getBrojRacuna();
 
@@ -132,9 +134,11 @@ public class ImportController {
 				try{
 					blService.sameBankTransfer(nalog, duznik, poverilac);
 				}catch(Exception e ){
+					e.printStackTrace();
 					return new ResponseEntity<String>("Wrong",HttpStatus.INTERNAL_SERVER_ERROR);
 				}
-				
+				//logger.debug("In bar my name is {}.", name);
+				//logger.info("USER {} " + user.getId().toString() +" PERMISIJA " + " INERNI " + duznik.getBrojRacuna()+" "+ poverilac.getBrojRacuna()+" "+nalog.getPodaciOPlacanju().getIznos());
 				logger.info("User {} Permisija interna tranasakcija duznik: {} poverilac: {} iznos: {} ", user.getId().toString(), duznik.getBrojRacuna(), poverilac.getBrojRacuna(), nalog.getPodaciOPlacanju().getIznos());;
 			} else if (duznik != null && poverilac == null
 					&& duznik.getStanje() >= nalog.getPodaciOPlacanju().getIznos()) {
@@ -143,16 +147,45 @@ public class ImportController {
 				blService.differentBanksTransfer(nalog, duznik, racunPoverioca);
 				}catch (Exception e) {
 					// TODO: handle exception
+					e.printStackTrace();
 					return new ResponseEntity<String>("Wrong",HttpStatus.INTERNAL_SERVER_ERROR);
 				}
 				//logger.info("USER " + user.getId().toString() +" PERMISIJA " + " Medjubankarski "+duznik.getBrojRacuna()+" "+ racunPoverioca+" "+ nalog.getPodaciOPlacanju().getIznos());
 
 				
 				logger.info("User {} Permisija medjubankarska transakcija duznik: {} poverilac: {} iznos: {}  hitno: {}",user.getId().toString(), duznik.getBrojRacuna(), racunPoverioca,nalog.getPodaciOPlacanju().getIznos(),nalog.getHitno() );
-			} else {
-				continue;
+			} else if(duznik == null && poverilac != null){// uplata iz druge banke
+				System.out.println("Uplata iz druge banke!");
+				try{
+				blService.otherBankPayment(nalog,  poverilac);
+				}catch (Exception e) {
+					// TODO: handle exception
+					return new ResponseEntity<String>("Wrong",HttpStatus.INTERNAL_SERVER_ERROR);
+				}
 			}
+			}else if(podaciDuznika!=null && podaciPoverioca==null){
+				//islata
 
+				String racunDuznika = podaciDuznika.getBrojRacuna();
+			//	String racunPoverioca = podaciPoverioca.getBrojRacuna();
+
+				Racun duznik = racunRepository.findByBankAndBrojRacunaAndStatusTrue(bank, racunDuznika);
+			//	Racun poverilac = racunRepository.findByBankAndBrojRacunaAndStatusTrue(bank, racunPoverioca);
+				if(duznik!=null){
+					blService.isplata(nalog, duznik);
+				}
+				
+			}else if(podaciPoverioca!=null && podaciDuznika==null){
+				//uplata
+			
+				String racunPoverioca = podaciPoverioca.getBrojRacuna();
+
+			
+				Racun poverilac = racunRepository.findByBankAndBrojRacunaAndStatusTrue(bank, racunPoverioca);
+				if(poverilac!=null){
+					blService.uplata(nalog,poverilac);
+				}
+			}
 		}
 	//	logger.debug("Leaving importChosenXML(): "+"Sve ok!");
 		return new ResponseEntity<String>("Sve ok!", HttpStatus.OK);

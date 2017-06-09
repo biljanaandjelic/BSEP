@@ -126,7 +126,11 @@ public class BusinessLogicService {
 				nalog.getPodaciOPlacanju().getIznos(), nalog.getPodaciOPlacanju().getValuta(), hitno,
 				dnevnoStanjePoverioca);
 
-		
+		// if((dnevnoStanjeDuznika.getNovoStanje()-analitikaDuznika.getIznos())
+		// < 0){
+		// System.out.println("Nema dovoljno sredstava!");
+		// return;
+		// }
 
 		try {
 			analitikaDuznika=analitikaIzvodaRepository.save(analitikaDuznika);
@@ -297,6 +301,238 @@ public class BusinessLogicService {
 	}
 
 	
+	public boolean otherBankPayment(NalogZaPrenos nalog,Racun racunPoverioca)
+			throws ParseException {
+		DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+
+		Date today = new Date();
+		Date todayWithZeroTime = null;
+		try {
+			todayWithZeroTime = formatter.parse(formatter.format(today));
+		} catch (ParseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			return false;
+		}
+		
+		DnevnoStanjeRacuna dnevnoStanjePoverioca = dnevnoStanjeRepository.findByDatumAndRacun(todayWithZeroTime,
+				racunPoverioca);
+
+		
+
+		if (dnevnoStanjePoverioca == null) {
+			dnevnoStanjePoverioca = new DnevnoStanjeRacuna(new Date(), racunPoverioca.getStanje(), 0, 0,
+					racunPoverioca.getStanje(), racunPoverioca);
+			racunPoverioca.getDnevnaStanjaRacuna().add(dnevnoStanjePoverioca);
+			try {
+				dnevnoStanjeRepository.save(dnevnoStanjePoverioca);
+			} catch (Exception e) {
+				// TODO: handle exception
+				return false;
+			}
+		}
+
+		boolean hitno;
+
+		if (nalog.getHitno().equals("Da")) {
+			hitno = true;
+		} else {
+			hitno = false;
+		}
+
+		
+
+		AnalitikaIzvoda analitikaPoverioca = new AnalitikaIzvoda(new Date(new Date().getTime()), "K",
+				nalog.getPodaciODuzniku().getAdresa(), nalog.getSvrhaPlacanja(),
+				nalog.getPodaciOPoveriocu().getAdresa(), nalog.getPodaciOPlacanju().getDatumValute(),
+				nalog.getPodaciOPlacanju().getDatumValute(), nalog.getPodaciOPlacanju().getFinansijskiPodaciDuznik().getBrojRacuna(),
+				nalog.getPodaciOPlacanju().getFinansijskiPodaciDuznik().getModel(),
+				nalog.getPodaciOPlacanju().getFinansijskiPodaciDuznik().getPozivNaBroj(),
+				racunPoverioca.getBrojRacuna(), nalog.getPodaciOPlacanju().getFinansijskiPodaciPoverilac().getModel(),
+				nalog.getPodaciOPlacanju().getFinansijskiPodaciPoverilac().getPozivNaBroj(),
+				nalog.getPodaciOPlacanju().getIznos(), nalog.getPodaciOPlacanju().getValuta(), hitno,
+				dnevnoStanjePoverioca);
+
+		
+		try {
+			
+			analitikaPoverioca=analitikaIzvodaRepository.save(analitikaPoverioca);
+			dnevnoStanjePoverioca.setNovoStanje(dnevnoStanjePoverioca.getNovoStanje() + analitikaPoverioca.getIznos());
+			dnevnoStanjePoverioca
+					.setPrometUKorist(dnevnoStanjePoverioca.getPrometUKorist() + analitikaPoverioca.getIznos());
+			dnevnoStanjePoverioca.getAnalitike().add(analitikaPoverioca);
+			dnevnoStanjeRepository.save(dnevnoStanjePoverioca);
+		} catch (Exception e) {
+			// TODO: handle exception
+			return false;
+		}
+		return true;
+	}
+	
+	public boolean uplata(NalogZaPrenos  nalog, Racun racunPoverioca){
+	
+			DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+
+			Date today = new Date();
+			Date todayWithZeroTime = null;
+			try {
+				todayWithZeroTime = formatter.parse(formatter.format(today));
+			} catch (ParseException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+				e1.printStackTrace();
+				return false;
+			}
+			
+			DnevnoStanjeRacuna dnevnoStanjePoverioca = dnevnoStanjeRepository.findByDatumAndRacun(todayWithZeroTime,
+					racunPoverioca);
+
+			
+
+			if (dnevnoStanjePoverioca == null) {
+				dnevnoStanjePoverioca = new DnevnoStanjeRacuna(new Date(), racunPoverioca.getStanje(), 0, 0,
+						racunPoverioca.getStanje(), racunPoverioca);
+				racunPoverioca.getDnevnaStanjaRacuna().add(dnevnoStanjePoverioca);
+				try {
+					dnevnoStanjeRepository.save(dnevnoStanjePoverioca);
+				} catch (Exception e) {
+					e.printStackTrace();
+					return false;
+				}
+			}
+			boolean hitno;
+			if (nalog.getHitno().equals("Da")) {
+				hitno = true;
+			} else {
+				hitno = false;
+			}
+
+			AnalitikaIzvoda analitikaPoverioca = new AnalitikaIzvoda(new Date(new Date().getTime()), "K",
+					nalog.getPodaciODuzniku().getAdresa(), nalog.getSvrhaPlacanja(),
+					nalog.getPodaciOPoveriocu().getAdresa(), nalog.getPodaciOPlacanju().getDatumValute(),
+					nalog.getPodaciOPlacanju().getDatumValute(),null,
+					null,
+					null,
+					racunPoverioca.getBrojRacuna(), nalog.getPodaciOPlacanju().getFinansijskiPodaciPoverilac().getModel(),
+					nalog.getPodaciOPlacanju().getFinansijskiPodaciPoverilac().getPozivNaBroj(),
+					nalog.getPodaciOPlacanju().getIznos(), nalog.getPodaciOPlacanju().getValuta(), hitno,
+					dnevnoStanjePoverioca);
+			
+			try {
+				
+				analitikaPoverioca=analitikaIzvodaRepository.save(analitikaPoverioca);
+				dnevnoStanjePoverioca.setNovoStanje(dnevnoStanjePoverioca.getNovoStanje() + analitikaPoverioca.getIznos());
+				dnevnoStanjePoverioca
+						.setPrometUKorist(dnevnoStanjePoverioca.getPrometUKorist() + analitikaPoverioca.getIznos());
+				dnevnoStanjePoverioca.getAnalitike().add(analitikaPoverioca);
+				dnevnoStanjeRepository.save(dnevnoStanjePoverioca);
+			} catch (Exception e) {
+				// TODO: handle exception
+				return false;
+			}
+		
+			
+			return true;
+	}
+	
+	public boolean isplata(NalogZaPrenos nalog, Racun racunDuznika){
+		
+		
+		DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+
+		Date today = new Date();
+		Date todayWithZeroTime = null;
+		try {
+			todayWithZeroTime = formatter.parse(formatter.format(today));
+		} catch (ParseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			return false;
+		}
+		DnevnoStanjeRacuna dnevnoStanjeDuznika = dnevnoStanjeRepository.findByDatumAndRacun(todayWithZeroTime,
+				racunDuznika);
+//		DnevnoStanjeRacuna dnevnoStanjePoverioca = dnevnoStanjeRepository.findByDatumAndRacun(todayWithZeroTime,
+//				racunPoverioca);
+
+		if (dnevnoStanjeDuznika == null) {
+			dnevnoStanjeDuznika = new DnevnoStanjeRacuna(todayWithZeroTime, racunDuznika.getStanje(), 0, 0,
+					racunDuznika.getStanje(), racunDuznika);
+			racunDuznika.getDnevnaStanjaRacuna().add(dnevnoStanjeDuznika);
+			try {
+				dnevnoStanjeRepository.save(dnevnoStanjeDuznika);
+			} catch (Exception e) {
+				// TODO: handle exception
+				return false;
+			}
+		}
+
+//		if (dnevnoStanjePoverioca == null) {
+//			dnevnoStanjePoverioca = new DnevnoStanjeRacuna(new Date(), racunPoverioca.getStanje(), 0, 0,
+//					racunPoverioca.getStanje(), racunPoverioca);
+//			racunPoverioca.getDnevnaStanjaRacuna().add(dnevnoStanjePoverioca);
+//			try {
+//				dnevnoStanjeRepository.save(dnevnoStanjePoverioca);
+//			} catch (Exception e) {
+//				// TODO: handle exception
+//				return false;
+//			}
+//		}
+
+		boolean hitno;
+
+		if (nalog.getHitno().equals("Da")) {
+			hitno = true;
+		} else {
+			hitno = false;
+		}
+
+		AnalitikaIzvoda analitikaDuznika = new AnalitikaIzvoda(new Date(new Date().getTime()), "T",
+				nalog.getPodaciODuzniku().getAdresa(), nalog.getSvrhaPlacanja(),
+				nalog.getPodaciOPoveriocu().getAdresa(), nalog.getPodaciOPlacanju().getDatumValute(),
+				nalog.getPodaciOPlacanju().getDatumValute(), racunDuznika.getBrojRacuna(),
+				nalog.getPodaciOPlacanju().getFinansijskiPodaciDuznik().getModel(),
+				nalog.getPodaciOPlacanju().getFinansijskiPodaciDuznik().getPozivNaBroj(),
+				null, null,
+				null,
+				nalog.getPodaciOPlacanju().getIznos(), nalog.getPodaciOPlacanju().getValuta(), hitno,
+				dnevnoStanjeDuznika);
+
+//		AnalitikaIzvoda analitikaPoverioca = new AnalitikaIzvoda(new Date(new Date().getTime()), "K",
+//				nalog.getPodaciODuzniku().getAdresa(), nalog.getSvrhaPlacanja(),
+//				nalog.getPodaciOPoveriocu().getAdresa(), nalog.getPodaciOPlacanju().getDatumValute(),
+//				nalog.getPodaciOPlacanju().getDatumValute(), racunDuznika.getBrojRacuna(),
+//				nalog.getPodaciOPlacanju().getFinansijskiPodaciDuznik().getModel(),
+//				nalog.getPodaciOPlacanju().getFinansijskiPodaciDuznik().getPozivNaBroj(),
+//				racunPoverioca.getBrojRacuna(), nalog.getPodaciOPlacanju().getFinansijskiPodaciPoverilac().getModel(),
+//				nalog.getPodaciOPlacanju().getFinansijskiPodaciPoverilac().getPozivNaBroj(),
+//				nalog.getPodaciOPlacanju().getIznos(), nalog.getPodaciOPlacanju().getValuta(), hitno,
+//				dnevnoStanjePoverioca);
+
+		// if((dnevnoStanjeDuznika.getNovoStanje()-analitikaDuznika.getIznos())
+		// < 0){
+		// System.out.println("Nema dovoljno sredstava!");
+		// return;
+		// }
+
+		try {
+			analitikaDuznika=analitikaIzvodaRepository.save(analitikaDuznika);
+			dnevnoStanjeDuznika.setNovoStanje(dnevnoStanjeDuznika.getNovoStanje() - analitikaDuznika.getIznos());
+			dnevnoStanjeDuznika.setPrometNaTeret(dnevnoStanjeDuznika.getPrometNaTeret() + analitikaDuznika.getIznos());
+			dnevnoStanjeDuznika.getAnalitike().add(analitikaDuznika);
+			dnevnoStanjeRepository.save(dnevnoStanjeDuznika);
+
+//			analitikaPoverioca=analitikaIzvodaRepository.save(analitikaPoverioca);
+//			dnevnoStanjePoverioca.setNovoStanje(dnevnoStanjePoverioca.getNovoStanje() + analitikaPoverioca.getIznos());
+//			dnevnoStanjePoverioca
+//					.setPrometUKorist(dnevnoStanjePoverioca.getPrometUKorist() + analitikaPoverioca.getIznos());
+//			dnevnoStanjePoverioca.getAnalitike().add(analitikaPoverioca);
+//			dnevnoStanjeRepository.save(dnevnoStanjePoverioca);
+		} catch (Exception e) {
+			// TODO: handle exception
+			return false;
+		}
+		return true;
+	}
 	public boolean export(MedjubankarskiPrenos foundMedjubankarskiPrenos){
 		try{
 		//	MedjubankarskiPrenos foundMedjubankarskiPrenos=mbPrenosRepository.findOne(id);
