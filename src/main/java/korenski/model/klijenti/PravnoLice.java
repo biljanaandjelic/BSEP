@@ -16,7 +16,7 @@ import korenski.model.sifrarnici.Activity;
 public class PravnoLice extends Klijent {
 	
 	@Column(nullable = false, length = 10)
-	@Pattern(regexp = "[0-9]{10}")
+	@Pattern(regexp = "[0-9]{10}", message = "Pib se sastoji od 10 cifara.")
 	private String pib;
 	
 	@Column(nullable = false)
@@ -50,6 +50,7 @@ public class PravnoLice extends Klijent {
 
 	public PravnoLice() {
 		super();
+		
 		// TODO Auto-generated constructor stub
 	}
 

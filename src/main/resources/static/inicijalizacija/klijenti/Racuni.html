@@ -11,6 +11,7 @@
 		                <th><span >IME KLIJENTA</span></th>
 		                <th><span >PREZIME KLIJENTA</span></th>
 		                <th><span >STATUS</span></th>
+		                <th><span >STANJE</span></th>
 		                <th>DATUM OTVARANJA</th>
 		                <th>DATUM DEAKTIVACIJE</th>
 		            </tr>
@@ -22,8 +23,9 @@
 			        	<td>{{racun.klijent.ime}}</td>
 						<td>{{racun.klijent.prezime}}</td>
 						<td>{{rr.getStatusRacuna(racun.status)}}</td>
-						<td><input type="date" ng-model="racun.datumOtvaranja" readonly></td>
-						<td><input type="date" ng-model="racun.datumDeaktivacije" readonly></td>
+						<td>{{racun.stanje}}</td>
+						<td>{{racun.datumOtvaranja | date : "MM/dd/yyyy 'at' h:mma"}}</td>
+						<td>{{racun.datumDeaktivacije | date : "MM/dd/yyyy 'at' h:mma"}}</td>
 						<td><input type="button" value="Zatvori racun" ng-show = "rr.checkStatus(racun)" ng-click = "rr.nadjiRacun(racun)" data-toggle="modal" data-target="#dijalogZatvaranje"/></td>
 			        </tr>
 		         
@@ -49,6 +51,7 @@
 		<div class="btn-group">
 		  <button type="button" class="btn btn-default" disabled><img src="ikonice/add.gif" width="20" /></button>
 		  <button type="button" class="btn btn-default" disabled><img src="ikonice/remove.gif" width="20"/></button>
+		  <button type="button" class="btn btn-default" ng-click="rr.accountReports()"><img src="ikonice/Minority-Report-icon.png" width="20"/></button>
 		</div>
 		
 		<div class="btn-group">

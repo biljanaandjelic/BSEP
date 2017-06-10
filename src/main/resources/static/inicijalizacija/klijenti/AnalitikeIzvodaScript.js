@@ -8,7 +8,29 @@ administrator.controller('RukovanjeAnalitikamaIzvoda', function($scope, $http, $
 	$scope.analitike = {};
 	
 	$scope.idSelektovaneAnalitike = null;
-	
+	$scope.$on('filterPoStavkamaPrenosa', function (event, medjubankarskiPrenos) {
+	    //console.log(id); // Index drzave
+	    console.log("filterPoStavkamaPrenosa");
+	   $http({
+		  url: "/stavkePrenosa" ,
+		  method:'POST',
+		  data: medjubankarskiPrenos
+	   }).then(function(response) {
+        	//$scope.naseljenaMesta = response.data;
+        	//$scope.selektovanaDrzava = angular.copy($scope.naseljenaMesta[0].drzava);
+        	
+        	//$scope.naseljenoMesto = {};
+			$scope.analitike=[];
+			for (var i = 0; i < response.data.length; i++) { 
+				//if(angular.equals($scope.messages[i].id, id)){
+				//	temp = i;
+				//	return temp;
+				//}
+				$scope.analitike.push(response.data[i].analitikaIzvoda);
+			}
+        });
+	    
+	  });
 	
 	$scope.$on('filterAnalitika', function (event, obj) {
 		
@@ -110,20 +132,14 @@ administrator.controller('RukovanjeAnalitikamaIzvoda', function($scope, $http, $
 	}
 	
 	this.firstClick = function(){
-		
-		if(!$scope.nultoStanje()){
-			return;
-		}
-		
+	
 		
 		$scope.idSelektovaneAnalitike = $scope.analitike[0].id;
 	};
 
 	this.prevClick = function(){
 		
-		if(!$scope.nultoStanje()){
-			return;
-		}
+		
 		
 		var temp = -1;
 		for (var i = 0; i < $scope.analitike.length; i++) { 
@@ -143,9 +159,7 @@ administrator.controller('RukovanjeAnalitikamaIzvoda', function($scope, $http, $
 	
 
 	this.nextClick = function(){
-		if(!$scope.nultoStanje()){
-			return;
-		}
+		
 		
 		var temp = -1;
 		for (var i = 0; i < $scope.analitike.length; i++) { 
@@ -165,9 +179,7 @@ administrator.controller('RukovanjeAnalitikamaIzvoda', function($scope, $http, $
 	
 
 	this.lastClick = function(){
-		if(!$scope.nultoStanje()){
-			return;
-		}
+		
 		
 		$scope.idSelektovaneAnalitike = $scope.analitike[$scope.analitike.length-1].id;
 	};

@@ -98,7 +98,11 @@ menjanje.controller('IzmenaCtrl', [ '$window', '$scope', '$http', '$compile', 't
 					}else if(response.data.id == -2){
 						toastr.error('Uneti podaci se ne poklapaju sa podacima ulogovanog korisnika');
 						return;
-					}else if(response.data.id == -5){
+					}else if(response.data.id == -3){
+						toastr.error('Korisnik sa unetim kredencijalima ne postoji');
+						return;
+					}
+					else if(response.data.id == -5){
 						
 						$window.location.href=response.data.username;
 						

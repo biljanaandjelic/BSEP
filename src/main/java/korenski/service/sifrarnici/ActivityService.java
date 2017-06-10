@@ -43,6 +43,6 @@ public class ActivityService {
 	}
 	
 	public Set<Activity> findActivityByCodeAndName(String code,String name){
-		return activityRepository.findByCodeContainingIgnoreCaseOrNameContainingIgnoreCase(code, name);
+		return activityRepository.findByCodeContainingIgnoreCaseAndNameContainingIgnoreCase(code, name);
 	}
 }

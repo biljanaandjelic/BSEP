@@ -184,8 +184,39 @@ administrator.controller('Opsti', function($scope, $http, $compile, $timeout, $r
 		$scope.$broadcast('filterAnalitika', idSelektovanogStanja); // going down!
 	};
 	
+	this.tabClickMedjubankarski11=function(num, medjubankarskiPrenos){
+		$scope.tab = num;
+		var stavke=[];
+		
+		$scope.$broadcast('filterPoStavkamaPrenosa', medjubankarskiPrenos); // going down!
+	};
+	
+	this.importXMLFile=function(){
+		//$http.post('/importChosenXML', scope[ attrs.name ][0].name).
+		//	then(function mySucces(response) {
+				
+				//$scope.$emit('novaStanja');
+				
+		//	});
+		$http({
+			method: 'GET',
+			url: '/importChosenXML'
+		}).then(
+			function success(response){
+				toastr.success("Uspijesan import naloga");
+			},
+			function error(response){
+				if(response.status==500){
+					toastr.error("Doslo je do interne greske na serveru. Pokusajte ponovo");
+				}else{
+					toastr.success("Uspijesan import naloga");
+				}
+			}
+		);
+	}
+	
 });
-
+/*
 administrator.directive("filelistBind", function($http) {
 	  return function( scope, elm, attrs ) {
 	    elm.bind("change", function( evt ) {
@@ -204,3 +235,4 @@ administrator.directive("filelistBind", function($http) {
 	    });
 	  };
 	});
+*/

@@ -1,15 +1,16 @@
 package korenski.model.sifrarnici;
 
-import java.util.Collection;
+
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 
-import korenski.model.geografija.NaseljenoMesto;
-import korenski.model.klijenti.PravnoLice;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+
 
 @Entity
 public class Activity {
@@ -18,23 +19,25 @@ public class Activity {
 	private Long id;
 	
 	@Column(unique=true, nullable=false)
+	@Pattern(regexp = "[A-Z]+[0-9]*{5}", message = "Oznaka djelatnosti se mora sastojati od tacno 5 karaktera  pri cemu mogu biti velika slova ili brojevi !")
 	private String code;
 	
 	@Column(unique=true, nullable=false)
+	@Size(max=60, message="Naziv djelatnosti ne smije sadrzati vise od 60 karaktera")
 	private String name;
 	
-	@Column(name="pravnaLica")
-	@OneToMany()
-	private Collection<PravnoLice> pravnaLica;
-	
-	public Collection<PravnoLice> getPravnaLica() {
-		return pravnaLica;
-	}
+//	@Column(name="pravnaLica")
+//	@OneToMany()
+//	private Collection<PravnoLice> pravnaLica;
+//	
+//	public Collection<PravnoLice> getPravnaLica() {
+//		return pravnaLica;
+//	}
 
 
-	public void setPravnaLica(Collection<PravnoLice> pravnaLica) {
-		this.pravnaLica = pravnaLica;
-	}
+//	public void setPravnaLica(Collection<PravnoLice> pravnaLica) {
+//		this.pravnaLica = pravnaLica;
+//	}
 
 
 	public Activity() {

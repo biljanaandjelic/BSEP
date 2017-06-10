@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Context;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,9 +19,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import korenski.controller.autentifikacija.pomocneKlase.LoginObject;
+import korenski.controller.institutions.RacunController;
 import korenski.intercepting.CustomAnnotation;
 import korenski.model.autorizacija.Permission;
 import korenski.model.autorizacija.User;
+import korenski.model.klijenti.Klijent;
 import korenski.repository.autorizacija.RoleRepository;
 import korenski.repository.autorizacija.UserRepository;
 import korenski.repository.institutions.BankRepository;
@@ -154,7 +158,7 @@ public class NaiveAuthenticationController {
 	public ResponseEntity<User> logoff(@Context HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		User user = (User) request.getSession().getAttribute("user");
-		
+		User zaLogger = (User)request.getSession().getAttribute("user");
 		request.getSession().setAttribute("user", null);
 		
 		String redirect = checkPermission(user);
@@ -172,7 +176,14 @@ public class NaiveAuthenticationController {
 		
 		user.setUsername(url);
 		request.getSession().invalidate();
+
+		Logger logger=LoggerFactory.getLogger(NaiveAuthenticationController.class);
+		java.lang.reflect.Method m =NaiveAuthenticationController.class.getMethod("logoff", 
+				HttpServletRequest.class, HttpServletResponse.class);
+		String mime = m.getAnnotation(CustomAnnotation.class).value();
+		logger.info("User {} {}", zaLogger.getId().toString() ,mime);
 		return new ResponseEntity<User>(user, HttpStatus.OK);
+
 		
 		
 	}

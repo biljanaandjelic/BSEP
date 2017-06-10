@@ -23,4 +23,5 @@ public interface CertificateInfoRepository  extends CrudRepository<CertificateIn
 	public Set<CertificateInfo> findAll();
 	public CertificateInfo findByAlias(String alias);
 	public CertificateInfo findBySerialNumberAndBank(BigInteger serialNumber, Bank bank);
+	public Set<CertificateInfo> findByAliasContainingIgnoreCase(String alias);
 }

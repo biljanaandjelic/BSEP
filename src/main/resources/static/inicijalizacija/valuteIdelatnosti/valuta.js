@@ -1,6 +1,7 @@
 administrator.controller('RukovanjeSifrarnikomValuta', function($scope, $http, $compile,$log){
 	$scope.sifrarnikValuta=[];
 	$scope.valuta={};
+	$scope.valutaPomocni={};
 	$scope.valutaId=-1;
 	var states=[];
 	
@@ -17,6 +18,7 @@ administrator.controller('RukovanjeSifrarnikomValuta', function($scope, $http, $
 		}
 		states.push($scope.rezim);
 		$scope.valuta={};
+		$scope.valutaPomocni={};
 		
 	}
 	this.deleteClick=function(){
@@ -53,6 +55,7 @@ administrator.controller('RukovanjeSifrarnikomValuta', function($scope, $http, $
 			var selectedValuta=$scope.sifrarnikValuta[0];
 			$scope.valutaId=selectedValuta.id;
 			$scope.valuta=selectedValuta;
+			$scope.valutaPomocni=angular.copy($scope.valuta);
 		
 		}
 	}
@@ -91,6 +94,7 @@ administrator.controller('RukovanjeSifrarnikomValuta', function($scope, $http, $
 				var selectedValuta=$scope.sifrarnikValuta[temp-1];
 				$scope.valutaId=selectedValuta.id;
 				$scope.valuta=selectedValuta;
+				$scope.valutaPomocni=angular.copy($scope.valuta);
 			
 			}
 		}
@@ -113,6 +117,7 @@ administrator.controller('RukovanjeSifrarnikomValuta', function($scope, $http, $
 				var selectedValuta=$scope.sifrarnikValuta[temp+1];
 				$scope.valutaId=selectedValuta.id;
 				$scope.valuta=selectedValuta;
+				$scope.valutaPomocni=angular.copy($scope.valuta);
 			
 			}
 		}
@@ -121,7 +126,7 @@ administrator.controller('RukovanjeSifrarnikomValuta', function($scope, $http, $
 		Pronalazenje indeksa valute u kolekciji stavki koje se prikazuju 
 		na osnovu vrijednosti id.
 	*/
-	findIndexOfValuta=function(id){
+	var findIndexOfValuta=function(id){
 		var temp=-1;
 		for (var i = 0; i < $scope.sifrarnikValuta.length; i++) { 
 				if(angular.equals($scope.sifrarnikValuta[i].id, id)){
@@ -137,6 +142,7 @@ administrator.controller('RukovanjeSifrarnikomValuta', function($scope, $http, $
 			var selectedValuta=$scope.sifrarnikValuta[$scope.sifrarnikValuta.length-1];
 			$scope.valutaId=selectedValuta.id;
 			$scope.valuta=selectedValuta;
+			$scope.valutaPomocni=angular.copy($scope.valuta);
 			
 		}
 	}
@@ -144,6 +150,7 @@ administrator.controller('RukovanjeSifrarnikomValuta', function($scope, $http, $
 		
 		$scope.valutaId=valuta.id;
 		$scope.valuta=valuta;
+		$scope.valutaPomocni=angular.copy($scope.valuta);
 	}
 	this.commitClick=function(){
 		$log.log("*****Valuta "+$scope.valuta.code+" name "+ $scope.valuta.name);
@@ -154,7 +161,7 @@ administrator.controller('RukovanjeSifrarnikomValuta', function($scope, $http, $
 			$http({
 				method: 'POST',
 				url: path,
-				data: $scope.valuta
+				data: $scope.valutaPomocni
 			}).then(
 			function successCallback(response){
 				
@@ -173,11 +180,11 @@ administrator.controller('RukovanjeSifrarnikomValuta', function($scope, $http, $
 			$http({
 				method: 'POST',
 				url: path,
-				data: $scope.valuta
+				data:  $scope.valutaPomocni
 			}).then(
 			function successCallback(response){
 				$log.log("Success");
-				var index=findIndexOfValuta($scope.valuta.id);
+				var index=findIndexOfValuta($scope.valutaPomocni.id);
 				$scope.sifrarnikValuta[index]=response.data;
 				
 			}, 
@@ -185,7 +192,7 @@ administrator.controller('RukovanjeSifrarnikomValuta', function($scope, $http, $
 				$log.log("Error");
 			});
 		}else if($scope.rezim==State.SEARCH ){
-			var path="/valute/"+$scope.valuta.code+"/"+$scope.valuta.name;
+			var path="/valute/"+$scope.valutaPomocni.code+"/"+$scope.valutaPomocni.name;
 			$http({
 				method: 'GET',
 				url: path
@@ -194,6 +201,7 @@ administrator.controller('RukovanjeSifrarnikomValuta', function($scope, $http, $
 					
 					$scope.sifrarnikValuta=response.data;
 					$scope.valuta={};
+					 $scope.valutaPomocni={};
 					
 				}, 
 				function errorCallback(response){
@@ -210,17 +218,17 @@ administrator.controller('RukovanjeSifrarnikomValuta', function($scope, $http, $
 	*/
 	var check=function(){
 			$log.log("Valuta "+ $scope.valuta.code+ " name: "+$scope.valuta.name);
-			if(angular.equals($scope.valuta, {})){
+			if(angular.equals($scope.valutaPomocni, {})){
 				
 				return false;
-			}else if(angular.isUndefined($scope.valuta.code)){
+			}else if(angular.isUndefined($scope.valutaPomocni.code)){
 				
 				toastr.error('Oznaka  mora sadrzati tacno 3 karaktera');
 				return false;
-			}else if(!angular.equals($scope.valuta.code.trim().length, 3)){
+			}else if(!angular.equals($scope.valutaPomocni.code.trim().length, 3)){
 				toastr.error('Oznaka mora da sadrzi 3 karaktera!');
 				return false;
-			}else if(angular.isUndefined($scope.valuta.name)){
+			}else if(angular.isUndefined($scope.valutaPomocni.name)){
 				toastr.error('Naziv mora biti zadat!');
 				return  false;
 			}

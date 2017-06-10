@@ -177,8 +177,11 @@ public class AuthenticationController {
 package korenski.controller.autentifikacija;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Context;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -189,6 +192,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import korenski.controller.autentifikacija.pomocneKlase.LoginObject;
+import korenski.intercepting.CustomAnnotation;
 import korenski.model.autorizacija.Role;
 import korenski.model.autorizacija.User;
 import korenski.model.infrastruktura.Bank;
@@ -219,9 +223,16 @@ public class AuthenticationController {
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<LoginObject> loginUser(@RequestBody LoginObject loginObject , @Context HttpServletRequest request) throws Exception {
 		
+		Logger logger=LoggerFactory.getLogger(AuthenticationController.class);
+		java.lang.reflect.Method m =AuthenticationController.class.getMethod("loginUser", LoginObject.class, 
+				HttpServletRequest.class);
+		//String mime = m.getAnnotation(CustomAnnotation.class).value();
+		
+		
 		User userFromSession  = (User) request.getSession().getAttribute("user");
 		
 		if(userFromSession != null){
+		//	logger.info("");
 			loginObject.setId(-2);
 			return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
 		}
@@ -230,19 +241,24 @@ public class AuthenticationController {
 		try {
 			user = repository.findByUsername(loginObject.getUsername());
 			
-			boolean expired = userService.checkPasswordExpiration(user);
-			
-			if(expired){
-				loginObject.setId(-4);
-				return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
-			}
 			
 			if(user != null){
 			
+				
+				boolean expired = userService.checkPasswordExpiration(user);
+				
+				if(expired){
+					loginObject.setId(-4);
+					logger.info("User {} LOGIN greska: istekla lozinka", user.getId());
+					return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
+				}
+				
+				
 				boolean valid = userService.authenticate(loginObject.getPassword(), user.getPassword(), user.getSalt());
 				
 				if(!valid){
 					loginObject.setId(-1);
+					logger.info("User {} LOGIN greska: nevalidini kredencijali", user.getId());
 					return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
 				}else{
 					request.getSession().setAttribute("user", user);
@@ -256,6 +272,7 @@ public class AuthenticationController {
 						url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/authentification/change.html");
 						
 						loginObject.setUrl(url);
+						logger.info("User {} LOGIN info: promjena inicijalne lozinke", user.getId());
 						return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
 					}else{
 						if(user.getRole().getName().equals("ADMINISTRATOR_BANK")){
@@ -267,6 +284,7 @@ public class AuthenticationController {
 							url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/adminResources/AdminPage.html");
 							loginObject.setId(-5);
 							loginObject.setUrl(url);
+							logger.info("User {} LOGIN ", user.getId());
 							return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
 						}else if(user.getRole().getName().equals("COUNTER_OFFICER") ||
 								 user.getRole().getName().equals("MANAGER")){
@@ -279,6 +297,7 @@ public class AuthenticationController {
 							url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/inicijalizacija/InitPage.html");
 							loginObject.setId(-5);
 							loginObject.setUrl(url);
+							logger.info("User {} LOGIN ", user.getId());
 							return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
 						}
 					}
@@ -287,10 +306,12 @@ public class AuthenticationController {
 				}
 			}else{
 				loginObject.setId(-1);
+				logger.warn("Neuspijesno logovanje");
 				return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
 			}
 		} catch (Exception e) {
 			loginObject.setId(-3);
+			logger.warn("Neuspijesno logovanje");
 			return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
 		}
 	

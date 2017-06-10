@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+    targetNamespace="http://ftn.uns.ac.rs/faktura" xmlns:fkt="http://ftn.uns.ac.rs/faktura">
+
+    <xs:element name="Faktura">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Preduzece" type="fkt:TFirma"/>
+                <xs:element name="Poslovni_partner" type="fkt:TFirma"/>
+                <xs:element name="Datum_fakture" type="xs:dateTime"/>
+                <xs:element name="Broj_fakture">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:minLength value="1"/>
+                            <xs:maxLength value="200"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="Datum_valute" type="xs:dateTime"/>
+                <xs:element name="Vrednost_bez_PDV">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:decimal">
+                            <xs:minInclusive value="0"/>
+                            <xs:totalDigits value="15"/>
+                            <xs:fractionDigits value="2"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="Iznos_PDV">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:decimal">
+                            <xs:minInclusive value="0"/>
+                            <xs:totalDigits value="15"/>
+                            <xs:fractionDigits value="2"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="Ukupan_iznos">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:decimal">
+                            <xs:minInclusive value="0"/>
+                            <xs:totalDigits value="15"/>
+                            <xs:fractionDigits value="2"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="Rabat">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:decimal">
+                            <xs:minInclusive value="0"/>
+                            <xs:totalDigits value="15"/>
+                            <xs:fractionDigits value="2"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" ref="fkt:Stavka_fakture"/>
+                </xs:sequence>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType abstract="false" name="TFirma">
+        <xs:sequence>
+            <xs:element name="Naziv">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:minLength value="1"/>
+                        <xs:maxLength value="60"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="PIB">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:length value="10"/>
+                        <xs:pattern value="[0-9]{10}"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="Adresa">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:minLength value="1"/>
+                        <xs:maxLength value="60"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="Telefon">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:pattern value="[0-9]{9,15}"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="Stavka_fakture">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Redni_broj" type="xs:positiveInteger"/>
+                <xs:element name="Sifra">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:length value="10"/>
+                            <xs:pattern value="[0-9]{10}"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="Naziv_artikla">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:minLength value="1"/>
+                            <xs:maxLength value="60"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="Kolicina" type="xs:positiveInteger"/>
+                <xs:element name="Cena_bez_PDV">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:decimal">
+                            <xs:minInclusive value="0"/>
+                            <xs:totalDigits value="15"/>
+                            <xs:fractionDigits value="2"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="Rabat">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:decimal">
+                            <xs:minInclusive value="0"/>
+                            <xs:maxInclusive value="100.00"/>
+                            <xs:totalDigits value="5"/>
+                            <xs:fractionDigits value="2"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="PDV">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:decimal">
+                            <xs:minInclusive value="0"/>
+                            <xs:maxInclusive value="100.00"/>
+                            <xs:totalDigits value="5"/>
+                            <xs:fractionDigits value="2"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="Iznos_PDV">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:decimal">
+                            <xs:minInclusive value="0"/>
+                            <xs:totalDigits value="15"/>
+                            <xs:fractionDigits value="2"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="Vrednost_sa_PDV">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:decimal">
+                            <xs:minInclusive value="0"/>
+                            <xs:totalDigits value="15"/>
+                            <xs:fractionDigits value="2"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

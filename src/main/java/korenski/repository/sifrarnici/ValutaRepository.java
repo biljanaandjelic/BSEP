@@ -16,6 +16,7 @@ public interface ValutaRepository extends CrudRepository<Valuta,Long> {
 	public Set<Valuta> findAll();
 	public Valuta findByCode(String code);
 	public Valuta findByName(String name);
-	public Set<Valuta> findByCodeContainingIgnoreCaseOrNameContainingIgnoreCase(String code, String name);
-
+	public Set<Valuta> findByCodeContainingIgnoreCaseAndNameContainingIgnoreCase(String code, String name);
+	public Set<Valuta> findByCodeContainingIgnoreCase(String code);
+	public Set<Valuta> findByNameContainingIgnoreCase(String name);
 }

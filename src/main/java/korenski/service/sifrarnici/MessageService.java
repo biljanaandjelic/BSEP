@@ -33,8 +33,8 @@ public class MessageService {
 		return messageRepository.findAll();
 	}
 	
-	public Message findByCode(String code){
-		return messageRepository.findByCode(code);
+	public Set<Message> findByCode(String code){
+		return messageRepository.findByCodeContainingIgnoreCase(code);
 	}
 
 }

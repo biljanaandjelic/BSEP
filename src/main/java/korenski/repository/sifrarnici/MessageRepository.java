@@ -12,7 +12,7 @@ public interface MessageRepository extends CrudRepository<Message, Long> {
 	
 	public Message findOne(Long id);
 	public Set<Message> findAll();
-	public Message findByCode(String code);
+	public Set<Message> findByCodeContainingIgnoreCase(String code);
 	public void delete(Long id);
 	public Message save(Message message);
 

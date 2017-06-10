@@ -30,6 +30,7 @@
 <script type="text/javascript" src="valuteIdelatnosti/valuta.js"></script>
 <script type="text/javascript" src="valuteIdelatnosti/activities.js"></script>
 <script type="text/javascript" src="messages/message.js"></script>
+<script type="text/javascript" src="medjubankarskiPrenos/medjubankarskiPrenos.js"></script>
 <script type = "text/javascript" src="klijenti/KlijentScript.js"></script>
 <script type = "text/javascript" src="klijenti/PravnoLiceScript.js"></script>
 <script type = "text/javascript" src="klijenti/RacunScript.js"></script>
@@ -64,7 +65,7 @@ integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7T
 
  <body ng-controller = "Opsti as opsti" data-ng-init="init()"> 
  <button ng-click = "opsti.logoff()">LOGOFF</button>
- <input type="file" multiple name="files" filelist-bind/>
+ <button ng-click = "opsti.importXMLFile()">Import naloge</button>
 <!-- <body> -->
  <ul class="nav nav-tabs"> 
     <li ng-class="{active: tab === 0}"><a href="#" ng-click="opsti.tabClick(0)"><h4>Home</h4></a></li>
@@ -77,9 +78,18 @@ integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7T
 	<li ng-class="{active: tab === 7}"><a href="#" ng-click="opsti.tabClick(7)"><h4>Racuni</h4></a></li>
 	<li ng-class="{active: tab === 8}"><a href="#" ng-click="opsti.tabClick(8)"><h4>Zatvaranja</h4></a></li>
 	<li ng-class="{active: tab === 9}"><a href="#" ng-click="opsti.tabClick(9)"><h4>Poruke</h4></a></li>
+
+
+	
+	
+
 	<li ng-class="{active: tab === 10}"><a href="#" ng-click="opsti.tabClick(10)"><h4>Dnevna stanja</h4></a></li>
 	<li ng-class="{active: tab === 11}"><a href="#" ng-click="opsti.tabClick(11)"><h4>Analitike izvoda</h4></a></li>
+
+	<li ng-class="{active: tab === 12}"><a href="#" ng-click="opsti.tabClick(12)"><h4>Medjubankarski prenosi</h4></a></li>
 	<li ng-class="{active: tab === 13}"><a href="#" ng-click="opsti.tabClick(13)"><h4>Izmena lozinke</h4></a></li>
+
+
   </ul>
  <nav>
 <div >
@@ -123,6 +133,10 @@ integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7T
       
       <div ng-include="'messages/messages.html'"></div>
     </div>
+
+	
+
+
     
     <div id="dnevnaStanja" class="tab-pane fade in active" ng-show='tab == 10'>
       
@@ -133,13 +147,17 @@ integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7T
       
       <div ng-include="'klijenti/AnalitikeIzvoda.html'"></div>
     </div>
-    
-    
-    <div id="izmena" class="tab-pane fade in active" ng-show='tab == 13'>
+
+    <div id="medjubankarskiPrenosi" class="tab-pane fade in active" ng-show='tab == 12'>
+      
+      <div ng-include="'medjubankarskiPrenos/medjubankarskiPrenos.html'"></div>
+    </div>
+	<div id="izmena" class="tab-pane fade in active" ng-show='tab == 13'>
       
       <div ng-include="'izmena/izmenaHTML.html'"></div>
     </div>
-    
+
+
   </div>
  </nav>
 </body>

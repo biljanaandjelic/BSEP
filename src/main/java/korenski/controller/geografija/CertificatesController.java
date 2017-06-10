@@ -34,11 +34,17 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.xml.XMLConstants;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 
 import org.bouncycastle.asn1.x500.RDN;
 import org.bouncycastle.asn1.x500.X500Name;
@@ -47,6 +53,8 @@ import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x500.style.IETFUtils;
 import org.bouncycastle.asn1.x509.BasicConstraints;
 import org.bouncycastle.asn1.x509.Extension;
+import org.bouncycastle.asn1.x509.GeneralName;
+import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
@@ -96,9 +104,6 @@ public class CertificatesController {
 	CertificateInfoService certificateIDService;
 	@Autowired
 	BankRepository bankRepository;
-
-	
-	
 
 	@Autowired
 	RevokeRequestService revokeRequestService;
@@ -152,53 +157,10 @@ public class CertificatesController {
 		
 		X509v3CertificateBuilder certGen;
 
-		//if (dto.selfSigned) {
-		CertificateInfo certificateInfo;
-
-//		if (dto.selfSigned) {
-
-			certificateInfo = new CertificateInfo(serial, CertStatus.GOOD, null, null, dto.alias, Type.NationalBank);
-
-			// certificateInfoService.create(certificateInfo);
-			certGen = new JcaX509v3CertificateBuilder(name, serial, startDate, endDate, name, pair.getPublic());
-//		} else {
-
-
+		certGen = new JcaX509v3CertificateBuilder(name, serial, startDate, endDate, name, pair.getPublic());
 		
-
-		certificateInfo = new CertificateInfo(serial, CertStatus.GOOD, null, null, dto.alias, Type.NationalBank);
-		
-		//ovo je tvoj deo biljo, samo zakaci na certificateinfo banku
-		Bank bank = ((User)request.getSession().getAttribute("user")).getBank();
-		certificateInfo.setBank(bank);
-		/*
-		 * Mozda ukloniti
-		 */
-		certificateInfo.setAlias("CERT-"+bank.getSwiftCode());
-		certificateIDService.create(certificateInfo);
-		certGen = new JcaX509v3CertificateBuilder(name, serial, startDate, endDate, name,
-				pair.getPublic());
-		/*} else {
-			
-			Certificate issuerCertificate = ks.getCertificate(dto.issuerAlias);
-
-			if (((X509Certificate) issuerCertificate).getNotAfter().before(new Date())) {
-				return new ResponseEntity<String>("Issuer certificate is no longer valid", HttpStatus.OK);
-			} else if (((X509Certificate) issuerCertificate).getBasicConstraints() == -1) {
-				return new ResponseEntity<String>("Issuer certificate is not CA!", HttpStatus.OK);
-			}
-			
-			CertificateID ca = certificateIDService.findByAlias(dto.issuerAlias);
-			CertificateID certificateID = new CertificateID(serial, Status.OK, null, ca, dto.alias);
-			certificateIDService.create(certificateID); 
-			X500Name issuerName = new JcaX509CertificateHolder((X509Certificate) issuerCertificate).getIssuer();
-
-			certGen = new JcaX509v3CertificateBuilder(issuerName, serial, startDate, endDate, name,
-					pair.getPublic());
-		}
-		*/
-
 		certGen.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
+		certGen.addExtension(Extension.subjectAlternativeName, true, new GeneralNames(new GeneralName(GeneralName.rfc822Name, "localhost")));
 		
 		X509CertificateHolder certHolder = certGen.build(contentSigner);
 
@@ -207,8 +169,23 @@ public class CertificatesController {
 
 		System.out.println(certConverter.getCertificate(certHolder));
 		
-		ks.setCertificateEntry("CERT-" + bank.getSwiftCode(), certConverter.getCertificate(certHolder));
-		ks.setKeyEntry("KEY", pair.getPrivate(), "test".toCharArray(), new Certificate[] { (Certificate) certConverter.getCertificate(certHolder) });
+		CertificateInfo certificateInfo = new CertificateInfo(serial, CertStatus.GOOD, null, null, "", Type.NationalBank);
+		Bank bank = ((User)request.getSession().getAttribute("user")).getBank();
+		certificateInfo.setBank(bank);
+		//biljo ovo je deo za generisanje sertifikata sa inkrementom,
+		//premestio sam deo gde se alijas sertifikata dodaje ovde, pa se posle toga stavljau bazu
+		int cnt = 1;
+		while(true){
+			if(!ks.isCertificateEntry("CERT-" + bank.getSwiftCode() + "-" + cnt)){
+				ks.setCertificateEntry("CERT-" + bank.getSwiftCode() + "-" + cnt, certConverter.getCertificate(certHolder));
+				certificateInfo.setAlias("CERT-" + bank.getSwiftCode() + "-" + cnt);
+				ks.setKeyEntry("KEY-" + cnt, pair.getPrivate(), "test".toCharArray(), new Certificate[] { (Certificate) certConverter.getCertificate(certHolder) });
+				break;
+			}
+			cnt++;
+		}
+		
+		certificateIDService.create(certificateInfo);
 		saveKeyStore(filePathString);
 		
 		return new ResponseEntity<String>("ok", HttpStatus.OK);
@@ -283,13 +260,20 @@ public class CertificatesController {
 		
 		getKeyStore("./files/KEYSTORE-" + bankSwiftCode + ".jks");
 		
-		Certificate certificate = ks.getCertificate("CERT-" + bankSwiftCode);
+		Certificate certificate = ks.getCertificate("CERT-" + bankSwiftCode + "-1");
 		
 		saveKeyStore("./files/KEYSTORE-" + bankSwiftCode + ".jks");
 		
 		getKeyStore("./files/KEYSTORE-" + dto.uid + ".jks");
-
-		ks.setKeyEntry("KEY", pair.getPrivate(), "test".toCharArray(), new Certificate[] { (certificate) });
+		
+		int cnt = 1;
+		while(true){
+			if(!ks.isKeyEntry("KEY-" + cnt)){
+				ks.setKeyEntry("KEY-" + cnt, pair.getPrivate(), "test".toCharArray(), new Certificate[] { (certificate) });
+				break;
+			}
+			cnt++;
+		}
 		
 		saveKeyStore("./files/KEYSTORE-" + dto.uid + ".jks");
 		
@@ -388,7 +372,7 @@ public class CertificatesController {
 
 		builder = builder.setProvider("BC");
 
-		ContentSigner contentSigner = builder.build((PrivateKey)ks.getKey("KEY", "test".toCharArray()));
+		ContentSigner contentSigner = builder.build((PrivateKey)ks.getKey("KEY-1", "test".toCharArray()));
 
 		Calendar cal = Calendar.getInstance();
 		Date startDate = cal.getTime();
@@ -402,7 +386,7 @@ public class CertificatesController {
 		CertificateInfo certificateInfo;
 		
 		
-		X509Certificate certificate = (X509Certificate)ks.getCertificate("CERT-" + bankSwiftCode);
+		X509Certificate certificate = (X509Certificate)ks.getCertificate("CERT-" + bankSwiftCode + "-1");
 		X500Name issuer = X500Name.getInstance(PrincipalUtil.getIssuerX509Principal(certificate));
 		
 		SubjectPublicKeyInfo pkInfo = csr.getSubjectPublicKeyInfo();
@@ -416,37 +400,70 @@ public class CertificatesController {
 		
 		if(u.getRole().getId().equals(new Long(1))){
 			certGen.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
+			Set<CertificateInfo> certs=certificateIDService.findCertInfoByAlias(bankSwiftCode);
+			CertificateInfo ca=null;
+			if(certs.size()!=0){
+				 for (Iterator<CertificateInfo> it =certs.iterator(); it.hasNext(); ) {
+
+					 ca=it.next();
+				    }
+			}
 			certificateInfo=new CertificateInfo(serial,CertStatus.GOOD,null,null,"",Type.Bank);
 			certificateInfo.setBank(((User)httpRequest.getSession().getAttribute("user")).getBank());
-			certificateInfo.setAlias("CERT-"+IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()));
-			CertificateInfo ca=certificateIDService.findByAlias("CERT-"+((User)httpRequest.getSession().getAttribute("user")).getBank().getSwiftCode());
+			//certificateInfo.setAlias("CERT-"+IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()));
+			//CertificateInfo ca=certificateIDService.findByAlias("CERT-"+((User)httpRequest.getSession().getAttribute("user")).getBank().getSwiftCode());
 			certificateInfo.setCa(ca);
 		}else if(u.getRole().getId().equals(new Long(2))){
 			certGen.addExtension(Extension.basicConstraints, true, new BasicConstraints(false));
 			certificateInfo=new CertificateInfo(serial,CertStatus.GOOD,null,null,"",Type.Company);
 			certificateInfo.setBank(((User)httpRequest.getSession().getAttribute("user")).getBank());
-			certificateInfo.setAlias("CERT-"+IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()));
-			CertificateInfo ca=certificateIDService.findByAlias("CERT-"+((User)httpRequest.getSession().getAttribute("user")).getBank().getSwiftCode());
+			//certificateInfo.setAlias("CERT-"+IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()));
+			Set<CertificateInfo> certs=certificateIDService.findCertInfoByAlias(bankSwiftCode);
+			CertificateInfo ca=null;
+			if(certs.size()!=0){
+				 for (Iterator<CertificateInfo> it =certs.iterator(); it.hasNext(); ) {
+				  
+					 ca=it.next();
+				    }
+			}
+			//CertificateInfo ca=certificateIDService.findByAlias("CERT-"+((User)httpRequest.getSession().getAttribute("user")).getBank().getSwiftCode());
 			certificateInfo.setCa(ca);
 		}else{
 			return null;
 		}
 		
-		certificateIDService.create(certificateInfo);
 		X509CertificateHolder certHolder = certGen.build(contentSigner);
 
 		JcaX509CertificateConverter certConverter = new JcaX509CertificateConverter();
 		certConverter = certConverter.setProvider("BC");
 		
 		System.out.println(certConverter.getCertificate(certHolder));
+
+		//biljo ovo je deo za generisanje sertifikata sa inkrementom,
+		//premestio sam deo gde se alijas sertifikata dodaje ovde, pa se posle toga stavljau bazu
+		int cnt = 1;
+		while(true){
+			if(!ks.isCertificateEntry("CERT-" + IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()) + "-" + cnt)){
+				ks.setCertificateEntry("CERT-" + IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()) + "-" + cnt, certConverter.getCertificate(certHolder));
+				certificateInfo.setAlias("CERT-"+IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()) + "-" + cnt);
+				break;
+			}
+			cnt++;
+		}
 		
-		ks.setCertificateEntry("CERT-" + IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()), certConverter.getCertificate(certHolder));
-		
+		certificateIDService.create(certificateInfo);
 		saveKeyStore(filePathString);
 		
 		getKeyStore("./files/KEYSTORE-" + IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()) + ".jks");
 		
-		ks.setCertificateEntry("CERT-" + IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()), certConverter.getCertificate(certHolder));
+		cnt = 1;
+		while(true){
+			if(!ks.isCertificateEntry("CERT-" + IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()) + "-" +cnt)){
+				ks.setCertificateEntry("CERT-" + IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()) + "-" + cnt, certConverter.getCertificate(certHolder));
+				break;
+			}
+			cnt++;
+		}
 		
 		saveKeyStore("./files/KEYSTORE-" + IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()) + ".jks");
 		
@@ -454,24 +471,38 @@ public class CertificatesController {
 		
 		return new ResponseEntity<String>("ok", HttpStatus.OK);
 	}
+
 	
+
+	/**
+	 * Metodu zamjeniti....
+	 * @param alias
+	 * @return
+	 * @throws KeyStoreException
+	 * @throws NoSuchProviderException
+	 */
 	@CustomAnnotation(value = "FIND_CERTIFICATE_BY_ALIAS")
 	@RequestMapping(value = "/certificate/{alias}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON)
-	public ResponseEntity<CertificateDTO> findCertificateDTO(@PathVariable("alias") String alias)
+	public ResponseEntity<CertificateDTO> findCertificateDTO(@PathVariable("alias") String alias, @Context HttpServletRequest request)
 			throws KeyStoreException, NoSuchProviderException {
 		System.out.println("Pronalazenje sertifikata na osnovu alijasa");
+		User user=(User)request.getSession().getAttribute("user");
+		Bank bank=user.getBank();
 		if (ks == null) {
 			//ks = KeyStore.getInstance("JCEKS", "SunJCE");
 			ks = KeyStore.getInstance("BKS", "BC");
+			System.out.println("Nije prethodno instanciran");
 		}
 		try {
 			//ks.load(new FileInputStream("./files/keystore.jks"), "test".toCharArray());
-			ks.load(new FileInputStream("./files/gagi.jks"), "test".toCharArray());
+			String newFilePath = "./files/KEYSTORE-" + bank.getSwiftCode() + ".jks";
+			ks.load(new FileInputStream(newFilePath), "test".toCharArray());
+			System.out.println("USpijesno je uctan ks");
 		} catch (NoSuchAlgorithmException | CertificateException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		alias="CERT-"+alias;
 		Certificate foundCertificate = ks.getCertificate(alias);
 
 		if (foundCertificate != null) {
@@ -484,38 +515,7 @@ public class CertificatesController {
 		return new ResponseEntity<CertificateDTO>(HttpStatus.NOT_FOUND);
 	}
 
-	public CertificateDTO getCertificateBySerialNumber(String serialNumber) {
-		try {
-			
-			ks.load(new FileInputStream("./files/gagi.jks"), "test".toCharArray());
-			Enumeration aliases = ks.aliases();
-			String alias;
-			for (; aliases.hasMoreElements();) {
-				alias = (String) aliases.nextElement();
 
-				Certificate cert = ks.getCertificate(alias);
-
-				if (cert.getType().equals(BCStyle.SERIALNUMBER)) {
-					
-					if (((X509Certificate) cert).getSerialNumber().equals(serialNumber)) {
-						CertificateDTO certDTO = getDataFromCertificate(cert);
-						return certDTO;
-					}
-				}
-
-			}
-		} catch (NoSuchAlgorithmException | CertificateException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (KeyStoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		// List the aliases
-		return null;
-
-	}
 
 	public CertificateDTO getDataFromCertificate(Certificate certificat) {
 		X500Name x500name;
@@ -557,7 +557,8 @@ public class CertificatesController {
 	/**
 	 * Revoke certificate if private key is lost or for some other reason
 	 * 
-	 * @param serialNumber
+	 * @param serialNumber seijski broj sertifikata cije povlacenje je zatrazeno
+	 * @author Biljana
 	 */
 	@CustomAnnotation(value = "REVOKE_CERTIFICATE")
 	@RequestMapping(value = "/revokeCertificate/{alias}", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN)
@@ -701,5 +702,27 @@ public class CertificatesController {
 		
 		ks.store(new FileOutputStream(filePathString), "test".toCharArray());
 		
+	}
+	
+	@RequestMapping(value = "/validateXML", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN)
+	public ResponseEntity<String> validateXML(@Context HttpServletRequest request) {
+		
+		String retVal;
+		
+		try
+	    {
+	        SchemaFactory factory = 
+	            SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+	        Schema schema = factory.newSchema(new StreamSource(new File("./files/xml_tests/Faktura.xsd")));
+	        Validator validator = schema.newValidator();
+	        validator.validate(new StreamSource(new File("./files/xml_tests/Faktura.xml")));
+	        retVal = "ok";
+	    }
+	    catch(Exception ex)
+	    {
+	        retVal = "notok";
+	    }
+		
+		return new ResponseEntity<String>(retVal, HttpStatus.OK);
 	}
 }

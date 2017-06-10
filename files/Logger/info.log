@@ -1,0 +1,41 @@
+[INFO ]2017-06-10 14:06:58 k.c.a.AuthenticationController - User {} LOGIN info: promjena inicijalne lozinke
+[INFO ]2017-06-10 14:07:15 k.c.a.AuthenticationController - User 10 LOGIN 
+[INFO ]2017-06-10 14:07:47 k.c.a.NaiveAuthenticationController - User 10 LOGOFF
+[INFO ]2017-06-10 14:07:52 k.c.a.AuthenticationController - User {} LOGIN info: promjena inicijalne lozinke
+[INFO ]2017-06-10 14:08:12 k.c.a.AuthenticationController - User 11 LOGIN 
+[INFO ]2017-06-10 14:10:34 k.c.a.AuthenticationController - User 10 LOGIN info: promjena inicijalne lozinke
+[INFO ]2017-06-10 14:10:50 k.c.a.AuthenticationController - User 10 LOGIN 
+[INFO ]2017-06-10 14:11:33 k.c.a.NaiveAuthenticationController - User 10 LOGOFF
+[INFO ]2017-06-10 14:11:37 k.c.a.AuthenticationController - User 11 LOGIN info: promjena inicijalne lozinke
+[INFO ]2017-06-10 14:11:52 k.c.a.AuthenticationController - User 11 LOGIN 
+[INFO ]2017-06-10 14:58:11 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 10 
+[INFO ]2017-06-10 14:58:29 k.c.a.AuthenticationController - User 10 LOGIN info: promjena inicijalne lozinke
+[WARN ]2017-06-10 14:58:45 k.c.autorizacija.UserController - User 10 PASSWORD_CHANGE_USER greska: neuspijesna promjena lozinke korisnicko ime se ne poklapa sa unesenim
+[WARN ]2017-06-10 14:59:42 k.c.autorizacija.UserController - User -1  PASSWORD_CHANGE_USER greska: stara i unesena lozinka se ne poklapaju
+[INFO ]2017-06-10 14:59:51 k.c.autorizacija.UserController - User -5 PASSWORD_CHANGE_USER 
+[INFO ]2017-06-10 15:00:01 k.c.a.AuthenticationController - User 10 LOGIN greska: nevalidini kredencijali
+[INFO ]2017-06-10 15:00:07 k.c.a.AuthenticationController - User 10 LOGIN 
+[WARN ]2017-06-10 15:00:36 k.c.autorizacija.UserController - INSERT_USER greska: nevalidni paterni inputa
+[INFO ]2017-06-10 15:00:50 k.c.autorizacija.UserController - User 10 INSERT_USER employee profile 11 
+[WARN ]2017-06-10 16:39:49 k.c.autorizacija.UserController - INSERT_INITAL_ADMIN greska: nevalidni paterni inputa
+[WARN ]2017-06-10 16:40:03 k.c.a.AuthenticationController - Neuspijesno logovanje
+[WARN ]2017-06-10 16:40:50 k.c.autorizacija.UserController - INSERT_INITAL_ADMIN greska: nevalidni paterni inputa
+[INFO ]2017-06-10 16:42:18 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 10 
+[INFO ]2017-06-10 16:42:28 k.c.a.AuthenticationController - User 10 LOGIN info: promjena inicijalne lozinke
+[INFO ]2017-06-10 16:42:44 k.c.autorizacija.UserController - User -5 PASSWORD_CHANGE_USER 
+[INFO ]2017-06-10 16:42:48 k.c.a.AuthenticationController - User 10 LOGIN 
+[WARN ]2017-06-10 16:43:07 k.c.autorizacija.UserController - INSERT_USER greska: nevalidni paterni inputa
+[INFO ]2017-06-10 16:44:35 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 10 
+[INFO ]2017-06-10 16:44:50 k.c.a.AuthenticationController - User 10 LOGIN info: promjena inicijalne lozinke
+[INFO ]2017-06-10 16:44:57 k.c.autorizacija.UserController - User -5 PASSWORD_CHANGE_USER 
+[INFO ]2017-06-10 16:45:04 k.c.a.AuthenticationController - User 10 LOGIN 
+[INFO ]2017-06-10 16:45:22 k.c.autorizacija.UserController - User 10 INSERT_USER employee profile 11 
+[INFO ]2017-06-10 16:45:37 k.c.a.NaiveAuthenticationController - User 10 LOGOFF
+[INFO ]2017-06-10 16:45:47 k.c.a.AuthenticationController - User 11 LOGIN info: promjena inicijalne lozinke
+[INFO ]2017-06-10 16:45:58 k.c.autorizacija.UserController - User -5 PASSWORD_CHANGE_USER 
+[INFO ]2017-06-10 16:46:03 k.c.a.AuthenticationController - User 11 LOGIN 
+[INFO ]2017-06-10 16:47:04 k.c.a.NaiveAuthenticationController - User 11 LOGOFF
+[INFO ]2017-06-10 16:47:10 k.c.a.AuthenticationController - User 10 LOGIN 
+[INFO ]2017-06-10 16:47:30 k.c.autorizacija.UserController - User 10 INSERT_USER legal profile null 
+[INFO ]2017-06-10 16:47:49 k.c.a.NaiveAuthenticationController - User 10 LOGOFF
+[INFO ]2017-06-10 16:47:58 k.c.a.AuthenticationController - User 12 LOGIN info: promjena inicijalne lozinke

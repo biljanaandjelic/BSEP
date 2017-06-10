@@ -2,7 +2,7 @@
 
 	<div class="panel panel-default" id ="sveobuhvatniNM">
 	
-		<!-- <div id="table-wrapper">-->
+		
 		  <div id="table-scroll"> 
 		    <table class="table table-hover">
 		        <thead>
@@ -14,10 +14,7 @@
 		            </tr>
 		        </thead>
 		        <tbody>
-			      <!-- <tr ng-repeat="item in sifrarnikValuta track by valuta.id" ng-click="rnm.setSelected(valuta)"
-			         ng-class="{selected: item.id === valutaId}" >  -->
-					 <!--ng-click="rsv.setSelected(item)" ng-class="{selected: item.id===valutaId}"--->
-					 <!--track item.id -->
+			    
 					 <tr ng-repeat="item in sifrarnikValuta "  ng-click="rsv.setSelected(item)" ng-class="{selected: item.id==valutaId}">
 					
 			        	<td>{{item.code}}</td>
@@ -28,7 +25,7 @@
 		        </tbody>
 		    </table>
 		  </div>
-		 <!--</div> -->
+		 
 	</div>
 	
 	 <div class="container" id="dugmici">
@@ -52,10 +49,7 @@
 		</button>
 		</div>
 		
-		<div class="btn-group">
-		  <button type="button" class="btn btn-default" ><img src="ikonice/nextform.gif" width="20" /></button>
-		  
-		</div>
+		
 		
 		<div class="panel panel-info">
 			<p> <h4>Rezim za {{rezim | stringRezima}}</h4></p>
@@ -64,8 +58,8 @@
 	  <div class="panel panel-default">
 	   		<div class="panel-body">
 	   			<div>
-		   			<p>Oznaka valute : <input type="text" ng-model="valuta.code" required autofocus></p>
-		   			<p>Naziv valute : <input type="text" ng-model="valuta.name" maxlength="40" required></p>
+		   			<p>Oznaka valute : <input type="text" ng-model="valutaPomocni.code" required autofocus maxlength="3"> </p>
+		   			<p>Naziv valute : <input type="text" ng-model="valutaPomocni.name" maxlength="40" required></p>
 		   		
 	   			<div class="container" id="dugmici">
 	  				<div class="btn-group">

@@ -71,7 +71,27 @@ administrator.controller('RukovanjeKlijentima', function($scope, $http, $compile
 			return false;
 		}
 	}
-	
+	this.exportIzvoda=function(id){
+		var path="/exportKlijentiIzvod/"+id;
+		//$log.log("Path "+path);
+		$http({
+			
+			method: 'GET',
+			url: path
+		}).then(
+			function success(response){
+				//$log.log("Success: Rezzultat "+response.data.status);
+				toastr.success("Podaci o medjubankarskom prenosu su uspijesno eksportovani");
+			}, function error(response){
+			//	$log.log("Error: Rezzultat "+response.data.status);
+				if(response.status==500){
+					toastr.error('Doslo je do interne greske na serveru. Pokusajte ponovo.');
+				}else{
+					toastr.success("Podaci o medjubankarskom prenosu su uspijesno eksportovani");
+				}
+			}
+		);
+	}
 	this.commitClick = function(){
 		
 	
@@ -118,10 +138,10 @@ administrator.controller('RukovanjeKlijentima', function($scope, $http, $compile
     		then(function mySucces(response) {
     				
     				if(response.data.id == -1){
-    					toastr.error('Neuspesan unos!');
+    					toastr.error(response.data.ime);
     					return;
     				}
-    			
+    				
     				$scope.klijenti.push(response.data);
     				$scope.klijent = {};
     				$scope.selektovanoNaseljenoMesto = {};
@@ -171,7 +191,7 @@ administrator.controller('RukovanjeKlijentima', function($scope, $http, $compile
     		then(function mySucces(response) {
     			
 	    			if(response.data.id == -1){
-						toastr.error('Neuspesan unos!');
+						toastr.error(response.data.ime);
 						return;
 					}
     			
@@ -251,6 +271,7 @@ administrator.controller('RukovanjeKlijentima', function($scope, $http, $compile
 		}
 		
 		
+		
 	};
 	
 	
@@ -280,9 +301,9 @@ administrator.controller('RukovanjeKlijentima', function($scope, $http, $compile
 		$http.delete('/obrisiKlijenta/'+$scope.klijent.id).
         then(function(response) {
         	
-        	if(response.data.id == -1){
-				toastr.error('Neuspesan unos!');
-				return;
+        	if(response.data.jmbg !== null){
+        		toastr.error(response.data.jmbg);
+        		return;
 			}
         	
         	var temp = -1;
@@ -387,10 +408,34 @@ administrator.controller('RukovanjeKlijentima', function($scope, $http, $compile
 			    data: klijent
 			}).
 			then(function mySucces(response) {
-				toastr.success("Racun uspesno otvoren!");
-				$scope.$parent.$parent.opsti.addRacun();
+				if(response.data.id == -1){
+					toastr.error(response.data.brojRacuna);
+				}else{
+					toastr.success("Racun uspesno otvoren!");
+					$scope.$parent.$parent.opsti.addRacun();
+				}
 			});
 		}
+	}
+	
+	this.izvestajIzvoda = function(){
+		var izvestaj = {};
+		izvestaj.id = $scope.idSelektovanogKlijenta;
+		izvestaj.izvestajOd = $scope.izvestajOd;
+		izvestaj.izvestajDo = $scope.izvestajDo;
+		
+		$http({
+		    method: 'POST',
+		    url: '/izvestajIzvoda',
+		    data: izvestaj
+		}).
+		then(function mySucces(response) {
+			if(response.data === 'ok'){
+				toastr.success("Izvestaj izvoda klijenta uspesno napravljen!");
+			}else{
+				toastr.error('Doslo je do neocekivane greske!');
+			}
+		});
 	}
 	
 	this.setSelected = function(nm){
