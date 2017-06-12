@@ -286,7 +286,7 @@ public class CertificatesController {
 		
 		saveKeyStore("./files/KEYSTORE-" + dto.uid + ".jks");
 		
-		return new ResponseEntity<String>("ok", HttpStatus.OK);
+		return new ResponseEntity<String>("ok", HttpStatus.OK);	
 		}
 	
 	@CustomAnnotation(value = "GET_CERTIFICATE_REQUESTS")
