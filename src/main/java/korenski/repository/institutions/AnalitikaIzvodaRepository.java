@@ -40,19 +40,45 @@ public interface AnalitikaIzvodaRepository extends CrudRepository<AnalitikaIzvod
 			+"and a in (select a4 from AnalitikaIzvoda a4 where a4.racunDrugi like %?5% ) "
 			+"and a in (select a5 from AnalitikaIzvoda a5 where a5.modelDrugi like %?6% ) "
 			+"and a in (select a6 from AnalitikaIzvoda a6 where a6.pozivNaBrojDrugi like %?7% ) "
+			//+"and a in (select a7 from AnalitikaIzvoda a7 where a7.hitno = ?8 ) "
+			+"and a in (select a7 from AnalitikaIzvoda a7 where a7.datumAnalitike between ?8 and ?9 )" 
+			+"and a in (select a8 from AnalitikaIzvoda a8 where a8.datumNaloga between ?10 and ?11 ) "
+			+"and a in (select a9 from AnalitikaIzvoda a9 where a9.datumValute between ?12 and ?13 ) "
+			+"and a in (select a10 from AnalitikaIzvoda a10 where a10.smer like %?14% ) "
+			)
+	public Set<AnalitikaIzvoda> filter(Long id, String racunDuznika, String modelDuznika, 
+			String pozivNaBrojDuznika,
+			String racunPoverioca, String modelPoverioca, String pozivNaBrojPoverioca
+			//, boolean hitno
+			,Date datumAnalitikePocetak,Date datumAnalitikeKraj
+			,Date datumNalogaPocetak, Date datumNalogaKraj
+			,Date datumValutePocetak, Date datumValuteKraj
+			,String smer
+			);
+	
+	@Query("select a from AnalitikaIzvoda a where a.dnevnoStanjeRacuna.racun.bank.id = ?1"
+			+" and a in (select a1 from AnalitikaIzvoda a1 where a1.racunPrvi like %?2% ) "
+			+"and a in (select a2 from AnalitikaIzvoda a2 where a2.modelPrvi like %?3% ) "
+			+"and a in (select a3 from AnalitikaIzvoda a3 where a3.pozivNaBrojPrvi like %?4% ) "
+			+"and a in (select a4 from AnalitikaIzvoda a4 where a4.racunDrugi like %?5% ) "
+			+"and a in (select a5 from AnalitikaIzvoda a5 where a5.modelDrugi like %?6% ) "
+			+"and a in (select a6 from AnalitikaIzvoda a6 where a6.pozivNaBrojDrugi like %?7% ) "
 			+"and a in (select a7 from AnalitikaIzvoda a7 where a7.hitno = ?8 ) "
 			+"and a in (select a8 from AnalitikaIzvoda a8 where a8.datumAnalitike between ?9 and ?10 )" 
 			+"and a in (select a9 from AnalitikaIzvoda a9 where a9.datumNaloga between ?11 and ?12 ) "
 			+"and a in (select a10 from AnalitikaIzvoda a10 where a10.datumValute between ?13 and ?14 ) "
+			+"and a in (select a11 from AnalitikaIzvoda a11 where a11.smer like %?15% ) "
 			)
-	public Set<AnalitikaIzvoda> filter(Long id, String racunDuznika, String modelDuznika, 
+	public Set<AnalitikaIzvoda> filterUzHitno(Long id, String racunDuznika, String modelDuznika, 
 			String pozivNaBrojDuznika,
 			String racunPoverioca, String modelPoverioca, String pozivNaBrojPoverioca
 			, boolean hitno
 			,Date datumAnalitikePocetak,Date datumAnalitikeKraj
 			,Date datumNalogaPocetak, Date datumNalogaKraj
 			,Date datumValutePocetak, Date datumValuteKraj
+			,String smer
 			);
+	
 	
 	@Query("select a from AnalitikaIzvoda a where a.dnevnoStanjeRacuna.racun.bank.id = ?1"
 			+" and a in (select a1 from AnalitikaIzvoda a1 where a1.dnevnoStanjeRacuna.id = ?2 ) ")

@@ -178,21 +178,81 @@ public class AnalitikeIzvodaController {
 			krajValuta = new java.sql.Date(filter.getKrajValuta().getTime() + TimeUnit.DAYS.toMillis(1));
 		}
 		//////////////////////////////////////////////////// DATUM VALUTA
-
-		if(filter.isHitno() == null){
-			filter.setHitno(false);
+		
+		
+		String korist ;
+		
+		if(filter.getKorist() == null){
+			korist = "";
+			System.out.println("korist je null");
+		}
+		else if(filter.getKorist().equals("yes")){
+			korist = "K";
+			System.out.println("korist je K");
+		}else if(filter.getKorist().equals("no")){
+			korist = "T";
+			System.out.println("korist je T");
+		}else{
+			korist = "";
+			System.out.println("korist je ELSE");
 		}
 		
-		return new ResponseEntity<Collection<AnalitikaIzvoda>>(
-				repository.filter(bank.getId(), filter.getRacunDuznika(),
-						filter.getModelDuznika(), filter.getPozivNaBrojDuznika(),
-						filter.getRacunPoverioca(), filter.getModelPoverioca(),
-						filter.getPozivNaBrojPoverioca(),
-						filter.isHitno(),
-						pocetakAnalitika, krajAnalitika
-						,pocetakNalog, krajNalog, 
-						pocetakValuta, krajValuta)
-				,HttpStatus.OK);
+		
+		boolean hitno;
+		
+		if(filter.getHitno() == null){
+			System.out.println("hitno je null");
+			return new ResponseEntity<Collection<AnalitikaIzvoda>>(
+					repository.filter(bank.getId(), filter.getRacunDuznika(),
+							filter.getModelDuznika(), filter.getPozivNaBrojDuznika(),
+							filter.getRacunPoverioca(), filter.getModelPoverioca(),
+							filter.getPozivNaBrojPoverioca(),
+							pocetakAnalitika, krajAnalitika
+							,pocetakNalog, krajNalog, 
+							pocetakValuta, krajValuta, korist)
+					,HttpStatus.OK);
+		}
+		else if(filter.getHitno().equals("yes")){
+			hitno = true;
+			System.out.println("korist je true");
+			return new ResponseEntity<Collection<AnalitikaIzvoda>>(
+					repository.filterUzHitno(bank.getId(), filter.getRacunDuznika(),
+							filter.getModelDuznika(), filter.getPozivNaBrojDuznika(),
+							filter.getRacunPoverioca(), filter.getModelPoverioca(),
+							filter.getPozivNaBrojPoverioca(),
+							hitno,
+							pocetakAnalitika, krajAnalitika
+							,pocetakNalog, krajNalog, 
+							pocetakValuta, krajValuta, korist)
+					,HttpStatus.OK);
+		}else if(filter.getHitno().equals("no")){
+			hitno = false;
+			System.out.println("korist je false");
+			return new ResponseEntity<Collection<AnalitikaIzvoda>>(
+					repository.filterUzHitno(bank.getId(), filter.getRacunDuznika(),
+							filter.getModelDuznika(), filter.getPozivNaBrojDuznika(),
+							filter.getRacunPoverioca(), filter.getModelPoverioca(),
+							filter.getPozivNaBrojPoverioca(),
+							hitno,
+							pocetakAnalitika, krajAnalitika
+							,pocetakNalog, krajNalog, 
+							pocetakValuta, krajValuta, korist)
+					,HttpStatus.OK);
+		}else{
+			System.out.println("korist je ELSE");
+			return new ResponseEntity<Collection<AnalitikaIzvoda>>(
+					repository.filter(bank.getId(), filter.getRacunDuznika(),
+							filter.getModelDuznika(), filter.getPozivNaBrojDuznika(),
+							filter.getRacunPoverioca(), filter.getModelPoverioca(),
+							filter.getPozivNaBrojPoverioca(),
+							pocetakAnalitika, krajAnalitika
+							,pocetakNalog, krajNalog, 
+							pocetakValuta, krajValuta, korist)
+					,HttpStatus.OK);
+		}
+		
+		
+		
 	}
 
 	@RequestMapping(

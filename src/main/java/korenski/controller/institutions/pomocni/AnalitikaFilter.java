@@ -21,7 +21,8 @@ public class AnalitikaFilter {
 	private Date pocetakValuta;
 	private Date krajValuta;
 	
-	private Boolean hitno;
+	private String hitno;
+	private String korist;
 
 	public AnalitikaFilter() {
 		super();
@@ -30,7 +31,7 @@ public class AnalitikaFilter {
 
 	public AnalitikaFilter(String racunDuznika, String modelDuznika, String pozivNaBrojDuznika, String racunPoverioca,
 			String modelPoverioca, String pozivNaBrojPoverioca, Date pocetakAnalitika, Date krajAnalitika,
-			Date pocetakNalog, Date krajNalog, Date pocetakValuta, Date krajValuta, Boolean hitno) {
+			Date pocetakNalog, Date krajNalog, Date pocetakValuta, Date krajValuta, String hitno, String korist) {
 		super();
 		this.racunDuznika = racunDuznika;
 		this.modelDuznika = modelDuznika;
@@ -45,6 +46,7 @@ public class AnalitikaFilter {
 		this.pocetakValuta = pocetakValuta;
 		this.krajValuta = krajValuta;
 		this.hitno = hitno;
+		this.korist = korist;
 	}
 
 	public String getRacunDuznika() {
@@ -143,14 +145,22 @@ public class AnalitikaFilter {
 		this.krajValuta = krajValuta;
 	}
 
-	public Boolean isHitno() {
+	public String getHitno() {
 		return hitno;
 	}
 
-	public void setHitno(Boolean hitno) {
+	public void setHitno(String hitno) {
 		this.hitno = hitno;
 	}
-	
+
+	public String getKorist() {
+		return korist;
+	}
+
+	public void setKorist(String korist) {
+		this.korist = korist;
+	}
+
 	
 
 }

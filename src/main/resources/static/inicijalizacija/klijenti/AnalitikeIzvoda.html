@@ -104,8 +104,39 @@
 		   			<p>do: <input type="date" ng-model="analitikaSearch.krajValuta" maxlength="40" ></p>
 		   			
 		   			
-		   			<p>Da li je racun aktivan? <input type="checkbox" ng-model="analitikaSearch.hitno" required></p>
+		   			<p>Hitno? </p>
+		   			<!--<input type="checkbox" ng-model="analitikaSearch.hitno" required>-->
 		   			
+		   			<label>
+		    			<input type="radio" ng-model="analitikaSearch.hitno" value="yes" >
+		    			Hitno
+		  			</label>
+		 			<label>
+		    			<input type="radio" ng-model="analitikaSearch.hitno" value="no">
+		    			Nije hitno
+		  			</label>
+		  			<label>
+		    			<input type="radio" ng-model="analitikaSearch.hitno" value="none" checked="checked">
+		    			Sve
+		  			</label>
+		   			
+		   			<p>U korist? </p>
+		   			<!-- <input type="checkbox" ng-model="analitikaSearch.korist" required> -->
+		   			
+		   			
+		   			
+		   			<label>
+		    			<input type="radio" ng-model="analitikaSearch.korist" value="yes" >
+		    			U korist
+		  			</label>
+		 			<label>
+		    			<input type="radio" ng-model="analitikaSearch.korist" value="no">
+		    			Na teret
+		  			</label>
+		  			<label>
+		    			<input type="radio" ng-model="analitikaSearch.korist" value="none" checked="checked">
+		    			Sve
+		  			</label>
 	   			</div>
 	   			<div class="container" id="dugmici">
 	  				<div class="btn-group">

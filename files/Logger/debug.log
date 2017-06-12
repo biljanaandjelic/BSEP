@@ -291,3 +291,63 @@
 [INFO ]2017-06-09 21:52:54 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Ne
 [INFO ]2017-06-09 21:52:55 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Ne
 [INFO ]2017-06-09 21:52:56 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Da
+[INFO ]2017-06-09 22:54:24 korenski.MtbApplication - Starting MtbApplication on DESKTOP-KT196EP with PID 7848 (C:\Users\Biljana\Documents\Biljana\Fakultet\Projekat_zavrsni\target\classes started by Biljana in C:\Users\Biljana\Documents\Biljana\Fakultet\Projekat_zavrsni)
+[DEBUG]2017-06-09 22:54:24 korenski.MtbApplication - Running with Spring Boot v1.4.1.RELEASE, Spring v4.3.3.RELEASE
+[INFO ]2017-06-09 22:54:24 korenski.MtbApplication - No active profile set, falling back to default profiles: default
+[INFO ]2017-06-09 22:56:17 korenski.MtbApplication - Started MtbApplication in 113.781 seconds (JVM running for 114.945)
+[INFO ]2017-06-09 22:56:57 k.c.businesslogic.ImportController - User 1 Permisija interna tranasakcija duznik: 123-9338670954849-69 poverilac: 123-8880775775674-13 iznos: 150.23 
+[INFO ]2017-06-09 22:56:59 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 234-6355718718680-9 iznos: 1500.23  hitno: Ne
+[INFO ]2017-06-09 22:57:00 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 1200.0  hitno: Ne
+[INFO ]2017-06-09 22:57:01 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 8000.0  hitno: Ne
+[INFO ]2017-06-09 22:57:01 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Ne
+[INFO ]2017-06-09 22:57:01 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Ne
+[INFO ]2017-06-09 22:57:03 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Ne
+[INFO ]2017-06-09 22:57:04 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Da
+[INFO ]2017-06-11 15:09:34 korenski.MtbApplication - Starting MtbApplication on DESKTOP-KT196EP with PID 8348 (C:\Users\Biljana\Documents\Biljana\Fakultet\Projekat_zavrsni\target\classes started by Biljana in C:\Users\Biljana\Documents\Biljana\Fakultet\Projekat_zavrsni)
+[DEBUG]2017-06-11 15:09:34 korenski.MtbApplication - Running with Spring Boot v1.4.1.RELEASE, Spring v4.3.3.RELEASE
+[INFO ]2017-06-11 15:09:34 korenski.MtbApplication - No active profile set, falling back to default profiles: default
+[INFO ]2017-06-11 15:11:42 korenski.MtbApplication - Started MtbApplication in 129.252 seconds (JVM running for 130.725)
+[INFO ]2017-06-11 15:16:55 k.c.businesslogic.ImportController - User 1 Permisija interna tranasakcija duznik: 123-9338670954849-69 poverilac: 123-8880775775674-13 iznos: 150.23 
+[INFO ]2017-06-11 15:16:57 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 234-6355718718680-9 iznos: 1500.23  hitno: Ne
+[INFO ]2017-06-11 15:16:59 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 1200.0  hitno: Ne
+[INFO ]2017-06-11 15:16:59 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 8000.0  hitno: Ne
+[INFO ]2017-06-11 15:16:59 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Ne
+[INFO ]2017-06-11 15:17:00 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Ne
+[INFO ]2017-06-11 15:17:01 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Ne
+[INFO ]2017-06-11 15:17:03 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Da
+[INFO ]2017-06-11 15:50:08 korenski.MtbApplication - Starting MtbApplication on DESKTOP-KT196EP with PID 7200 (C:\Users\Biljana\Documents\Biljana\Fakultet\Projekat_zavrsni\target\classes started by Biljana in C:\Users\Biljana\Documents\Biljana\Fakultet\Projekat_zavrsni)
+[DEBUG]2017-06-11 15:50:08 korenski.MtbApplication - Running with Spring Boot v1.4.1.RELEASE, Spring v4.3.3.RELEASE
+[INFO ]2017-06-11 15:50:08 korenski.MtbApplication - No active profile set, falling back to default profiles: default
+[INFO ]2017-06-11 15:51:57 korenski.MtbApplication - Started MtbApplication in 109.761 seconds (JVM running for 110.786)
+[INFO ]2017-06-11 16:17:34 korenski.MtbApplication - Starting MtbApplication on DESKTOP-KT196EP with PID 8844 (C:\Users\Biljana\Documents\Biljana\Fakultet\Projekat_zavrsni\target\classes started by Biljana in C:\Users\Biljana\Documents\Biljana\Fakultet\Projekat_zavrsni)
+[DEBUG]2017-06-11 16:17:34 korenski.MtbApplication - Running with Spring Boot v1.4.1.RELEASE, Spring v4.3.3.RELEASE
+[INFO ]2017-06-11 16:17:34 korenski.MtbApplication - No active profile set, falling back to default profiles: default
+[INFO ]2017-06-11 16:19:22 korenski.MtbApplication - Started MtbApplication in 109.223 seconds (JVM running for 110.175)
+[INFO ]2017-06-11 16:32:11 korenski.MtbApplication - Starting MtbApplication on DESKTOP-KT196EP with PID 1504 (C:\Users\Biljana\Documents\Biljana\Fakultet\Projekat_zavrsni\target\classes started by Biljana in C:\Users\Biljana\Documents\Biljana\Fakultet\Projekat_zavrsni)
+[DEBUG]2017-06-11 16:32:11 korenski.MtbApplication - Running with Spring Boot v1.4.1.RELEASE, Spring v4.3.3.RELEASE
+[INFO ]2017-06-11 16:32:11 korenski.MtbApplication - No active profile set, falling back to default profiles: default
+[INFO ]2017-06-11 16:34:02 korenski.MtbApplication - Started MtbApplication in 111.917 seconds (JVM running for 113.044)
+[INFO ]2017-06-11 16:39:00 korenski.MtbApplication - Starting MtbApplication on DESKTOP-KT196EP with PID 5288 (C:\Users\Biljana\Documents\Biljana\Fakultet\Projekat_zavrsni\target\classes started by Biljana in C:\Users\Biljana\Documents\Biljana\Fakultet\Projekat_zavrsni)
+[DEBUG]2017-06-11 16:39:00 korenski.MtbApplication - Running with Spring Boot v1.4.1.RELEASE, Spring v4.3.3.RELEASE
+[INFO ]2017-06-11 16:39:00 korenski.MtbApplication - No active profile set, falling back to default profiles: default
+[INFO ]2017-06-11 16:40:50 korenski.MtbApplication - Started MtbApplication in 110.858 seconds (JVM running for 111.858)
+[INFO ]2017-06-11 16:47:30 korenski.MtbApplication - Starting MtbApplication on DESKTOP-KT196EP with PID 5220 (C:\Users\Biljana\Documents\Biljana\Fakultet\Projekat_zavrsni\target\classes started by Biljana in C:\Users\Biljana\Documents\Biljana\Fakultet\Projekat_zavrsni)
+[DEBUG]2017-06-11 16:47:30 korenski.MtbApplication - Running with Spring Boot v1.4.1.RELEASE, Spring v4.3.3.RELEASE
+[INFO ]2017-06-11 16:47:30 korenski.MtbApplication - No active profile set, falling back to default profiles: default
+[INFO ]2017-06-11 16:49:21 korenski.MtbApplication - Started MtbApplication in 111.359 seconds (JVM running for 112.47)
+[INFO ]2017-06-11 16:51:23 korenski.MtbApplication - Starting MtbApplication on DESKTOP-KT196EP with PID 2164 (C:\Users\Biljana\Documents\Biljana\Fakultet\Projekat_zavrsni\target\classes started by Biljana in C:\Users\Biljana\Documents\Biljana\Fakultet\Projekat_zavrsni)
+[DEBUG]2017-06-11 16:51:23 korenski.MtbApplication - Running with Spring Boot v1.4.1.RELEASE, Spring v4.3.3.RELEASE
+[INFO ]2017-06-11 16:51:23 korenski.MtbApplication - No active profile set, falling back to default profiles: default
+[INFO ]2017-06-11 16:53:16 korenski.MtbApplication - Started MtbApplication in 113.71 seconds (JVM running for 114.728)
+[INFO ]2017-06-11 16:55:32 korenski.MtbApplication - Starting MtbApplication on DESKTOP-KT196EP with PID 11284 (C:\Users\Biljana\Documents\Biljana\Fakultet\Projekat_zavrsni\target\classes started by Biljana in C:\Users\Biljana\Documents\Biljana\Fakultet\Projekat_zavrsni)
+[DEBUG]2017-06-11 16:55:32 korenski.MtbApplication - Running with Spring Boot v1.4.1.RELEASE, Spring v4.3.3.RELEASE
+[INFO ]2017-06-11 16:55:32 korenski.MtbApplication - No active profile set, falling back to default profiles: default
+[INFO ]2017-06-11 16:57:21 korenski.MtbApplication - Started MtbApplication in 108.715 seconds (JVM running for 109.682)
+[INFO ]2017-06-11 17:01:11 k.c.businesslogic.ImportController - User 1 Permisija interna tranasakcija duznik: 123-9338670954849-69 poverilac: 123-8880775775674-13 iznos: 150.23 
+[INFO ]2017-06-11 17:01:12 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 234-6355718718680-9 iznos: 1500.23  hitno: Ne
+[INFO ]2017-06-11 17:01:14 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 1200.0  hitno: Ne
+[INFO ]2017-06-11 17:01:15 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 8000.0  hitno: Ne
+[INFO ]2017-06-11 17:01:15 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Ne
+[INFO ]2017-06-11 17:01:16 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Ne
+[INFO ]2017-06-11 17:01:17 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Ne
+[INFO ]2017-06-11 17:01:19 k.c.businesslogic.ImportController - User 1 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Da

@@ -34,7 +34,7 @@ administrator.controller('MedjubankarskiPrenosController', function($scope, $htt
 	
 	this.refresh=function(){
 		var path="/medjubankarskiPrenos";
-		
+		$scope.medjubankarskiPrenosi=[];
 		$http({
 			method: 'GET',
 			url: path
@@ -48,7 +48,7 @@ administrator.controller('MedjubankarskiPrenosController', function($scope, $htt
 		);
 		
 		path="/messages";
-		
+		$scope.poruke=[];
 		$http({
 			method: 'GET',
 			url: path
@@ -62,7 +62,7 @@ administrator.controller('MedjubankarskiPrenosController', function($scope, $htt
 		);
 		
 		path='/allBanks';
-		
+		//$scope.
 		$http({
 			method: 'GET',
 			url: path
