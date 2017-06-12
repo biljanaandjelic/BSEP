@@ -9,15 +9,20 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.deser.std.DateDeserializers.DateDeserializer;
+import com.fasterxml.jackson.databind.ser.std.DateSerializer;
 
 import korenski.model.klijenti.Klijent;
 
@@ -42,7 +47,10 @@ public class Racun {
 	@Column(nullable = false)
 	private double stanje;
 	
-	@Column(nullable = true)
+	@Column(name = "datumDeaktivacije", columnDefinition = "DATETIME")
+	@Temporal(TemporalType.TIMESTAMP)
+	@JsonSerialize(using = DateSerializer.class)
+	@JsonDeserialize(using = DateDeserializer.class)
 	private Date datumDeaktivacije;
 	
 	@NotNull
@@ -126,6 +134,7 @@ public class Racun {
 		this.datumDeaktivacije = datumDeaktivacije;
 	}
 	@XmlTransient
+	@JsonIgnoreProperties({"racuni"})
 	public Klijent getKlijent() {
 		return klijent;
 	}

@@ -192,7 +192,7 @@ administrator.controller('RukovanjeSifrarnikomValuta', function($scope, $http, $
 				$log.log("Error");
 			});
 		}else if($scope.rezim==State.SEARCH ){
-			var path="/valute/"+$scope.valuta.code+"/"+$scope.valuta.name;
+			var path="/valute/"+$scope.valutaPomocni.code+"/"+$scope.valutaPomocni.name;
 			$http({
 				method: 'GET',
 				url: path
@@ -218,17 +218,17 @@ administrator.controller('RukovanjeSifrarnikomValuta', function($scope, $http, $
 	*/
 	var check=function(){
 			$log.log("Valuta "+ $scope.valuta.code+ " name: "+$scope.valuta.name);
-			if(angular.equals($scope.valuta, {})){
+			if(angular.equals($scope.valutaPomocni, {})){
 				
 				return false;
-			}else if(angular.isUndefined($scope.valuta.code)){
+			}else if(angular.isUndefined($scope.valutaPomocni.code)){
 				
 				toastr.error('Oznaka  mora sadrzati tacno 3 karaktera');
 				return false;
-			}else if(!angular.equals($scope.valuta.code.trim().length, 3)){
+			}else if(!angular.equals($scope.valutaPomocni.code.trim().length, 3)){
 				toastr.error('Oznaka mora da sadrzi 3 karaktera!');
 				return false;
-			}else if(angular.isUndefined($scope.valuta.name)){
+			}else if(angular.isUndefined($scope.valutaPomocni.name)){
 				toastr.error('Naziv mora biti zadat!');
 				return  false;
 			}

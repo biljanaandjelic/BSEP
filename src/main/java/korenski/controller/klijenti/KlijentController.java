@@ -236,6 +236,7 @@ public class KlijentController {
 		return new ResponseEntity<Collection<Klijent>>( repository.filterNaseljenoMesto(klijentFilter.getJmbg(), klijentFilter.getIme(), klijentFilter.getPrezime(), klijentFilter.getAdresa(), klijentFilter.getTelefon(), klijentFilter.getEmail(), klijentFilter.getMesto()), HttpStatus.OK);
 	}
 	
+	@CustomAnnotation( value = "GENERATE_REPORT" )
 	@RequestMapping(
 			value = "/izvestajIzvoda",
 			method = RequestMethod.POST,

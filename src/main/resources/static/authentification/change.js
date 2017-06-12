@@ -1,15 +1,67 @@
 var menjanje = angular.module('menjanje', []);
 
-menjanje.controller('IzmenaCtrl', [ '$window', '$scope', '$http', '$compile',
-		function($window, $scope, $http, $compile) {
+menjanje.service('tokenService', function(){
+	var token = "";
+	
+	var setToken = function(vrednost){
+		token = vrednost;
+	}
+	
+	var getToken = function(){
+		return token;
+	}
+
+	return {
+		setToken : setToken,
+		getToken : getToken
+	};
+	
+});
+
+menjanje.factory('httpRequestInterceptor',['tokenService', function (tokenService) {
+	
+		
+	  return {
+	    request: function (config) {
+	    	var t = tokenService.getToken();
+	      config.headers['X-XSRF-Token'] = t;
+	       return config;
+	    }
+	  };
+	}]);
+//'$httpProvider', 'tokenService', '$http', 
+menjanje.config(function ($httpProvider) {
+	
+	
+	$httpProvider.interceptors.push('httpRequestInterceptor');
+	});
+
+
+
+
+
+menjanje.controller('IzmenaCtrl', [ '$window', '$scope', '$http', '$compile', 'tokenService', 
+		function($window, $scope, $http, $compile, tokenService) {
 
 			$scope.userToChange = {}
 
 			
 			$scope.lozinka1 = "";
 			
-			$scope.init = function() {
+			$scope.init = function(){
 				
+				
+				$http.get('/special/getSafeToken').
+				then(function mySucces(response) {
+					
+					
+					if(angular.equals(response.data.name, 'OHNO')){
+						$window.location.href=response.data.value;
+					}
+					
+					tokenService.setToken(response.data.value);
+				});
+			
 			};
 			
 			this.logoff = function(){
@@ -40,7 +92,26 @@ menjanje.controller('IzmenaCtrl', [ '$window', '$scope', '$http', '$compile',
 				then(function mySucces(response) {
 					
 					
-						toastr.success(response.data);
+					if(response.data.id == -1){
+						toastr.error('Ne postoji korisnik sa takvim korisnickim imenom i lozinkom!');
+						return;
+					}else if(response.data.id == -2){
+						toastr.error('Uneti podaci se ne poklapaju sa podacima ulogovanog korisnika');
+						return;
+					}else if(response.data.id == -3){
+						toastr.error('Korisnik sa unetim kredencijalima ne postoji');
+						return;
+					}
+					else if(response.data.id == -5){
+						
+						$window.location.href=response.data.username;
+						
+						return;
+					}else{
+						toastr.success('Uspesno logovanje!');
+						return;
+					}
+				
 					
 				});
 			};

@@ -1,6 +1,21 @@
-certificateModule.controller("TabController", function(){
-    this.tab = 1;
+certificateModule.controller("TabController", function($scope, $http, $compile, $timeout, $rootScope, $window, tokenService){
+    this.tab = 8;
 
+    $scope.init = function(){
+	
+		
+		$http.get('/special/getSafeToken').
+		then(function mySucces(response) {
+			
+			
+			if(angular.equals(response.data.name, 'OHNO')){
+				$window.location.href=response.data.value;
+			}
+			
+			tokenService.setToken(response.data.value);
+		});
+    };
+    
     this.isSet = function(checkTab) {
       return this.tab === checkTab;
     };

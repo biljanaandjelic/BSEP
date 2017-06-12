@@ -40,15 +40,16 @@ public class MedjubankarskiPrenos {
 	
 	@OneToMany(fetch=FetchType.LAZY)	
 	private List<StavkaPrenosa> stavkePrenosa;
-	
+	private boolean send;
 	public MedjubankarskiPrenos() {
 		super();
 		// TODO Auto-generated constructor stub
 		this.stavkePrenosa=new ArrayList<StavkaPrenosa>();
+		this.send=false;
 	}
 
 	public MedjubankarskiPrenos(Long id, Bank bankaPrva, Bank bankaDruga, Message poruka, Timestamp datum,
-			double iznos, List<StavkaPrenosa> stavkePrenosa) {
+			double iznos, List<StavkaPrenosa> stavkePrenosa, boolean send) {
 		super();
 		this.id = id;
 		this.bankaPrva = bankaPrva;
@@ -57,6 +58,8 @@ public class MedjubankarskiPrenos {
 		this.datum = datum;
 		this.iznos = iznos;
 		this.stavkePrenosa=stavkePrenosa;
+		this.send=send;
+	
 	}
 
 	@XmlTransient
@@ -119,6 +122,15 @@ public class MedjubankarskiPrenos {
 	public void addStavkaPrenosa(StavkaPrenosa stavkaPrenosa){
 		this.stavkePrenosa.add(stavkaPrenosa);
 	}
-	
+	@XmlTransient
+	public boolean isSend() {
+		return send;
+	}
 
+	public void setSend(boolean send) {
+		this.send = send;
+	}
+	
+	
+	
 }

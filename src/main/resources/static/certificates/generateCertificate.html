@@ -1,0 +1,73 @@
+<div ng-controller="CertificateController as certCtrl">
+		
+				  	<div class="row">
+				  		<div class="col-sm-4"></div>
+				  		<div class="col-sm-4">
+							<div class="panel panel-default">
+								<div class="panel-body">
+									<form name="genCertificateForm" ng-submit="genCertificateForm.$valid && certCtrl.generate()" class="form-signin" novalidate >
+										<h3>Generate certificate: </h3>
+										<!--  
+										<fieldset class="form-group">
+											<input ng-model="certCtrl.certificate.alias" type="text" class="form-control" placeholder="Certificate alias:" required></input>
+										</fieldset>
+										<fieldset class="form-group">
+											<input ng-model="certCtrl.certificate.keyAlias" type="text" class="form-control" placeholder="Private key alias:" required></input>
+										</fieldset>
+										-->
+										<!--  
+										<fieldset class="form-group">
+								  			<label class="control-label">Self-signed?<input ng-model="certCtrl.certificate.selfSigned" type="checkbox" class="form-control" ng-change="certCtrl.resetIssuer()"></input></label>
+										</fieldset>
+										<fieldset class="form-group">
+											<input ng-model="certCtrl.certificate.issuerAlias" type="text" class="form-control" placeholder="Issuer alias:" ng-show="!certCtrl.certificate.selfSigned"></input>
+										</fieldset>
+										-->
+										<fieldset class="form-group">
+											<input ng-model="certCtrl.certificate.cn" type="text" class="form-control" placeholder="CN:" required></input>
+										</fieldset>
+										<fieldset class="form-group">
+											<input ng-model="certCtrl.certificate.surname" type="text" class="form-control" placeholder="Surname:" required></input>
+										</fieldset>
+										<fieldset class="form-group">
+											<input ng-model="certCtrl.certificate.givenName" type="text" class="form-control" placeholder="Given name:" required></input>
+										</fieldset>
+										<fieldset class="form-group">
+											<input ng-model="certCtrl.certificate.organization" type="text" class="form-control" placeholder="Organization:" required></input>
+										</fieldset>
+										<fieldset class="form-group">
+											<input ng-model="certCtrl.certificate.organizationUnit" type="text" class="form-control" placeholder="Organization unit:" required></input>
+										</fieldset>
+										<fieldset class="form-group">
+											<input ng-model="certCtrl.certificate.country" type="text" class="form-control" placeholder="Country:" required></input>
+										</fieldset>
+										<fieldset class="form-group">
+											<input ng-model="certCtrl.certificate.email" type="email" class="form-control" placeholder="Email:" required></input>
+										</fieldset>
+										<fieldset class="form-group">
+											<input ng-model="certCtrl.certificate.uid" type="text" class="form-control" placeholder="UID:" required></input>
+										</fieldset>
+										<!--  
+										<fieldset class="form-group">
+								  			<label class="control-label">Certificate authority?<input ng-model="certCtrl.certificate.ca" type="checkbox" class="form-control"></input></label>
+										</fieldset>
+										-->
+										<fieldset class="form-group">
+											<input ng-model="certCtrl.certificate.validFrom" type="date" class="form-control" placeholder="Valid from:" required></input>
+										</fieldset>
+										<fieldset class="form-group">
+											<input ng-model="certCtrl.certificate.validTo" type="date" class="form-control" placeholder="Valid until:" required></input>
+										</fieldset>
+										<fieldset class="form-group">
+			                				<input  type="submit" class="btn btn-lg btn-primary btn-block pull-right" value="Generate" />
+			              				</fieldset>
+										<hr></hr>
+										<fieldset><div></div>{{certCtrl.result}}</fieldset><br />
+									</form>
+								</div>
+							</div>
+				  		</div>
+				  		<div class="col-sm-4"></div>
+				  	</div>
+			
+		</div>

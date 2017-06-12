@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import korenski.DTOs.MedjubankarskiPrenosDTO;
+import korenski.intercepting.CustomAnnotation;
 import korenski.model.autorizacija.User;
 import korenski.model.infrastruktura.MedjubankarskiPrenos;
 import korenski.repository.institutions.MedjubankarskiPrenosRepository;
@@ -27,24 +28,33 @@ public class MedjubankarskiPrenosController {
 
 	@Autowired 
 	MedjubankarskiPrenosRepository medjubankarskiPrenosRepository;
+	
+	
+	@CustomAnnotation( value = "FIND_ALL_INTERBANK_TRANSFER" )
 	@RequestMapping(
 			value="/medjubankarskiPrenos",
 			method=RequestMethod.GET,
 			produces=MediaType.APPLICATION_JSON_VALUE
 			)
 	public ResponseEntity<Set<MedjubankarskiPrenos>> findAllMedjubankarskePrenose(@Context HttpServletRequest request){
+		System.out.println("**********************************************");
 		System.out.println("Filtriranje medjubankarskog prenosa");
 		User user=(User) request.getSession().getAttribute("user");
 		Set<MedjubankarskiPrenos> medjubankarskiPrenosi=medjubankarskiPrenosRepository.findByBankaPrva(user.getBank());
 		if(medjubankarskiPrenosi!=null){
-			System.out.println("Pronadjen su zapisi kojima odgovara uslov");
+			System.out.println("Pronadjen su zapisi kojima odgovara uslov "+medjubankarskiPrenosi.size());
+			System.out.println("**********************************************");
 			return new ResponseEntity<Set<MedjubankarskiPrenos>>(medjubankarskiPrenosi, HttpStatus.OK);
 		}else{
 			System.out.println("Nije pronadjen nijedan medjubankarski prenos koji odgovara datom upitu");
+			System.out.println("**********************************************");
 			return new ResponseEntity<Set<MedjubankarskiPrenos>>(HttpStatus.NO_CONTENT);
 		}
+	
 		
 	}
+	
+	@CustomAnnotation( value = "FILTER_INTERBANK_TRANSFER")
 	@RequestMapping(
 			value="/medjubankarskiPrenosi",
 			method=RequestMethod.POST,

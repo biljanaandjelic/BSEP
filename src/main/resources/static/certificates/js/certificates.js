@@ -1,5 +1,43 @@
 certificateModule = angular.module('certificates', []);
 
+certificateModule.service('tokenService', function(){
+	var token = "";
+	
+	var setToken = function(vrednost){
+		token = vrednost;
+	}
+	
+	var getToken = function(){
+		return token;
+	}
+
+	return {
+		setToken : setToken,
+		getToken : getToken
+	};
+	
+});
+
+certificateModule.factory('httpRequestInterceptor',['tokenService', function (tokenService) {
+	
+		
+	  return {
+	    request: function (config) {
+	    	var t = tokenService.getToken();
+	      config.headers['X-XSRF-Token'] = t;
+	       return config;
+	    }
+	  };
+	}]);
+//'$httpProvider', 'tokenService', '$http', 
+certificateModule.config(function ($httpProvider) {
+	
+	
+	$httpProvider.interceptors.push('httpRequestInterceptor');
+	});
+
+
+
 certificateModule.controller("CertificateController", function($http,$scope, $log){
 	var control = this;
 	$scope.revokeRequest={};

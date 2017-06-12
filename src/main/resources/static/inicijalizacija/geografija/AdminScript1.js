@@ -1,4 +1,44 @@
-administrator.controller('Opsti', function($scope, $http, $compile, $timeout, $rootScope, $cookies){
+administrator.service('tokenService', function(){
+	var token = "";
+	
+	var setToken = function(vrednost){
+		token = vrednost;
+	}
+	
+	var getToken = function(){
+		return token;
+	}
+
+	return {
+		setToken : setToken,
+		getToken : getToken
+	};
+	
+});
+
+administrator.factory('httpRequestInterceptor',['tokenService', function (tokenService) {
+	
+		
+	  return {
+	    request: function (config) {
+	    	var t = tokenService.getToken();
+	      config.headers['X-XSRF-Token'] = t;
+	       return config;
+	    }
+	  };
+	}]);
+//'$httpProvider', 'tokenService', '$http', 
+administrator.config(function ($httpProvider) {
+	
+	
+	$httpProvider.interceptors.push('httpRequestInterceptor');
+	});
+
+
+
+//'$scope', 'http', '$compile', '$timeout', '$rootScope', '$cookies', '$window', 'tokenService',
+
+administrator.controller('Opsti', function($scope, $http, $compile, $timeout, $rootScope, $cookies, $window, tokenService){
 	
 	$scope.tab = 0;
 	
@@ -18,7 +58,12 @@ administrator.controller('Opsti', function($scope, $http, $compile, $timeout, $r
 		$http.get('/special/getSafeToken').
 		then(function mySucces(response) {
 			
-			$scope.token = response.data.value;
+			
+			if(angular.equals(response.data.name, 'OHNO')){
+				$window.location.href=response.data.value;
+			}
+			
+			tokenService.setToken(response.data.value);
 		});
 	
 	};
@@ -54,6 +99,7 @@ administrator.controller('Opsti', function($scope, $http, $compile, $timeout, $r
 			
 				//$window.location.href="http://localhost:8080/authentification/login.html";
 				toastr.success("IZLOGOVAN");
+				$window.location.href=response.data.username;
 		});
 	};
 
@@ -160,13 +206,17 @@ administrator.controller('Opsti', function($scope, $http, $compile, $timeout, $r
 				toastr.success("Uspijesan import naloga");
 			},
 			function error(response){
-				
+				if(response.status==500){
+					toastr.error("Doslo je do interne greske na serveru. Pokusajte ponovo");
+				}else{
+					toastr.success("Uspijesan import naloga");
+				}
 			}
 		);
 	}
 	
 });
-
+/*
 administrator.directive("filelistBind", function($http) {
 	  return function( scope, elm, attrs ) {
 	    elm.bind("change", function( evt ) {
@@ -185,3 +235,4 @@ administrator.directive("filelistBind", function($http) {
 	    });
 	  };
 	});
+*/

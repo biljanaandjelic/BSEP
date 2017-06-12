@@ -68,7 +68,9 @@ public class PravnoLiceController {
 		try {
 			pl = repository.save(pravnoLice);
 		} catch (Exception e){
+
 			return new ResponseEntity<PravnoLice>(new PravnoLice(new Long(-1), null, "Greska pri cuvanju u bazi!", null, null, null, null, null), HttpStatus.OK);
+
 		}
 		return new ResponseEntity<PravnoLice>(pl, HttpStatus.OK);
 	}

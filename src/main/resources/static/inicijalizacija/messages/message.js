@@ -161,7 +161,7 @@ administrator.controller('MessagesController', function($scope, $http, $compile,
 				$log.log("Error");
 			});
 		}else if($scope.state==State.SEARCH){
-			var path="/messageByCode/"+$scope.message.code;
+			var path="/messageByCode/"+$scope.messagePomocni.code;
 			$http({
 				method: 'GET',
 				url: path

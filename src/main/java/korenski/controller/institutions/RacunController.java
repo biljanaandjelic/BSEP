@@ -1,6 +1,5 @@
 package korenski.controller.institutions;
 
-import java.io.IOException;
 import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -10,13 +9,12 @@ import java.util.HashMap;
 import java.util.Properties;
 import java.util.Random;
 import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
-//import org.slf4j.Logger;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Context;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,18 +28,26 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import korenski.DTOs.RacunSearchDTO;
 import korenski.controller.institutions.pomocni.ZatvaranjePomocni;
 import korenski.intercepting.CustomAnnotation;
-import korenski.logger.AppLogger;
 import korenski.model.autorizacija.User;
 import korenski.model.infrastruktura.Bank;
 import korenski.model.infrastruktura.Racun;
 import korenski.model.infrastruktura.ZatvaranjeRacuna;
 import korenski.model.klijenti.Klijent;
+import korenski.model.klijenti.PravnoLice;
+import korenski.model.nalog_za_prenos.NalogZaPrenos;
+import korenski.model.nalog_za_prenos.TFinansijskiPodaci;
+import korenski.model.nalog_za_prenos.NalogZaPrenos.PodaciOPlacanju;
+import korenski.model.nalog_za_prenos.TFizickoLice;
+import korenski.model.nalog_za_prenos.TLice;
+import korenski.model.nalog_za_prenos.TPravnoLice;
 import korenski.repository.institutions.BankRepository;
 import korenski.repository.institutions.RacunRepository;
 import korenski.repository.institutions.ZatvaranjeRacunaRepository;
 import korenski.repository.klijenti.KlijentRepository;
+import korenski.service.infrastruktura.BusinessLogicService;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
+
 
 @Controller
 public class RacunController {
@@ -57,6 +63,10 @@ public class RacunController {
 
 	@Autowired
 	ZatvaranjeRacunaRepository zatvaranjeRepository;
+	
+	
+	@Autowired
+	BusinessLogicService businessService;
 
 	public Logger logger;
 	public FileHandler fh;
@@ -65,10 +75,7 @@ public class RacunController {
 	@RequestMapping(value = "/noviRacun", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Racun> noviRacun(@RequestBody Klijent klijent, @Context HttpServletRequest request)
 			throws Exception {
-		AppLogger appLogger=AppLogger.getInstance();
-		Logger logger=appLogger.getLogger();
-		logger.log(Level.FINEST,"Entering  noviRacun(klijent="+klijent.toString()+", request="+request+") ");
-		//logger.debug("Entering  noviRacun(klijent="+klijent.toString()+", request="+request+")");
+		Logger logger=LoggerFactory.getLogger(RacunController.class);
 		Racun racun = new Racun();
 
 		User u = (User) request.getSession().getAttribute("user");
@@ -85,49 +92,23 @@ public class RacunController {
 		racun.setStatus(true);
 		racun.setBank(bank);
 		
-//
-//<<<<<<< HEAD
-//		Racun savedRacun=repository.save(racun);
-//		klijent.getRacuni().add(savedRacun);
-//		klijentRepository.save(klijent);
-//		
-//		java.lang.reflect.Method m = RacunController.class.getMethod("zatvoriRacun", ZatvaranjePomocni.class,
-//				HttpServletRequest.class);
-//		String mime = m.getAnnotation(CustomAnnotation.class).value();
-//		
-//		String msg="USER "+u.getId().toString()+" "+mime+" "+brojRacuna+"\n";
-//		logger.info(msg);
-//		//logger.log(Level.INFO,msg);
-//		System.out.println("FINEST ISPIS");
-//		logger.log(Level.FINEST,"Leaving noviRacun(): "+ racun+"\n");
-//		//logger.debug("Leaving noviRacun(): "+ racun+"\n");
-//		System.out.println("FINEST ISPIS");
-//	//	return new ResponseEntity<Racun>(savedRacun, HttpStatus.OK);
-//
-//		try {
-//			racun = repository.save(racun);
-//		} catch (Exception e) {
-//			return new ResponseEntity<Racun>(new Racun(new Long(-1), "Greska pri upisu u bazu!", false, null, null, null), HttpStatus.OK);
-//		}
-//		
-//		return new ResponseEntity<Racun>(racun, HttpStatus.OK);
-//
-//=======
+
 		try {
 			Klijent foundKlijent=klijentRepository.findOne(klijent.getId());
 			racun = repository.save(racun);
 			foundKlijent.getRacuni().add(racun);
 			klijentRepository.save(foundKlijent);
-			java.lang.reflect.Method m = RacunController.class.getMethod("zatvoriRacun", ZatvaranjePomocni.class,
+			java.lang.reflect.Method m = RacunController.class.getMethod("noviRacun", Klijent.class,
 					HttpServletRequest.class);
 			String mime = m.getAnnotation(CustomAnnotation.class).value();
 
-			String msg = "USER " + u.getId().toString() + " " + mime + " " + brojRacuna + "\n";
-			logger.info(msg);
-			// logger.log(Level.INFO,msg);
+	
 			System.out.println("FINEST ISPIS");
-			logger.log(Level.FINEST, "Leaving noviRacun(): " + racun + "\n");
-			// logger.debug("Leaving noviRacun(): "+ racun+"\n");
+	
+			if(klijent instanceof PravnoLice)
+				logger.info("User {} {} tip: {} broj ziroracuna {}", u.getId().toString(), mime, "pravno lice", brojRacuna);
+			else
+				logger.info("User {} {} tip: {} broj ziroracuna {}", u.getId().toString(), mime, "fizicko lice", brojRacuna);
 			System.out.println("FINEST ISPIS");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -200,22 +181,40 @@ public class RacunController {
 	@RequestMapping(value = "/zatvoriRacun", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Racun> zatvoriRacun(@RequestBody ZatvaranjePomocni pomocni,
 			@Context HttpServletRequest request) throws Exception {
-		AppLogger appLogger=AppLogger.getInstance();
-		Logger logger=appLogger.getLogger();
-		//Logger logger=appLogger.getLogger();
+		logger=LoggerFactory.getLogger(RacunController.class);
 		Racun racun = repository.findOne(pomocni.getId());
 
+		
 		if (!racun.getStatus()) {
 			return new ResponseEntity<Racun>(racun, HttpStatus.OK);
 		}
 		User user = (User) request.getSession().getAttribute("user");
 		// LOGOVI
 
+
+		Bank bank = bankRepository.findOne(user.getBank().getId());
+		
 		if (racun.getStanje() != 0 && pomocni.getRacun().equals("")) {
 			return new ResponseEntity<Racun>(
 					new Racun(new Long(-1), "Stanje na racunu nije 0!Broj racuna za prenos sredstava mora biti unesen!",
 							false, null, null, null),
 					HttpStatus.OK);
+		}else if(racun.getStanje() != 0){
+			String racunZaPrenos = pomocni.getRacun();
+			
+			Racun racunPrenosa = repository.findByBankAndBrojRacuna(bank, racunZaPrenos);
+			
+			if(racunPrenosa!=null && racunPrenosa.getStatus()){
+				
+				NalogZaPrenos nalog = kreiranjeNaloga(racun, racunPrenosa);
+				
+				businessService.sameBankTransfer(nalog, racun, racunPrenosa);
+				
+			}else if(racunPrenosa == null){
+				NalogZaPrenos nalog = kreiranjeNalogaVan(racun, pomocni.getRacun());
+				businessService.differentBanksTransfer(nalog, racun, pomocni.getRacun());
+			}
+			
 		}
 
 		racun.setStatus(false);
@@ -233,14 +232,14 @@ public class RacunController {
 		String msg="USER "+user.getId().toString()+" "+mime+" "+pomocni.getRacun();
 		try {
 			racun = repository.save(racun);
-			logger.info("USER " + user.getId().toString() + " " + mime +" "+pomocni.getRacun());
-			logger.log(Level.WARNING, "BILJANA");
+		
+			if(racun.getKlijent() instanceof PravnoLice)
+				logger.info("User {} {} tip: {} broj ziroracuna {}", user.getId().toString(), mime, "pravno lice", racun.getBrojRacuna());
+			else
+				logger.info("User {} {} tip: {} broj ziroracuna {}", user.getId().toString(), mime, "fizicko lice", racun.getBrojRacuna());
 		} catch (Exception e) {
 			
-			//logger.log(Level.,msg);
-			//logger.log(Level);
-			logger.log(Level.WARNING, msg);
-	//		logger.warn(msg);
+		
 			return new ResponseEntity<Racun>(
 					new Racun(new Long(-1), "Greska pri upisu u bazu!", false, current, current, null), HttpStatus.OK);
 		}
@@ -248,6 +247,115 @@ public class RacunController {
 		return new ResponseEntity<Racun>(racun, HttpStatus.OK);
 	}
 
+	
+	private NalogZaPrenos kreiranjeNaloga(Racun racun, Racun racunPrenosa){
+		boolean fizicko = racun.getKlijent().isFizickoLice();
+		
+		NalogZaPrenos nalog = new NalogZaPrenos();
+		TLice duznik = null;
+		
+		if(racun.getStanje()>=250000){
+			nalog.setHitno("Da");
+		}else{
+			nalog.setHitno("Ne");
+		}
+		
+		if(fizicko){
+			duznik = new TFizickoLice();
+			duznik.setAdresa(racun.getKlijent().getAdresa());
+			
+		}else{
+			duznik = new TPravnoLice();
+			duznik.setAdresa(racun.getKlijent().getAdresa());
+		}
+		
+		nalog.setPodaciODuzniku(duznik);
+		
+		PodaciOPlacanju pop = new PodaciOPlacanju();
+		pop.setDatumValute(new Date());
+		
+		TFinansijskiPodaci finDuznik = new TFinansijskiPodaci();
+		finDuznik.setBrojRacuna(racun.getBrojRacuna());
+		finDuznik.setModel("97");
+		finDuznik.setPozivNaBroj("321456789032145");
+		
+		TFinansijskiPodaci finPoverilac = new TFinansijskiPodaci();
+		finPoverilac.setBrojRacuna(racunPrenosa.getBrojRacuna());
+		finPoverilac.setModel("97");
+		finPoverilac.setPozivNaBroj("321456789032145");
+		
+		
+		pop.setFinansijskiPodaciDuznik(finDuznik);
+		pop.setFinansijskiPodaciPoverilac(finPoverilac);
+		pop.setIznos(racun.getStanje());
+		pop.setSifraPlacanja("233");
+		pop.setValuta("DIN");
+		
+		
+		TLice podaciOPoveriocu = new TFizickoLice();
+		podaciOPoveriocu.setAdresa("Adresa prenosa");
+		
+		nalog.setPodaciOPlacanju(pop);
+		nalog.setPodaciOPoveriocu(podaciOPoveriocu);
+		nalog.setSvrhaPlacanja("Zatvaranje racuna");
+		return nalog;
+	}
+	
+	private NalogZaPrenos kreiranjeNalogaVan(Racun racun, String racunPrenosa){
+		boolean fizicko = racun.getKlijent().isFizickoLice();
+		
+		NalogZaPrenos nalog = new NalogZaPrenos();
+		TLice duznik = null;
+		
+		if(racun.getStanje()>=250000){
+			nalog.setHitno("Da");
+		}else{
+			nalog.setHitno("Ne");
+		}
+		
+		if(fizicko){
+			duznik = new TFizickoLice();
+			duznik.setAdresa(racun.getKlijent().getAdresa());
+			
+		}else{
+			duznik = new TPravnoLice();
+			duznik.setAdresa(racun.getKlijent().getAdresa());
+		}
+		
+		nalog.setPodaciODuzniku(duznik);
+		
+		PodaciOPlacanju pop = new PodaciOPlacanju();
+		pop.setDatumValute(new Date());
+		
+		TFinansijskiPodaci finDuznik = new TFinansijskiPodaci();
+		finDuznik.setBrojRacuna(racun.getBrojRacuna());
+		finDuznik.setModel("97");
+		finDuznik.setPozivNaBroj("321456789032145");
+		
+		TFinansijskiPodaci finPoverilac = new TFinansijskiPodaci();
+		finPoverilac.setBrojRacuna(racunPrenosa);
+		finPoverilac.setModel("97");
+		finPoverilac.setPozivNaBroj("321456789032145");
+		
+		
+		pop.setFinansijskiPodaciDuznik(finDuznik);
+		pop.setFinansijskiPodaciPoverilac(finPoverilac);
+		pop.setIznos(racun.getStanje());
+		pop.setSifraPlacanja("233");
+		pop.setValuta("DIN");
+		
+		
+		TLice podaciOPoveriocu = new TFizickoLice();
+		podaciOPoveriocu.setAdresa("Adresa prenosa");
+		
+		nalog.setPodaciOPlacanju(pop);
+		nalog.setPodaciOPoveriocu(podaciOPoveriocu);
+		nalog.setSvrhaPlacanja("Zatvaranje racuna");
+		return nalog;
+	}
+	
+	
+	
 	@CustomAnnotation(value = "FIND_ONE_ACCOUNT")
 	@RequestMapping(value = "/nadjiRacun/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Racun> nadjiRacun(@PathVariable("id") Long id, @Context HttpServletRequest request)

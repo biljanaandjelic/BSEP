@@ -1,11 +1,13 @@
 package korenski.controller.geografija;
 
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,22 +41,7 @@ public class DrzavaController {
 	public ResponseEntity<Drzava> novaDrzava(@RequestBody Drzava drzava , @Context HttpServletRequest request) throws Exception {
 
 		
-//		ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
-//		
-//		javax.validation.Validator validator = validatorFactory.getValidator();
-//		
-//		 
-//		
-//		Set<ConstraintViolation<Drzava>> violations = validator.validate(drzava);
-//		
-//		for (ConstraintViolation<Drzava> violation : violations) {
-//		
-//		   String propertyPath = violation.getPropertyPath().toString();
-//		
-//		    String message = violation.getMessage();
-//		
-//		    System.out.println("invalid value for: '" + propertyPath + "': " + message);
-//		}
+		
 		
 		Drzava validity = validityCheck(drzava);
 		if(validity != null){
@@ -132,6 +119,13 @@ public class DrzavaController {
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Collection<Drzava>> sveDrzave() throws Exception {
 
+		
+//		Method m = DrzavaController.class.getMethod("sveDrzave");
+//		
+//		String mime = m.getAnnotation(CustomAnnotation.class).value();
+//		
+//		System.out.println("Mime "+mime);
+		
 		
 		return new ResponseEntity<Collection<Drzava>>( repository.findAll(), HttpStatus.OK);
 	}

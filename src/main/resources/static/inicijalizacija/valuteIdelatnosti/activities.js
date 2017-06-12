@@ -36,6 +36,7 @@ administrator.controller('HandleActivities', function($scope, $http, $compile,$l
 				$log.log("Index "+index);
 				$scope.activities.splice(index,1);
 				$scope.activity={};
+				$scope.activityPomocni={};
 				
 			}, 
 			function errorCallback(response){
@@ -149,8 +150,8 @@ administrator.controller('HandleActivities', function($scope, $http, $compile,$l
 	this.commitClick=function(){
 		
 		
-		$log.log("Stanje "+ $scope.state);
-		$log.log("Activity "+$scope.activity.code +" name "+$scope.activity.name);
+		///$log.log("Stanje "+ $scope.state);
+	//	$log.log("Activity "+$scope.activity.code +" name "+$scope.activity.name);
 		if($scope.state==State.ADD && check()){
 			$log.log("Stanje dodavanja");
 			var path="/activity";
@@ -189,7 +190,7 @@ administrator.controller('HandleActivities', function($scope, $http, $compile,$l
 				$log.log("Error");
 			});
 		}else if($scope.state==State.SEARCH){
-			var path="/activities/"+$scope.activity.code+"/"+$scope.activity.name;
+			var path="/activities/"+$scope.activityPomocni.code+"/"+$scope.activityPomocni.name;
 			$http({
 				method: 'GET',
 				url: path

@@ -72,19 +72,19 @@ public class UserService {
 		
 	}
 	
-//	public User handleThePassword(User user, String generatedPass){
-//		
-//		byte[] salt = generateSalt();
-//		
-//		byte[] hashedPass = hashPassword(generatedPass, salt);
-//		
-//		//String hashedPassString =hashedPass.toString();
-//		
-//		user.setSalt(salt);
-//		user.setPassword(hashedPass);
-//		
-//		return user;
-//	}
+	public User handleThePassword(User user, String generatedPass){
+		
+		byte[] salt = generateSalt();
+		
+		byte[] hashedPass = hashPassword(generatedPass, salt);
+		
+		//String hashedPassString =hashedPass.toString();
+		
+		user.setSalt(salt);
+		user.setPassword(hashedPass);
+		
+		return user;
+	}
 
 	private byte[] hashPassword(String password, byte[] salt) {
 		
@@ -134,7 +134,7 @@ public class UserService {
 		long difference = tempTime - creationDate;
 		
 		// ako je proslo vise od 2 sata onda lozinka je istekla
-		if ( difference > 2400000){
+		if ( difference > 7200000){
 			return true;
 		}else{// u suprotnom je validna
 			return false;

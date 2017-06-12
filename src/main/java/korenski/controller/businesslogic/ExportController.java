@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import korenski.intercepting.CustomAnnotation;
 import korenski.model.infrastruktura.MedjubankarskiPrenos;
 import korenski.model.klijenti.Klijent;
 import korenski.repository.institutions.MedjubankarskiPrenosRepository;
@@ -35,6 +36,7 @@ public class ExportController {
 	 * @return status odgovra
 	 * @author Biljana 
 	 */
+	@CustomAnnotation(value = "EXPORT_INTERBANK_TRANSFER")
 	@RequestMapping(
 			value="/exportMedjubankarskiPrenos/{id}",
 			method=RequestMethod.GET,
@@ -50,6 +52,8 @@ public class ExportController {
 			
 
 			jaxbMarshaller.marshal(foundMedjubankarskiPrenos, file);
+			foundMedjubankarskiPrenos.setSend(true);
+			mbPrenosRepository.save(foundMedjubankarskiPrenos);
 			return new ResponseEntity<String>("OK",HttpStatus.OK);
 		}catch (Exception e) {
 			// TODO: handle exception
@@ -59,6 +63,7 @@ public class ExportController {
 		
 	}
 
+	@CustomAnnotation(value = "EXPORT_ACCOUNT_STATEMENT")
 	@RequestMapping(
 			value="/exportKlijentiIzvod/{id}",
 			method=RequestMethod.GET,

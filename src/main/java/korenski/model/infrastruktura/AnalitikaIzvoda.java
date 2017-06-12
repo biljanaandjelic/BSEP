@@ -1,16 +1,16 @@
 package korenski.model.infrastruktura;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @XmlRootElement()
@@ -216,6 +216,7 @@ public class AnalitikaIzvoda {
 		this.hitno = hitno;
 	}
 	@XmlTransient
+	
 	public DnevnoStanjeRacuna getDnevnoStanjeRacuna() {
 		return dnevnoStanjeRacuna;
 	}

@@ -11,7 +11,7 @@
 						<th><span >Banka</span></th>
 						<th><span >Iznos</span></th>
 						<th><span >Poruka</span></th>
-		               
+		              
 		          
 		               
 		            </tr>
@@ -20,12 +20,13 @@
 			    
 					 <tr ng-repeat="item in medjubankarskiPrenosi "  ng-click="ma.setSelected(item)" ng-class="{selected: item.id==medjubankarskiPrenos.id}">
 					
-			        	<td>{{item.datum | date : "dd.MM.y  HH:mm:ss "  }}</td>
+			        	<td>{{item.datum | date : "dd.MM.y  HH:mm:ss "  }} </td>
 						<td>{{item.bankaDruga.name}}</td>
 						<td>{{item.iznos}}</td>
 						<td>{{item.poruka.code}}</td>
-			        	<td><button class="btn btn-successful" ng-click="ma.exportMedjubankarskiPrenos(item.id)">Export</button></td>
-			        </tr>  
+						
+			        	<td><button class="btn btn-primary" ng-show="ma.sakrijExport(item)" ng-click="ma.exportMedjubankarskiPrenos(item.id,item.send)">Export</button></td>
+			        </tr>  <!-- {{item.send || item.stavkePrenosa.length!=4}}-->
 		         
 		        </tbody>
 		    </table>
