@@ -195,16 +195,16 @@ public class UserController {
 //		
 		String pass = userService.generatePassword();
 		
-		System.out.println("============================================Generated pass " + pass +" size : "+pass.length());
+		System.out.println("============================================Generated pass for adminPoslovne is " + pass +" size : "+pass.length());
 		
 		//User sessionUser = (User) request.getSession().getAttribute("user");
 		Bank bank = bankRepository.findOne(new Long(1));
 		
 		User user = new User();
-		user.setUsername("mojkorisnik");
-		user.setChangedFirstPassword(false);
+		user.setUsername("adminPoslovne");
+		user.setChangedFirstPassword(true);
 		user.setRole(roleRepository.findOne(new Long(1)));
-		user.setEmail("nkikk@kkk.kkk");
+		user.setEmail("adminPoslovne@kkk.kkk");
 		
 		User rle;
 		try {
@@ -224,7 +224,7 @@ public class UserController {
 			Date current = new Date();
 			
 			user.setCreationTime(new java.sql.Date(current.getTime()));
-			
+		
 			
 			rle = repository.save(user);
 			logger.info("User  INSERT_INITAL_ADMIN admin profile {} ", user.getId());
@@ -233,6 +233,8 @@ public class UserController {
 			rle = new User(new Long(-1), "Greska pri upisu u bazu!", null, null, null, null, null, null);
 		}
 	
+		napraviKorisnike(bank, logger);
+		
 		return new ResponseEntity<User>(rle, HttpStatus.OK);
 	}
 	
@@ -567,6 +569,68 @@ public class UserController {
 			return u;
 		}else{
 			return null;
+		}
+	}
+	
+	
+	public void napraviKorisnike(Bank bank, Logger logger){
+		User user;
+		for(int i=2; i < 6; i++){
+			
+			String ime = "";
+			
+			switch (i) {
+			case 2:
+				ime = "menadzer";
+				break;
+			case 3:
+				ime = "salterusa";
+				break;
+			case 4:
+				ime = "pravnoLice";
+				break;
+			case 5:
+				ime = "adminCentralne";
+				break;
+
+			default:
+				break;
+			}
+		
+			String pass = userService.generatePassword();
+			
+			System.out.println("============================================Generated pass for "+ ime +" is " + pass +" size : "+pass.length());
+			
+			
+			
+			user = new User();
+			user.setUsername(ime);
+			user.setChangedFirstPassword(true);
+			user.setRole(roleRepository.findOne(new Long(i)));
+			user.setEmail(ime.concat("@kkk.kkk"));
+			
+			User rle;
+			try {
+				
+				
+				user = userService.handleThePassword(user, pass);
+				
+				
+				user.setBank(bank);
+				Employee employee = employeeRepository.findOne(new Long(3+i));
+				user.setSubject(employee);
+				Date current = new Date();
+				
+				user.setCreationTime(new java.sql.Date(current.getTime()));
+				
+				rle = repository.save(user);
+				logger.info("User  INSERT_INITAL_ADMIN admin profile {} ", user.getId());
+			} catch (Exception e) {
+				e.printStackTrace();
+				rle = new User(new Long(-1), "Greska pri upisu u bazu!", null, null, null, null, null, null);
+			}
+			
+			
 		}
 	}
 }

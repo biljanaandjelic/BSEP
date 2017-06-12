@@ -308,11 +308,11 @@ insert into user values ('1', FALSE, '2017-06-04 00:05:00', 'neki1@kkk.kkk', 'us
 insert into user values ('2', TRUE, '2013-08-30 19:06:00', 'neki2@kkk.kkk', 'username2', '', 'username2', '1', '1', '2');
 insert into user values ('3', TRUE, '2013-08-30 19:07:00', 'neki3@kkk.kkk', 'username3', '', 'username3', '1', '2', '3');
 insert into user values ('4', TRUE, '2013-08-30 19:08:00', 'neki4@kkk.kkk', 'username4', '', 'username4', '1', '2', '4');
-insert into user values ('5', TRUE, '2013-08-30 19:09:00', 'neki5@kkk.kkk', 'username5', '', 'username5', '1', '2', '5');
-insert into user values ('6', TRUE, '2013-08-30 19:10:00', 'neki6@kkk.kkk', 'username6', '', 'username6', '1', '3', '6');
-insert into user values ('7', TRUE, '2013-08-30 19:11:00', 'neki7@kkk.kkk', 'username7', '', 'username7', '1', '3', '7');
-insert into user values ('8', TRUE, '2013-08-30 19:11:00', 'neki8@kkk.kkk', 'username8', '', 'username8', '2', '2', '8');
-insert into user values ('9', TRUE, '2013-09-30 19:11:00', 'neki9@kkk.kkk', 'username9', '' ,'username9', '3', '3', '9');
+--insert into user values ('5', TRUE, '2013-08-30 19:09:00', 'neki5@kkk.kkk', 'username5', '', 'username5', '1', '2', '5');
+--insert into user values ('6', TRUE, '2013-08-30 19:10:00', 'neki6@kkk.kkk', 'username6', '', 'username6', '1', '3', '6');
+--insert into user values ('7', TRUE, '2013-08-30 19:11:00', 'neki7@kkk.kkk', 'username7', '', 'username7', '1', '3', '7');
+--insert into user values ('8', TRUE, '2013-08-30 19:11:00', 'neki8@kkk.kkk', 'username8', '', 'username8', '2', '2', '8');
+--insert into user values ('9', TRUE, '2013-09-30 19:11:00', 'neki9@kkk.kkk', 'username9', '' ,'username9', '3', '3', '9');
 
 insert into klijent values ('adresa', 'mail1@kkk.kkk', TRUE, 'Ime1', '4578445121255', 'Prezime1', '123456788', '12', '1', '1');
 insert into klijent values ('adresa', 'mail2@kkk.kkk', TRUE, 'Ime2', '4578545121255', 'Prezime2', '123454788', '13', '1', '1');
