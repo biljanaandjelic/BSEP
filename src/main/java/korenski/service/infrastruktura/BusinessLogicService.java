@@ -140,7 +140,18 @@ public class BusinessLogicService {
 			dnevnoStanjeDuznika.getAnalitike().add(analitikaDuznika);
 			dnevnoStanjeRepository.save(dnevnoStanjeDuznika);
 
+//<<<<<<< HEAD
 			analitikaPoverioca = analitikaIzvodaRepository.save(analitikaPoverioca);
+//=======
+			
+			racunDuznika.setStanje(racunDuznika.getStanje()-nalog.getPodaciOPlacanju().getIznos());
+			racunPoverioca.setStanje(racunPoverioca.getStanje()+nalog.getPodaciOPlacanju().getIznos());
+			
+			racunRepository.save(racunDuznika);
+			racunRepository.save(racunPoverioca);
+			
+//			analitikaPoverioca=analitikaIzvodaRepository.save(analitikaPoverioca);
+//>>>>>>> 867519fb46c1caadce1b9f443060473310b22185
 			dnevnoStanjePoverioca.setNovoStanje(dnevnoStanjePoverioca.getNovoStanje() + analitikaPoverioca.getIznos());
 			dnevnoStanjePoverioca
 					.setPrometUKorist(dnevnoStanjePoverioca.getPrometUKorist() + analitikaPoverioca.getIznos());
@@ -372,8 +383,17 @@ public class BusinessLogicService {
 				dnevnoStanjePoverioca);
 
 		try {
+//<<<<<<< HEAD
 
 			analitikaPoverioca = analitikaIzvodaRepository.save(analitikaPoverioca);
+///=======
+			
+			racunPoverioca.setStanje(racunPoverioca.getStanje()+nalog.getPodaciOPlacanju().getIznos());
+			
+			racunRepository.save(racunPoverioca);
+			
+//			analitikaPoverioca=analitikaIzvodaRepository.save(analitikaPoverioca);
+//>>>>>>> 867519fb46c1caadce1b9f443060473310b22185
 			dnevnoStanjePoverioca.setNovoStanje(dnevnoStanjePoverioca.getNovoStanje() + analitikaPoverioca.getIznos());
 			dnevnoStanjePoverioca
 					.setPrometUKorist(dnevnoStanjePoverioca.getPrometUKorist() + analitikaPoverioca.getIznos());
@@ -409,6 +429,19 @@ public class BusinessLogicService {
 					racunPoverioca.getStanje(), racunPoverioca);
 			racunPoverioca.getDnevnaStanjaRacuna().add(dnevnoStanjePoverioca);
 			try {
+
+		
+				AnalitikaIzvoda analitikaPoverioca=null;
+				racunPoverioca.setStanje(racunPoverioca.getStanje()+nalog.getPodaciOPlacanju().getIznos());
+				
+				racunRepository.save(racunPoverioca);
+				
+				analitikaPoverioca=analitikaIzvodaRepository.save(analitikaPoverioca);
+				dnevnoStanjePoverioca.setNovoStanje(dnevnoStanjePoverioca.getNovoStanje() + analitikaPoverioca.getIznos());
+				dnevnoStanjePoverioca
+						.setPrometUKorist(dnevnoStanjePoverioca.getPrometUKorist() + analitikaPoverioca.getIznos());
+				dnevnoStanjePoverioca.getAnalitike().add(analitikaPoverioca);
+
 				dnevnoStanjeRepository.save(dnevnoStanjePoverioca);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -498,7 +531,16 @@ public class BusinessLogicService {
 
 
 		try {
+
 			analitikaDuznika = analitikaIzvodaRepository.save(analitikaDuznika);
+
+			
+			racunDuznika.setStanje(racunDuznika.getStanje()-nalog.getPodaciOPlacanju().getIznos());
+			
+			racunRepository.save(racunDuznika);
+			
+			analitikaDuznika=analitikaIzvodaRepository.save(analitikaDuznika);
+
 			dnevnoStanjeDuznika.setNovoStanje(dnevnoStanjeDuznika.getNovoStanje() - analitikaDuznika.getIznos());
 			dnevnoStanjeDuznika.setPrometNaTeret(dnevnoStanjeDuznika.getPrometNaTeret() + analitikaDuznika.getIznos());
 			dnevnoStanjeDuznika.getAnalitike().add(analitikaDuznika);
