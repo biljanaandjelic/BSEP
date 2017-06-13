@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.math.BigInteger;
 import java.security.KeyFactory;
@@ -71,7 +72,9 @@ import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 import org.bouncycastle.pkcs.jcajce.JcaPKCS10CertificationRequestBuilder;
+import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemReader;
+import org.bouncycastle.util.io.pem.PemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -85,6 +88,9 @@ import com.fasterxml.jackson.annotation.JsonFormat.Value;
 
 import korenski.DTOs.CertificateDTO;
 import korenski.DTOs.CertificateRequestDTO;
+import korenski.DTOs.ImportCertificateDTO;
+import korenski.DTOs.KeystoreDTO;
+import korenski.controller.autentifikacija.pomocneKlase.LoginObject;
 import korenski.intercepting.CustomAnnotation;
 import korenski.model.autorizacija.User;
 import korenski.model.dto.CertificateInfo;
@@ -116,15 +122,17 @@ public class CertificatesController {
 			throws KeyStoreException, NoSuchAlgorithmException, CertificateException, FileNotFoundException,
 			IOException, NoSuchProviderException, OperatorCreationException, ParseException {
 		
-		String filePathString = "./files/KEYSTORE-" + ((User)request.getSession().getAttribute("user")).getBank().getSwiftCode() + ".jks";
+		//inicijalizacija
+		KeystoreDTO keystoreSession = (KeystoreDTO)request.getSession().getAttribute("keystore");
+		String filePathString = "./files/" + keystoreSession.getName() + ".jks";
 		
 		if (ks == null) {
 			ks = KeyStore.getInstance("BKS", "BC");
 		}
 
-		getKeyStore(filePathString);
+		getKeyStore2(filePathString, keystoreSession.getPassword());
 		
-		
+		//kreiranje sertifikata
 		X500NameBuilder b = new X500NameBuilder(BCStyle.INSTANCE);
 		b.addRDN(BCStyle.CN, dto.cn);
 		b.addRDN(BCStyle.SURNAME, dto.surname);
@@ -169,24 +177,49 @@ public class CertificatesController {
 
 		System.out.println(certConverter.getCertificate(certHolder));
 		
+		//potencijalno izmeniti
 		CertificateInfo certificateInfo = new CertificateInfo(serial, CertStatus.GOOD, null, null, "", Type.NationalBank);
 		Bank bank = ((User)request.getSession().getAttribute("user")).getBank();
 		certificateInfo.setBank(bank);
-		//biljo ovo je deo za generisanje sertifikata sa inkrementom,
-		//premestio sam deo gde se alijas sertifikata dodaje ovde, pa se posle toga stavljau bazu
+
+		//smesanje kljuca i sertifikata u keystore
+		ks.setCertificateEntry(dto.alias, certConverter.getCertificate(certHolder));
+		//potencijalno izmeniti
+		certificateInfo.setAlias(dto.alias);
 		int cnt = 1;
 		while(true){
-			if(!ks.isCertificateEntry("CERT-" + bank.getSwiftCode() + "-" + cnt)){
-				ks.setCertificateEntry("CERT-" + bank.getSwiftCode() + "-" + cnt, certConverter.getCertificate(certHolder));
-				certificateInfo.setAlias("CERT-" + bank.getSwiftCode() + "-" + cnt);
-				ks.setKeyEntry("KEY-" + cnt, pair.getPrivate(), "test".toCharArray(), new Certificate[] { (Certificate) certConverter.getCertificate(certHolder) });
+			if(!ks.isKeyEntry("KEY-" + cnt)){
+				ks.setKeyEntry("KEY-" + cnt, pair.getPrivate(), keystoreSession.getPassword().toCharArray(), new Certificate[] { (Certificate) certConverter.getCertificate(certHolder) });
 				break;
 			}
 			cnt++;
 		}
 		
+		//export sertifikata u fajlove projekta
+		//ove sertifikate mogu importovati poslovne banke i pravna lica
+		X509Certificate cert = certConverter.getCertificate(certHolder);
+		X500Name x500name = new JcaX509CertificateHolder(cert).getSubject();
+		RDN uid = x500name.getRDNs(BCStyle.UID)[0];
+		
+		File f = new File("./files/certificates/" + uid.getFirst().getValue() + "-" + cnt +  ".cer");
+		BufferedWriter w = new BufferedWriter(new FileWriter(f.getPath()));
+		
+		StringWriter writer = new StringWriter();
+		PemWriter pemWriter = new PemWriter(writer);
+		
+		pemWriter.writeObject(new PemObject("CERTIFICATE", cert.getEncoded()));
+		
+		pemWriter.close();
+		w.write(writer.toString());
+		writer.close();
+		w.flush();
+		w.close();
+		
+		//izmeniti
 		certificateIDService.create(certificateInfo);
-		saveKeyStore(filePathString);
+		
+		//cuvanje keystore-a
+		saveKeyStore2(filePathString, keystoreSession.getPassword());
 		
 		return new ResponseEntity<String>("ok", HttpStatus.OK);
 	}
@@ -197,6 +230,15 @@ public class CertificatesController {
 			throws KeyStoreException, NoSuchAlgorithmException, CertificateException, FileNotFoundException,
 			IOException, NoSuchProviderException, OperatorCreationException, ParseException, InvalidKeySpecException {
 		
+		//inicijalizacija
+		if (ks == null) {
+			ks = KeyStore.getInstance("BKS", "BC");
+		}
+		
+		KeystoreDTO keystoreSession = (KeystoreDTO)httpRequest.getSession().getAttribute("keystore");
+		
+		
+		//kreiranje csr zahteva
 		X500NameBuilder b = new X500NameBuilder(BCStyle.INSTANCE);
 		b.addRDN(BCStyle.CN, dto.cn);
 		b.addRDN(BCStyle.SURNAME, dto.surname);
@@ -224,12 +266,13 @@ public class CertificatesController {
 		String data = request.toString();
 		System.out.println("DATA: " + data);
 		
+		//na osnovu korisnika se csr zahtev smesta u odredjeni fajl po sablonu CSR+swift kod banke
 		User u = (User)httpRequest.getSession().getAttribute("user");
 		String bankSwiftCode;
-		if(u.getRole().getId().equals(new Long(2))){
+		if(u.getRole().getName().equals("ADMINISTRATOR_BANK")){
 			Bank bank = bankRepository.findOne(new Long(1));
 			bankSwiftCode = bank.getSwiftCode();
-		}else if(u.getRole().getId().equals(new Long(3))){
+		}else if(u.getRole().getName().equals("LEGAL")){
 			bankSwiftCode = ((User)httpRequest.getSession().getAttribute("user")).getBank().getSwiftCode();
 		}else{
 			return null;
@@ -239,13 +282,16 @@ public class CertificatesController {
 		if(!folder.exists()){
 			folder.mkdirs();
 		}
+		/*
 		File[] listOfFiles = folder.listFiles();
 		int num = 0;
 		if(listOfFiles!=null){
 			 num=listOfFiles.length;
 		}
 		num++;
+		*/
 		
+		//kreiranje csr zahteva i njegovo smestanje u fajl
 		int cnt = 1;
 		while(true){
 			File f = new File("./files/CSR"+bankSwiftCode+"/CSR-"+dto.uid + "-" +cnt+".csr");
@@ -260,47 +306,63 @@ public class CertificatesController {
 		StringWriter sw = new StringWriter();
 		JcaPEMWriter pemWriter = new JcaPEMWriter(sw);
 		pemWriter.writeObject(request);
-		pemWriter.close();
 		
-		sw.close();
+		pemWriter.close();
 		w.write(sw.toString());
+		sw.close();
 		w.flush();
 		w.close();
 		
-		getKeyStore("./files/KEYSTORE-" + bankSwiftCode + ".jks");
+		//preuzimanje sertifikata za privremeni potpis privatnog kljuca
+		f = new File("./files/certificates/12345678-1.cer");
+		BufferedReader r = new BufferedReader(new FileReader(f.getPath()));
+		PemReader pemReader = new PemReader(r);
+		PEMParser pemParser = new PEMParser(pemReader);
+		Object o = pemParser.readObject();
+		X509CertificateHolder certificateHolder = (X509CertificateHolder)o;
 		
-		Certificate certificate = ks.getCertificate("CERT-" + bankSwiftCode + "-1");
+		pemParser.close();
+		pemReader.close();
+		r.close();
 		
-		saveKeyStore("./files/KEYSTORE-" + bankSwiftCode + ".jks");
+		JcaX509CertificateConverter certConverter = new JcaX509CertificateConverter();
+		certConverter = certConverter.setProvider("BC");
 		
-		getKeyStore("./files/KEYSTORE-" + dto.uid + ".jks");
+		Certificate certificate = certConverter.getCertificate(certificateHolder);
 		
+		getKeyStore2("./files/" + keystoreSession.getName() + ".jks", keystoreSession.getPassword());
+		
+		//smestanje privatnog kljuca u keystore
 		cnt = 1;
 		while(true){
 			if(!ks.isKeyEntry("KEY-" + cnt)){
-				ks.setKeyEntry("KEY-" + cnt, pair.getPrivate(), "test".toCharArray(), new Certificate[] { (certificate) });
+				ks.setKeyEntry("KEY-" + cnt, pair.getPrivate(), keystoreSession.getPassword().toCharArray(), new Certificate[] { (certificate) });
 				break;
 			}
 			cnt++;
 		}
 		
-		saveKeyStore("./files/KEYSTORE-" + dto.uid + ".jks");
+		saveKeyStore2("./files/" + keystoreSession.getName() + ".jks", keystoreSession.getPassword());
 		
 		return new ResponseEntity<String>("ok", HttpStatus.OK);	
-		}
+	}
 	
 	@CustomAnnotation(value = "GET_CERTIFICATE_REQUESTS")
 	@RequestMapping(value = "/getCertificateRequests", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON)
 	public ResponseEntity<Collection<CertificateRequestDTO>> getCertificateRequests(@Context HttpServletRequest httpRequest) throws IOException{
 		
+		//inicijalizacija
+		
 		ArrayList<CertificateRequestDTO> retVal = new ArrayList<CertificateRequestDTO>();
 		
+		
+		//na osnovu ulogovanog korisnika se preuzima swift kod banke na osnovu cega se pretrazuju csr fajlovi
 		User u = (User)httpRequest.getSession().getAttribute("user");
 		String bankSwiftCode;
-		if(u.getRole().getId().equals(new Long(1))){
+		if(u.getRole().getName().equals("ADMINISTRATOR_CENTRAL")){
 			Bank bank = bankRepository.findOne(new Long(1));
 			bankSwiftCode = bank.getSwiftCode();
-		}else if(u.getRole().getId().equals(new Long(2))){
+		}else if(u.getRole().getName().equals("ADMINISTRATOR_BANK")){
 			bankSwiftCode = ((User)httpRequest.getSession().getAttribute("user")).getBank().getSwiftCode();
 		}else{
 			return null;
@@ -312,14 +374,16 @@ public class CertificatesController {
 		}
 		File[] listOfFiles = folder.listFiles();
 		
-		int cnt = 0;
+		//iteracija kroz csr fajlove i instanciranje DTO-ova koji ce se prikazati na frontendu
 		for(File f : listOfFiles){
+			
 			BufferedReader r = new BufferedReader(new FileReader(f.getPath()));
 			PemReader pemReader = new PemReader(r);
 			PEMParser pemParser = new PEMParser(pemReader);
 			Object o = pemParser.readObject();
 			PKCS10CertificationRequest csr = (PKCS10CertificationRequest)o;
 			
+			//kreiranje pojedinacnog dto-a koji se smesta u listu za prikaz
 			CertificateRequestDTO dto = new CertificateRequestDTO();
 			
 			dto.setId(f.getName().split("-")[1] + "-" + f.getName().split("-")[2]);
@@ -343,20 +407,26 @@ public class CertificatesController {
 	
 	@CustomAnnotation(value = "MAKE_CERTIFICATE")
 	@RequestMapping(value = "/makeCertificate/{id}", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN)
-	public ResponseEntity<String> makeCertificate(@PathVariable("id") int id, @Context HttpServletRequest httpRequest) throws IOException, KeyStoreException, NoSuchProviderException, NoSuchAlgorithmException, CertificateException, InvalidKeySpecException, UnrecoverableKeyException, OperatorCreationException{
+	public ResponseEntity<String> makeCertificate(@PathVariable("id") String id, @Context HttpServletRequest httpRequest) throws IOException, KeyStoreException, NoSuchProviderException, NoSuchAlgorithmException, CertificateException, InvalidKeySpecException, UnrecoverableKeyException, OperatorCreationException{
+		
+		//inicijalizacija
+		
+		KeystoreDTO keystoreSession = (KeystoreDTO)httpRequest.getSession().getAttribute("keystore");
 		
 		User u = (User)httpRequest.getSession().getAttribute("user");
 		String bankSwiftCode;
 		
-		if(u.getRole().getId().equals(new Long(1))){
+		//na osnovu swift koda ulogovanog korisnika se pretrazuju csrovi
+		if(u.getRole().getName().equals("ADMINISTRATOR_CENTRAL")){
 			Bank bank = bankRepository.findOne(new Long(1));
 			bankSwiftCode = bank.getSwiftCode();
-		}else if(u.getRole().getId().equals(new Long(2))){
+		}else if(u.getRole().getName().equals("ADMINISTRATOR_BANK")){
 			bankSwiftCode = ((User)httpRequest.getSession().getAttribute("user")).getBank().getSwiftCode();
 		}else{
 			return null;
 		}
 		
+		//preuzima se csr na osnovu prosledjenog parametra
 		File f = new File("./files/CSR"+bankSwiftCode+"/CSR-"+id + ".csr");
 		
 		BufferedReader r = new BufferedReader(new FileReader(f.getPath()));
@@ -369,19 +439,21 @@ public class CertificatesController {
 		pemReader.close();
 		r.close();
 		
-		String filePathString = "./files/KEYSTORE-" + bankSwiftCode + ".jks";
+		//inicijalizacija keystore-a
+		String filePathString = "./files/" + keystoreSession.getName() + ".jks";
 		
 		if (ks == null) {
 			ks = KeyStore.getInstance("BKS", "BC");
 		}
 
-		getKeyStore(filePathString);
-
+		getKeyStore2(filePathString, keystoreSession.getPassword());
+		
+		//kreiranje sertifikata
 		JcaContentSignerBuilder builder = new JcaContentSignerBuilder("SHA256WithRSAEncryption");
 
 		builder = builder.setProvider("BC");
 
-		ContentSigner contentSigner = builder.build((PrivateKey)ks.getKey("KEY-1", "test".toCharArray()));
+		ContentSigner contentSigner = builder.build((PrivateKey)ks.getKey("KEY-1", keystoreSession.getPassword().toCharArray()));
 
 		Calendar cal = Calendar.getInstance();
 		Date startDate = cal.getTime();
@@ -395,7 +467,7 @@ public class CertificatesController {
 		CertificateInfo certificateInfo;
 		
 		
-		X509Certificate certificate = (X509Certificate)ks.getCertificate("CERT-" + bankSwiftCode + "-1");
+		X509Certificate certificate = (X509Certificate)ks.getCertificate("active");
 		X500Name issuer = X500Name.getInstance(PrincipalUtil.getIssuerX509Principal(certificate));
 		
 		SubjectPublicKeyInfo pkInfo = csr.getSubjectPublicKeyInfo();
@@ -407,14 +479,16 @@ public class CertificatesController {
 		certGen = new JcaX509v3CertificateBuilder(issuer, serial, startDate, endDate, csr.getSubject(),
 				rsaPub);
 		
-		if(u.getRole().getId().equals(new Long(1))){
+		//na osnovu prava ulogovanog korisnika kreira se sertifikat sa ca = true ili false
+		//potencijalno izmeniti
+		if(u.getRole().getName().equals("ADMINISTRATOR_CENTRAL")){
 			certGen.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
 			certificateInfo=new CertificateInfo(serial,CertStatus.GOOD,null,null,"",Type.Bank);
 			certificateInfo.setBank(((User)httpRequest.getSession().getAttribute("user")).getBank());
 			//certificateInfo.setAlias("CERT-"+IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()));
 			CertificateInfo ca=certificateIDService.findByAlias("CERT-"+((User)httpRequest.getSession().getAttribute("user")).getBank().getSwiftCode());
 			certificateInfo.setCa(ca);
-		}else if(u.getRole().getId().equals(new Long(2))){
+		}else if(u.getRole().getName().equals("ADMINISTRATOR_BANK")){
 			certGen.addExtension(Extension.basicConstraints, true, new BasicConstraints(false));
 			certificateInfo=new CertificateInfo(serial,CertStatus.GOOD,null,null,"",Type.Company);
 			certificateInfo.setBank(((User)httpRequest.getSession().getAttribute("user")).getBank());
@@ -432,8 +506,7 @@ public class CertificatesController {
 		
 		System.out.println(certConverter.getCertificate(certHolder));
 
-		//biljo ovo je deo za generisanje sertifikata sa inkrementom,
-		//premestio sam deo gde se alijas sertifikata dodaje ovde, pa se posle toga stavljau bazu
+		//smestanje izgenerisanog sertifikata u keystore nadredjenog
 		int cnt = 1;
 		while(true){
 			if(!ks.isCertificateEntry("CERT-" + IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()) + "-" + cnt)){
@@ -444,23 +517,31 @@ public class CertificatesController {
 			cnt++;
 		}
 		
+		//potencijalno izmeniti
 		certificateIDService.create(certificateInfo);
+		
 		saveKeyStore(filePathString);
 		
-		getKeyStore("./files/KEYSTORE-" + IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()) + ".jks");
-		
-		cnt = 1;
-		while(true){
-			if(!ks.isCertificateEntry("CERT-" + IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()) + "-" +cnt)){
-				ks.setCertificateEntry("CERT-" + IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()) + "-" + cnt, certConverter.getCertificate(certHolder));
-				break;
-			}
-			cnt++;
-		}
-		
-		saveKeyStore("./files/KEYSTORE-" + IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()) + ".jks");
-		
+		//brisanje csr zahteva
 		f.delete();
+
+		//export sertifikata u lokalni fajl, ovaj sertifikat mogu importovati druge strane
+		X509Certificate cert = certConverter.getCertificate(certHolder);
+		X500Name x500name = new JcaX509CertificateHolder(cert).getSubject();
+		RDN uid = x500name.getRDNs(BCStyle.UID)[0];
+		
+		f = new File("./files/certificates/" + uid.getFirst().getValue() + "-" + cnt + ".cer");
+		BufferedWriter w = new BufferedWriter(new FileWriter(f.getPath()));
+		
+		StringWriter writer = new StringWriter();
+		PemWriter pemWriter = new PemWriter(writer);
+		pemWriter.writeObject(new PemObject("CERTIFICATE", cert.getEncoded()));
+		
+		pemWriter.close();
+		w.write(writer.toString());
+		writer.close();
+		w.flush();
+		w.close();
 		
 		return new ResponseEntity<String>("ok", HttpStatus.OK);
 	}
@@ -691,9 +772,26 @@ public class CertificatesController {
 		
 	}
 	
+	private void getKeyStore2(String filePathString, String password) throws KeyStoreException, NoSuchProviderException, NoSuchAlgorithmException, CertificateException, FileNotFoundException, IOException{
+
+		File f = new File(filePathString);
+		if(f.exists() && !f.isDirectory()) { 
+			ks.load(new FileInputStream(filePathString), password.toCharArray());
+		}else{
+			ks.load(null, password.toCharArray());
+		}
+		
+	}
+	
 	private void saveKeyStore(String filePathString) throws KeyStoreException, NoSuchProviderException, NoSuchAlgorithmException, CertificateException, FileNotFoundException, IOException{
 		
 		ks.store(new FileOutputStream(filePathString), "test".toCharArray());
+		
+	}
+	
+	private void saveKeyStore2(String filePathString, String password) throws KeyStoreException, NoSuchProviderException, NoSuchAlgorithmException, CertificateException, FileNotFoundException, IOException{
+		
+		ks.store(new FileOutputStream(filePathString), password.toCharArray());
 		
 	}
 	
@@ -717,5 +815,191 @@ public class CertificatesController {
 	    }
 		
 		return new ResponseEntity<String>(retVal, HttpStatus.OK);
+	}
+	
+	@RequestMapping(
+			value = "/openKeystore",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON,
+			produces = MediaType.APPLICATION_JSON)
+	public ResponseEntity<KeystoreDTO> openKeystore(@RequestBody KeystoreDTO dto, @Context HttpServletRequest request) throws Exception {
+		
+		//inicijalizacija
+		if (ks == null) {
+			ks = KeyStore.getInstance("BKS", "BC");
+		}
+		
+		KeystoreDTO keystoreSession = (KeystoreDTO)request.getSession().getAttribute("keystore");
+		User u = (User)request.getSession().getAttribute("user");
+		
+		
+		//ako korisnik nije ulogovan prebaci ga na login stranicu
+		if(u == null){
+			dto.setId(-2);
+			
+			String url = "";
+			String scheme = request.getScheme();
+			String host = request.getServerName();
+			int port = request.getServerPort();
+			url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/authentification/login.html");
+			
+			dto.setUrl(url);
+			
+			return new ResponseEntity<KeystoreDTO>(dto, HttpStatus.OK);
+		}
+		
+
+		if(keystoreSession != null){
+			//ako ima vec keystore u sesiji
+			dto.setId(-1);
+			
+			return new ResponseEntity<KeystoreDTO>(dto, HttpStatus.OK);
+		}else{
+			//provera da li su ispravni naziv/lozinka keystore-a
+			File f = new File("./files/" + dto.getName() + ".jks");
+			if(f.exists() && !f.isDirectory()) {
+				try{
+					ks.load(new FileInputStream(f.getPath()), dto.getPassword().toCharArray());
+				}catch(Exception e){
+					dto.setId(-3);
+					
+					return new ResponseEntity<KeystoreDTO>(dto, HttpStatus.OK);
+				}
+			}else if(!f.exists()){
+				dto.setId(-3);
+				
+				return new ResponseEntity<KeystoreDTO>(dto, HttpStatus.OK);
+			}
+			
+			request.getSession().setAttribute("keystore", dto);
+		}
+		
+		//redirekcija na stranice za rukovanje kljucevima/sertifikatima u zavisnosti od korisnicke role
+		if(u.getRole().getName().equals("ADMINISTRATOR_CENTRAL")){
+			dto.setId(1);
+			
+			String url = "";
+			String scheme = request.getScheme();
+			String host = request.getServerName();
+			int port = request.getServerPort();
+			url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/certificates/certificates.html");
+			
+			dto.setUrl(url);
+		}else if(u.getRole().getName().equals("ADMINISTRATOR_BANK")){
+			dto.setId(1);
+			
+			String url = "";
+			String scheme = request.getScheme();
+			String host = request.getServerName();
+			int port = request.getServerPort();
+			url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/certificates/certificatesAdmin.html");
+			
+			dto.setUrl(url);
+		}else if(u.getRole().getName().equals("LEGAL")){
+			dto.setId(1);
+			
+			String url = "";
+			String scheme = request.getScheme();
+			String host = request.getServerName();
+			int port = request.getServerPort();
+			url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/certificates/certificatesLegal.html");
+			
+			dto.setUrl(url);
+		}
+		
+		return new ResponseEntity<KeystoreDTO>(dto, HttpStatus.OK);
+	}
+	
+	@RequestMapping(
+			value = "/closeKeystore",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON)
+	public ResponseEntity<KeystoreDTO> closeKeystore(@Context HttpServletRequest request) throws KeyStoreException, NoSuchProviderException, NoSuchAlgorithmException, CertificateException, FileNotFoundException, IOException {
+		
+		//inicijalizacija
+		KeystoreDTO keystoreSession = (KeystoreDTO)request.getSession().getAttribute("keystore");
+		
+		if (ks == null) {
+			ks = KeyStore.getInstance("BKS", "BC");
+		}
+		
+		
+		//redirekcija na stranicu za otvaranje keystore-a
+		keystoreSession.setId(1);
+		
+		String url = "";
+		String scheme = request.getScheme();
+		String host = request.getServerName();
+		int port = request.getServerPort();
+		url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/certificates/openkeystore.html");
+		
+		keystoreSession.setUrl(url);
+		
+		saveKeyStore2("./files/" + keystoreSession.getName() + ".jks", keystoreSession.getPassword());
+		
+		request.getSession().removeAttribute("keystore");
+		
+		return new ResponseEntity<KeystoreDTO>(keystoreSession, HttpStatus.OK);
+	}
+	
+	@RequestMapping(
+			value = "/importCert",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON,
+			produces = MediaType.TEXT_PLAIN)
+	public ResponseEntity<String> importCert(@RequestBody ImportCertificateDTO dto, @Context HttpServletRequest request) throws KeyStoreException, NoSuchProviderException, IOException, CertificateException, NoSuchAlgorithmException {
+		
+		//inicijalizacija
+		KeystoreDTO keystoreSession = (KeystoreDTO)request.getSession().getAttribute("keystore");
+		
+		if (ks == null) {
+			ks = KeyStore.getInstance("BKS", "BC");
+		}
+		
+		//preuzimanje sertifikata iz fajl sistema
+		File f = new File("./files/certificates/" + dto.getName() + ".cer");
+		BufferedReader r = new BufferedReader(new FileReader(f.getPath()));
+		PemReader pemReader = new PemReader(r);
+		PEMParser pemParser = new PEMParser(pemReader);
+		Object o = pemParser.readObject();
+		X509CertificateHolder certificateHolder = (X509CertificateHolder)o;
+		
+		pemParser.close();
+		pemReader.close();
+		r.close();
+		
+		JcaX509CertificateConverter certConverter = new JcaX509CertificateConverter();
+		certConverter = certConverter.setProvider("BC");
+		
+		Certificate certificate = certConverter.getCertificate(certificateHolder);
+		
+		getKeyStore2("./files/" + keystoreSession.getName() + ".jks", keystoreSession.getPassword());
+		
+		//smestanje sertifikata pod zadatim alijasom
+		ks.setCertificateEntry(dto.getAlias(), certificate);
+		
+		saveKeyStore2("./files/" + keystoreSession.getName() + ".jks", keystoreSession.getPassword());
+		
+		return new ResponseEntity<String>("ok", HttpStatus.OK);
+	}
+	
+	//pomocna metoda za generisanje keystore-ova, potencijalno izbrisati pred rok
+	@RequestMapping(value = "/generateKeystores", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN)
+	public ResponseEntity<String> generateKeystores(@Context HttpServletRequest request) throws KeyStoreException, NoSuchProviderException, NoSuchAlgorithmException, CertificateException, IOException {
+		
+		if (ks == null) {
+			ks = KeyStore.getInstance("BKS", "BC");
+		}
+		
+		ks.load(null, "prvi".toCharArray());
+		ks.store(new FileOutputStream("./files/prvi.jks"), "prvi".toCharArray());
+		
+		ks.load(null, "drugi".toCharArray());
+		ks.store(new FileOutputStream("./files/drugi.jks"), "drugi".toCharArray());
+		
+		ks.load(null, "treci".toCharArray());
+		ks.store(new FileOutputStream("./files/treci.jks"), "treci".toCharArray());
+		
+		return new ResponseEntity<String>("ok", HttpStatus.OK);
 	}
 }

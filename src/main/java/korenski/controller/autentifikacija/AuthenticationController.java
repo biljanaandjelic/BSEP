@@ -366,7 +366,7 @@ public class AuthenticationController {
 	public ResponseEntity<User> loginDummyUser2(@Context HttpServletRequest request) throws Exception {
 		
 		Bank bank = bankRepository.findOne(new Long(1));
-		Role role = roleRepository.findOne(new Long(1));
+		Role role = roleRepository.findOne(new Long(5));
 		
 		
 		User user = new User();
@@ -386,7 +386,7 @@ public class AuthenticationController {
 	public ResponseEntity<User> loginDummyUser3(@Context HttpServletRequest request) throws Exception {
 		
 		Bank bank = bankRepository.findOne(new Long(2));
-		Role role = roleRepository.findOne(new Long(2));
+		Role role = roleRepository.findOne(new Long(1));
 		
 		
 		User user = new User();
@@ -405,7 +405,7 @@ public class AuthenticationController {
 	public ResponseEntity<User> loginDummyUser4(@Context HttpServletRequest request) throws Exception {
 		
 		Bank bank = bankRepository.findOne(new Long(2));
-		Role role = roleRepository.findOne(new Long(3));
+		Role role = roleRepository.findOne(new Long(4));
 		
 		
 		User user = new User();

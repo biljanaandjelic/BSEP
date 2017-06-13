@@ -1,0 +1,24 @@
+<div ng-controller="CertificateController as importCtrl">
+	<div class="row">
+	  		<div class="col-sm-4"></div>
+	  		<div class="col-sm-4">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<form name="importCertificateForm" ng-submit='importCertificateForm.$valid && importCtrl.importCertificate()' class="form-signin" novalidate >
+							<h3>Enter certificate details.</h3>
+							<fieldset class="form-group">
+								<input ng-model="importCtrl.importCert.name"  type="text" class="form-control" placeholder="Certificate name:" required></input>
+							</fieldset>
+							<fieldset class="form-group">
+								<input ng-model="importCtrl.importCert.alias" type="text" class="form-control" placeholder="Certificate alias:" required></input>
+							</fieldset>
+							<fieldset class="form-group">
+                				<input  type="submit" class="btn btn-lg btn-primary btn-block pull-right" value="Import" />
+              				</fieldset>
+						</form>
+					</div>
+				</div>
+	  		</div>
+	  		<div class="col-sm-4"></div>
+	  	</div>
+</div>

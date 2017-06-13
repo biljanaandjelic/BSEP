@@ -23,4 +23,15 @@ certificateModule.controller("TabController", function($scope, $http, $compile, 
     this.setTab = function(setTab) {
       this.tab = setTab;
     };
+    
+    this.closeKeystore = function(){
+    	$http.get('/certificates/closeKeystore').
+        then(function(response) {
+        	if(response.data.id == 1){
+        		$window.location.href=response.data.url;
+				
+				return;
+        	}
+        });
+    }
 });
