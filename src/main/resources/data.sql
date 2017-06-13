@@ -43,68 +43,77 @@ insert into permission values ('36', 'FIND_ONE_VALUTE');
 insert into permission values ('37', 'FIND_VALUTE_BY_CODE');
 
 insert into permission values ('38', 'FIND_ALL_EMPLOYEE');
-insert into permission values ('39', 'GET_ALL_LEGAL');
 
-insert into permission values ('40', 'INSERT_MESSAGE');
-insert into permission values ('41', 'UPDATE_MESSAGE');
-insert into permission values ('42', 'DELETE_MESSAGE');
-insert into permission values ('43', 'FIND_ALL_MESSAGE');
-insert into permission values ('44', 'FIND_MESSAGE_BY_CODE');
-insert into permission values ('45', 'FIND_ONE_MESSAGE');
+insert into permission values ('39', 'INSERT_MESSAGE');
+insert into permission values ('40', 'UPDATE_MESSAGE');
+insert into permission values ('41', 'DELETE_MESSAGE');
+insert into permission values ('42', 'FIND_ALL_MESSAGE');
+insert into permission values ('43', 'FIND_MESSAGE_BY_CODE');
+insert into permission values ('44', 'FIND_ONE_MESSAGE');
 
-insert into permission values ('46', 'GENERATE_CERTIFICATE_REQUEST');
-insert into permission values ('47', 'GET_CERTIFICATE_REQUESTS');
-insert into permission values ('48', 'MAKE_CERTIFICATE');
-insert into permission values ('49', 'FIND_CERTIFICATE_BY_ALIAS');
-insert into permission values ('50', 'REVOKE_CERTIFICATE');
-insert into permission values ('51', 'PROCESS_REVOKE_REQUEST');
-insert into permission values ('52', 'GET_REVOKE_REQUEST');
-insert into permission values ('53', 'SAVE_REVOKE_REQUEST');
+insert into permission values ('45', 'GENERATE_CERTIFICATE_REQUEST');
+insert into permission values ('46', 'GET_CERTIFICATE_REQUESTS');
+insert into permission values ('47', 'MAKE_CERTIFICATE');
+insert into permission values ('48', 'FIND_CERTIFICATE_BY_ALIAS');
+insert into permission values ('49', 'REVOKE_CERTIFICATE');
+insert into permission values ('50', 'PROCESS_REVOKE_REQUEST');
+insert into permission values ('51', 'GET_REVOKE_REQUEST');
+insert into permission values ('52', 'SAVE_REVOKE_REQUEST');
 
-insert into permission values ('54', 'OCSP_RESPONSE');
+insert into permission values ('53', 'OCSP_RESPONSE');
 
-insert into permission values ('55', 'GENERATE_CERTIFICATE');
-
-
-insert into permission values ('56', 'INSERT_ACCOUNT');
-insert into permission values ('57', 'DEACTIVATE_ACCOUNT');
-insert into permission values ('58', 'FIND_ALL_ACCOUNT');
-insert into permission values ('59', 'FIND_ONE_ACCOUNT');
-insert into permission values ('60', 'FIND_ACCOUNT_BY_OWNER');
-insert into permission values ('61', 'FILTER_ACCOUNT');
-
-insert into permission values ('62', 'FIND_ALL_DEACTIVATION');
-insert into permission values ('63', 'FILTER_DEACTIVATION');
-insert into permission values ('64', 'FILTER_DEACTIVATION_BY_ACCOUNT');
+insert into permission values ('54', 'GENERATE_CERTIFICATE');
 
 
-insert into permission values ('65', 'INSERT_PHYSICAL');
-insert into permission values ('66', 'UPDATE_PHYSICAL');
-insert into permission values ('67', 'DELETE_PHYSICAL');
-insert into permission values ('68', 'FIND_ALL_PHYSICAL');
-insert into permission values ('69', 'FIND_ALL_PHYSICAL_BY_CITY');
-insert into permission values ('70', 'FILTER_PHYSICAL');
+insert into permission values ('55', 'INSERT_ACCOUNT');
+insert into permission values ('56', 'DEACTIVATE_ACCOUNT');
+insert into permission values ('57', 'FIND_ALL_ACCOUNT');
+insert into permission values ('58', 'FIND_ONE_ACCOUNT');
+insert into permission values ('59', 'FIND_ACCOUNT_BY_OWNER');
+insert into permission values ('60', 'FILTER_ACCOUNT');
 
-insert into permission values ('71', 'INSERT_LEGAL');
-insert into permission values ('72', 'UPDATE_LEGAL');
-insert into permission values ('73', 'DELETE_LEGAL');
-insert into permission values ('74', 'FIND_ALL_LEGAL');
-insert into permission values ('75', 'FIND_ALL_LEGAL_BY_CITY');
-insert into permission values ('76', 'FILTER_LEGAL');
-
-insert into permission values ('77', 'FIND_ALL_DAILY_STATE');
-insert into permission values ('78', 'FILTER_DAILY_STATE');
-insert into permission values ('79', 'FIND_DAILY_STATE_BY_ACCOUNT');
-
-insert into permission values ('80', 'FIND_ALL_ANALYTICS');
-insert into permission values ('81', 'FILTER_ANALYTICS');
-insert into permission values ('82', 'FIND_ANALYTICS_BY_DAILY_STATE');
-
-insert into permission values ('83', 'IMPORT_FROM_XML');
-
-insert into permission values ('84', 'LOGOFF');
+insert into permission values ('61', 'FIND_ALL_DEACTIVATION');
+insert into permission values ('62', 'FILTER_DEACTIVATION');
+insert into permission values ('63', 'FILTER_DEACTIVATION_BY_ACCOUNT');
 
 
+insert into permission values ('64', 'INSERT_PHYSICAL');
+insert into permission values ('65', 'UPDATE_PHYSICAL');
+insert into permission values ('66', 'DELETE_PHYSICAL');
+insert into permission values ('67', 'FIND_ALL_PHYSICAL');
+insert into permission values ('68', 'FIND_ALL_PHYSICAL_BY_CITY');
+insert into permission values ('69', 'FILTER_PHYSICAL');
+
+insert into permission values ('70', 'INSERT_LEGAL');
+insert into permission values ('71', 'UPDATE_LEGAL');
+insert into permission values ('72', 'DELETE_LEGAL');
+insert into permission values ('73', 'FIND_ALL_LEGAL');
+insert into permission values ('74', 'FIND_ALL_LEGAL_BY_CITY');
+insert into permission values ('75', 'FILTER_LEGAL');
+
+insert into permission values ('76', 'FIND_ALL_DAILY_STATE');
+insert into permission values ('77', 'FILTER_DAILY_STATE');
+insert into permission values ('78', 'FIND_DAILY_STATE_BY_ACCOUNT');
+
+insert into permission values ('79', 'FIND_ALL_ANALYTICS');
+insert into permission values ('80', 'FILTER_ANALYTICS');
+insert into permission values ('81', 'FIND_ANALYTICS_BY_DAILY_STATE');
+
+insert into permission values ('82', 'IMPORT_FROM_XML');
+
+insert into permission values ('83', 'FIND_ALL_INTERBANK_TRANSFER');
+insert into permission values ('84', 'FILTER_INTERBANK_TRANSFER');
+
+insert into permission values ('85', 'TRANSACTION_ITEMS');
+
+insert into permission values ('86', 'GENERATE_REPORT');
+insert into permission values ('87', 'EXPORT_INTERBANK_TRANSFER');
+insert into permission values ('88', 'EXPORT_ACCOUNT_STATEMENT');
+
+
+insert into permission values ('89', 'LOGOFF');
+
+insert into permission values ('90', 'FIND_ALL_BANK');
 
 
 
@@ -127,37 +136,9 @@ insert into role_permissions values (1, 10);
 insert into role_permissions values (1, 11);
 insert into role_permissions values (1, 12);
 insert into role_permissions values (1, 13);
-insert into role_permissions values (1, 14);
-insert into role_permissions values (1, 15);
-insert into role_permissions values (1, 16);
-insert into role_permissions values (1, 17);
-insert into role_permissions values (1, 18);
-insert into role_permissions values (1, 19);
-insert into role_permissions values (1, 20);
-insert into role_permissions values (1, 21);
-insert into role_permissions values (1, 22);
-insert into role_permissions values (1, 23);
-insert into role_permissions values (1, 24);
-insert into role_permissions values (1, 25);
-insert into role_permissions values (1, 26);
-insert into role_permissions values (1, 27);
-insert into role_permissions values (1, 28);
-insert into role_permissions values (1, 29);
-insert into role_permissions values (1, 30);
-insert into role_permissions values (1, 31);
-insert into role_permissions values (1, 32);
-insert into role_permissions values (1, 33);
-insert into role_permissions values (1, 34);
-insert into role_permissions values (1, 35);
-insert into role_permissions values (1, 36);
-insert into role_permissions values (1, 37);
+
 insert into role_permissions values (1, 38);
-insert into role_permissions values (1, 39);
-insert into role_permissions values (1, 40);
-insert into role_permissions values (1, 41);
-insert into role_permissions values (1, 42);
-insert into role_permissions values (1, 43);
-insert into role_permissions values (1, 44);
+
 insert into role_permissions values (1, 45);
 insert into role_permissions values (1, 46);
 insert into role_permissions values (1, 47);
@@ -167,83 +148,187 @@ insert into role_permissions values (1, 50);
 insert into role_permissions values (1, 51);
 insert into role_permissions values (1, 52);
 insert into role_permissions values (1, 53);
-insert into role_permissions values (1, 54);
 
-insert into role_permissions values (1, 74);
-insert into role_permissions values (1, 84);
+insert into role_permissions values (1, 90);
+
+insert into role_permissions values (1, 73);
+insert into role_permissions values (1, 89);
 
 
 insert into role_permissions values (2, 13);
-insert into role_permissions values (2, 22);
-insert into role_permissions values (2, 28);
-insert into role_permissions values (2, 35);
 
+insert into role_permissions values (2, 14);
+insert into role_permissions values (2, 15);
+insert into role_permissions values (2, 16);
+insert into role_permissions values (2, 17);
+insert into role_permissions values (2, 18);
+
+insert into role_permissions values (1, 19);
+insert into role_permissions values (1, 20);
+insert into role_permissions values (1, 21);
+insert into role_permissions values (2, 22);
+insert into role_permissions values (2, 23);
+insert into role_permissions values (2, 24);
+
+insert into role_permissions values (1, 25);
+insert into role_permissions values (1, 26);
+insert into role_permissions values (2, 27);
+insert into role_permissions values (2, 28);
+insert into role_permissions values (2, 29);
+insert into role_permissions values (2, 30);
+
+insert into role_permissions values (2, 31);
+insert into role_permissions values (2, 32);
+insert into role_permissions values (2, 33);
+insert into role_permissions values (2, 34);
+insert into role_permissions values (2, 35);
+insert into role_permissions values (2, 36);
+insert into role_permissions values (2, 37);
+
+insert into role_permissions values (2, 39);
 insert into role_permissions values (2, 40);
 insert into role_permissions values (2, 41);
 insert into role_permissions values (2, 42);
 insert into role_permissions values (2, 43);
 insert into role_permissions values (2, 44);
-insert into role_permissions values (2, 45);
 
+insert into role_permissions values (2, 55);
 insert into role_permissions values (2, 56);
 insert into role_permissions values (2, 57);
 insert into role_permissions values (2, 58);
 insert into role_permissions values (2, 59);
 insert into role_permissions values (2, 60);
+
 insert into role_permissions values (2, 61);
 insert into role_permissions values (2, 62);
 insert into role_permissions values (2, 63);
-insert into role_permissions values (2, 64);
 
+insert into role_permissions values (2, 70);
 insert into role_permissions values (2, 71);
 insert into role_permissions values (2, 72);
 insert into role_permissions values (2, 73);
 insert into role_permissions values (2, 74);
 insert into role_permissions values (2, 75);
-insert into role_permissions values (2, 76);
 
+insert into role_permissions values (2, 76);
 insert into role_permissions values (2, 77);
 insert into role_permissions values (2, 78);
+
 insert into role_permissions values (2, 79);
 insert into role_permissions values (2, 80);
 insert into role_permissions values (2, 81);
+
 insert into role_permissions values (2, 82);
 insert into role_permissions values (2, 83);
 insert into role_permissions values (2, 84);
+insert into role_permissions values (2, 85);
+insert into role_permissions values (2, 86);
+insert into role_permissions values (2, 87);
+insert into role_permissions values (2, 88);
+insert into role_permissions values (2, 89);
 
 
 insert into role_permissions values (3, 13);
-insert into role_permissions values (3, 22);
-insert into role_permissions values (3, 28);
-insert into role_permissions values (3, 35);
 
+insert into role_permissions values (3, 14);
+insert into role_permissions values (3, 15);
+insert into role_permissions values (3, 16);
+insert into role_permissions values (3, 17);
+insert into role_permissions values (3, 18);
+
+insert into role_permissions values (3, 19);
+insert into role_permissions values (3, 20);
+insert into role_permissions values (3, 21);
+insert into role_permissions values (3, 22);
+insert into role_permissions values (3, 23);
+insert into role_permissions values (3, 24);
+
+insert into role_permissions values (3, 25);
+insert into role_permissions values (3, 26);
+insert into role_permissions values (3, 27);
+insert into role_permissions values (3, 28);
+insert into role_permissions values (3, 29);
+insert into role_permissions values (3, 30);
+
+insert into role_permissions values (3, 31);
+insert into role_permissions values (3, 32);
+insert into role_permissions values (3, 33);
+insert into role_permissions values (3, 34);
+insert into role_permissions values (3, 35);
+insert into role_permissions values (3, 36);
+insert into role_permissions values (3, 37);
+
+insert into role_permissions values (3, 39);
+insert into role_permissions values (3, 40);
+insert into role_permissions values (3, 41);
+insert into role_permissions values (3, 42);
+insert into role_permissions values (3, 43);
+insert into role_permissions values (3, 44);
+
+insert into role_permissions values (3, 55);
 insert into role_permissions values (3, 56);
 insert into role_permissions values (3, 57);
 insert into role_permissions values (3, 58);
 insert into role_permissions values (3, 59);
 insert into role_permissions values (3, 60);
+
 insert into role_permissions values (3, 61);
 insert into role_permissions values (3, 62);
 insert into role_permissions values (3, 63);
+
 insert into role_permissions values (3, 64);
 insert into role_permissions values (3, 65);
 insert into role_permissions values (3, 66);
 insert into role_permissions values (3, 67);
 insert into role_permissions values (3, 68);
 insert into role_permissions values (3, 69);
-insert into role_permissions values (3, 70);
 
+insert into role_permissions values (3, 76);
 insert into role_permissions values (3, 77);
 insert into role_permissions values (3, 78);
+
 insert into role_permissions values (3, 79);
 insert into role_permissions values (3, 80);
 insert into role_permissions values (3, 81);
+
 insert into role_permissions values (3, 82);
 insert into role_permissions values (3, 83);
 insert into role_permissions values (3, 84);
+insert into role_permissions values (3, 85);
+insert into role_permissions values (3, 86);
+insert into role_permissions values (3, 87);
+insert into role_permissions values (3, 88);
+insert into role_permissions values (3, 89);
 
-insert into role_permissions values (4, 55);
-insert into role_permissions values (4, 84);
+insert into role_permissions values (4, 13);
+
+insert into role_permissions values (4, 45);
+
+insert into role_permissions values (4, 48);
+insert into role_permissions values (4, 49);
+
+insert into role_permissions values (4, 52);
+insert into role_permissions values (4, 53);
+
+insert into role_permissions values (4, 90);
+
+insert into role_permissions values (4, 89);
+
+
+insert into role_permissions values (5, 13);
+
+insert into role_permissions values (5, 46);
+insert into role_permissions values (5, 47);
+insert into role_permissions values (5, 48);
+insert into role_permissions values (5, 49);
+insert into role_permissions values (5, 50);
+insert into role_permissions values (5, 51);
+insert into role_permissions values (5, 52);
+insert into role_permissions values (5, 53);
+insert into role_permissions values (5, 54);
+insert into role_permissions values (5, 90);
+
+insert into role_permissions values (5, 89);
 
 
 
@@ -266,6 +351,13 @@ insert into naseljeno_mesto values (3, 'Kragujevac', 'KG', '14300', 1);
 insert into naseljeno_mesto values (4, 'Skoplje', 'SK', '98000', 2);
 insert into naseljeno_mesto values (5, 'Prnjavor', 'PR', '43000', 4);
 
+
+insert into activity values ('1','DJEL1', 'Djelatnost1');
+insert into activity values ('2','DJEL2', 'Djelatnost2');
+insert into activity values ('3','DJEL3', 'Djelatnost3');
+insert into activity values ('4','DJEL4', 'Djelatnost4');
+
+
 insert into subject values ('1');
 insert into subject values ('2');
 insert into subject values ('3');
@@ -284,10 +376,7 @@ insert into subject values ('13');
 insert into subject values ('14');
 insert into subject values ('15');
 insert into subject values ('16');
-
-
-
-
+insert into subject values ('17');
 
 insert into employee values ('Prvizaposleni', 'Prvizaposleni', '1', '1');
 insert into employee values ('Drugizaposleni', 'Drugizaposleni', '2', '1');
@@ -320,6 +409,9 @@ insert into klijent values ('adresa', 'mail3@kkk.kkk', TRUE, 'Ime3', '4518545121
 insert into klijent values ('Adresa1', 'ime3@prezime.com', TRUE, 'Ime', '0000000000000', 'Prezime', '123452788', '15', '2', '2');
 insert into klijent values ('Adresa1', 'ime4@prezime.com', TRUE, 'Ime', '0000000000000', 'Prezime', '123452788', '16', '3', '3');
 
+insert into klijent values ('Pravno', 'pravno@prezime.com', FALSE, 'Pravno', '6655111444477', 'Prezime', '123452728', '17', '1', '1');
+insert into pravno_lice values ('9879879', 'Odobrilo', '9283746578', '17', '3');
+
 insert into racun values ('1', '123-1726533787929-93', '2017-04-30 19:05:00', '2013-02-15 19:05:00', '30000', FALSE, '1', '12');
 insert into racun values ('2', '123-9338670954849-69', NULL, '2013-01-15 19:05:00', '20000', TRUE, '1', '12');
 insert into racun values ('3', '123-8880775775674-13', null, '2013-05-10 19:05:00', '12000', TRUE, '1', '13');
@@ -350,11 +442,6 @@ insert into analitika_izvoda values ('6', '2017-05-29 00:00:00', '2017-05-29 00:
 
 insert into analitika_izvoda values ('7', '2017-05-30 00:00:00', '2017-05-30 00:00:00', '2017-05-30 00:00:00', '', TRUE, '1000', '97', '97', '123456789012345', '123456789012345', '', '123-9338670954849-69', '123-1726533787929-93', 'DIN', 'K', '', '4');
 insert into analitika_izvoda values ('8', '2017-05-30 00:00:00', '2017-05-30 00:00:00', '2017-05-30 00:00:00', '', FALSE, '500', '97', '97', '123456789012345', '123456789012345', '', '123-9338670954849-69', '123-1726533787929-93', 'DIN', 'K', '', '4');
-
-insert into activity values ('1','DJEL1', 'Djelatnost1');
-insert into activity values ('2','DJEL2', 'Djelatnost2');
-insert into activity values ('3','DJEL3', 'Djelatnost3');
-insert into activity values ('4','DJEL4', 'Djelatnost4');
 
 insert into valuta values ('1', 'DIN', 'Dinar');
 insert into valuta values ('2', 'BAM', 'Bosanska marka');
