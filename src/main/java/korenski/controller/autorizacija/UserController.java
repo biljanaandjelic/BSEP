@@ -285,7 +285,7 @@ public class UserController {
 	public ResponseEntity<User> deleteUser(@PathVariable("id") Long id , @Context HttpServletRequest request) throws Exception {
 		User userfromsession = (User) request.getSession().getAttribute("user");
 		Logger logger=LoggerFactory.getLogger(UserController.class);
-		java.lang.reflect.Method m =UserController.class.getMethod("deleteUserr",Long.class, 
+		java.lang.reflect.Method m =UserController.class.getMethod("deleteUser",Long.class, 
 				HttpServletRequest.class);
 		String mime = m.getAnnotation(CustomAnnotation.class).value();
 		User user = repository.findOne(id);
