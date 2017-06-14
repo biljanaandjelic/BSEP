@@ -34,7 +34,7 @@ public class CertificateInfoService {
 		return certificateIDRepository.findBySerialNumberAndCa(serialNumber, ca);
 	}
 	
-	public Set<CertificateInfo> findBySerialNumber(BigInteger serialNumber){
+	public CertificateInfo findBySerialNumber(BigInteger serialNumber){
 		return certificateIDRepository.findBySerialNumber(serialNumber);
 	}
 	
@@ -50,15 +50,15 @@ public class CertificateInfoService {
 		certificateIDRepository.delete(id);
 	}
 	
-	public CertificateInfo findByAlias(String alias){
-		return certificateIDRepository.findByAlias(alias);
-	}
+//	public CertificateInfo findByAlias(String alias){
+//		return certificateIDRepository.findByAlias(alias);
+//	}
 	
 	public CertificateInfo findCertificateBySerialNumberAndBank(BigInteger serialNumber, Bank bank){
 		return certificateIDRepository.findBySerialNumberAndBank(serialNumber, bank);
 	}
 	
-	public Set<CertificateInfo> findCertInfoByAlias(String alias){
-		return certificateIDRepository.findByAliasContainingIgnoreCase(alias);
-	}
+//	public Set<CertificateInfo> findCertInfoByAlias(String alias){
+//		return certificateIDRepository.findByAliasContainingIgnoreCase(alias);
+//	}
 }

@@ -299,6 +299,30 @@ public class AuthenticationController {
 							loginObject.setUrl(url);
 							logger.info("User {} LOGIN ", user.getId());
 							return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
+						}else if(user.getRole().getName().equals("LEGAL")){
+
+							
+							String url = "";
+							String scheme = request.getScheme();
+							String host = request.getServerName();
+							int port = request.getServerPort();
+							url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/certificates/openkeystore.html");
+							loginObject.setId(-5);
+							loginObject.setUrl(url);
+							logger.info("User {} LOGIN ", user.getId());
+							return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
+						}else if(user.getRole().getName().equals("ADMINISTRATOR_CENTRAL")){
+
+							
+							String url = "";
+							String scheme = request.getScheme();
+							String host = request.getServerName();
+							int port = request.getServerPort();
+							url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/certificates/openkeystore.html");
+							loginObject.setId(-5);
+							loginObject.setUrl(url);
+							logger.info("User {} LOGIN ", user.getId());
+							return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
 						}
 					}
 					
@@ -366,7 +390,7 @@ public class AuthenticationController {
 	public ResponseEntity<User> loginDummyUser2(@Context HttpServletRequest request) throws Exception {
 		
 		Bank bank = bankRepository.findOne(new Long(1));
-		Role role = roleRepository.findOne(new Long(1));
+		Role role = roleRepository.findOne(new Long(5));
 		
 		
 		User user = new User();
@@ -386,7 +410,7 @@ public class AuthenticationController {
 	public ResponseEntity<User> loginDummyUser3(@Context HttpServletRequest request) throws Exception {
 		
 		Bank bank = bankRepository.findOne(new Long(2));
-		Role role = roleRepository.findOne(new Long(2));
+		Role role = roleRepository.findOne(new Long(1));
 		
 		
 		User user = new User();
@@ -405,7 +429,7 @@ public class AuthenticationController {
 	public ResponseEntity<User> loginDummyUser4(@Context HttpServletRequest request) throws Exception {
 		
 		Bank bank = bankRepository.findOne(new Long(2));
-		Role role = roleRepository.findOne(new Long(3));
+		Role role = roleRepository.findOne(new Long(4));
 		
 		
 		User user = new User();

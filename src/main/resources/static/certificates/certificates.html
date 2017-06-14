@@ -26,7 +26,7 @@
 		
 		<link rel="stylesheet" href="css/certificates.css" > 
 	</head>
-	<body ng-controller="TabController as tab" ng-init="init()">
+	<body ng-controller="TabController as tab" data-ng-init="init()">
 		<nav class="navbar navbar-inverse">
 	  		<div class="container-fluid">
 	    		<div class="navbar-header">
@@ -48,12 +48,12 @@
 						<li ng-class="{active:tab.isSet(6)}"><a class="navbar-brand" href ng-click="tab.setTab(6)">Status</a></li>
 
 		    			<li ng-class="{active:tab.isSet(7)}"><a class="navbar-brand" href ng-click="tab.setTab(7)">Process CSR request</a></li>
-
+						<li ng-class="{active:tab.isSet(9)}"><a class="navbar-brand" href ng-click="tab.setTab(9)">Import certificate</a></li>
 
 		    		</ul>
 	    		</section>
 	    		<ul class="nav navbar-nav navbar-right">
-	     			<li><a class="btn"><span class="glyphicon glyphicon-log-in"></span> Close keystore</a></li>
+	     			<li><a class="btn" ng-click="tab.closeKeystore()"><span class="glyphicon glyphicon-log-in"></span> Close keystore</a></li>
 	    		</ul>
 	  		</div>
 		</nav>
@@ -88,5 +88,9 @@
 		</div>
 		<div ng-show="tab.isSet(6)">
 			<div ng-include="'status.html'"></div>
+		</div>
+		
+		<div ng-show="tab.isSet(9)">
+			<div ng-include="'importCertificate.html'"></div>
 		</div>
 </html>

@@ -87,17 +87,17 @@ public class OCSPResponder {
 	 * @return
 	 * @author Biljana
 	 */
-	public OCSPRequest generateOcspRequest(Bank bank, String alias, String requestorName) {
+	public OCSPRequest generateOcspRequest(Bank bank, BigInteger serialNumber, String requestorName) {
 		String swiftCode = bank.getSwiftCode();
-		try {
-			KeyStore ks = getKeyStore(swiftCode);
-			if (ks != null) {
-				Certificate certificat = ks.getCertificate(alias);
-				if (certificat != null) {
-					X500Name x500name = new JcaX509CertificateHolder((X509Certificate) certificat).getSubject();
-					if (x500name != null) {
-						X509Certificate x509Cert = (X509Certificate) certificat;
-						BigInteger serialNumber = x509Cert.getSerialNumber();
+		//try {
+		//	KeyStore ks = getKeyStore(swiftCode);
+		//	if (ks != null) {
+			//	Certificate certificat = ks.getCertificate(alias);
+			//	if (certificat != null) {
+			//		X500Name x500name = new JcaX509CertificateHolder((X509Certificate) certificat).getSubject();
+				//	if (x500name != null) {
+				//		X509Certificate x509Cert = (X509Certificate) certificat;
+				//		BigInteger serialNumber = x509Cert.getSerialNumber();
 						CertID certID = new CertID(HashAlgorithm.SHA1withRSA, "nestoI", "nestoK", serialNumber);
 						Request req = new Request(certID);
 						TBSRequest tbsReq = new TBSRequest(Version.V1, requestorName);
@@ -105,16 +105,16 @@ public class OCSPResponder {
 						OCSPRequest ocspReq = new OCSPRequest(tbsReq);
 
 						return ocspReq;
-					}
-				}
-			}
-		} catch (KeyStoreException | NoSuchProviderException | NoSuchAlgorithmException | CertificateException
-				| IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+					//}
+				//}
+			//}
+//		} catch (KeyStoreException | NoSuchProviderException | NoSuchAlgorithmException | CertificateException
+//				| IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 
-		return null;
+	//	return null;
 	}
 
 	/**
@@ -127,8 +127,8 @@ public class OCSPResponder {
 	 * @author Biljana
 	 */
 	@CustomAnnotation(value = "OCSP_RESPONSE")
-	@RequestMapping(value = "/ocspResponse/{alias}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
-	public ResponseEntity<OCSPResponse> processOcspRequest( @PathVariable String alias,
+	@RequestMapping(value = "/ocspResponse/{serialNumber}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+	public ResponseEntity<OCSPResponse> processOcspRequest( @PathVariable BigInteger serialNumber,
 			@Context HttpServletRequest request) {
 	
 		User user=(User) request.getSession().getAttribute("user");
@@ -138,15 +138,15 @@ public class OCSPResponder {
 			bank=user.getBank();
 			name=((PravnoLice)user.getSubject()).getPib();
 		}else if(user.getSubject() instanceof Klijent){
-		//	bank=bankRepository.findOne(new Long(1));
+		
 			name= ((Klijent)user.getSubject()).getJmbg();
 		}else if(user.getSubject() instanceof Employee){
 			bank=bankRepository.findOne(new Long(1));
 			name= ((Employee)user.getSubject()).getName();
 		}
 		bank=user.getBank();
-		alias="CERT-"+alias;
-		OCSPRequest ocspReq = generateOcspRequest(bank, alias, name);
+	
+		OCSPRequest ocspReq = generateOcspRequest(bank, serialNumber, name);
 		if (ocspReq != null) {
 			OCSPResponse ocspResp = new OCSPResponse(OCSPResponseStatus.SUCCESSFUL);
 			ResponseData responseData = new ResponseData(Version.V1, new Date());
@@ -166,22 +166,23 @@ public class OCSPResponder {
 								HttpStatus.OK);
 					}
 				}
-				CAData caData = getCA(bank,
-						ocspReq.getTbsRequest().getRequestList().get(0).getReqCert().getSeriaNumber());
-				if (caData != null && caData.getCertificate()!=null) {
-					byte[] signature = sign(ocspResp.getRespnseBytes().toString().getBytes(), caData.getPrivateKey());
-					if (verify(ocspResp.getRespnseBytes().toString().getBytes(), signature,
-							caData.getCertificate().getPublicKey())) {
-						return new ResponseEntity<OCSPResponse>(ocspResp, HttpStatus.OK);
-					} else {
-						return new ResponseEntity<OCSPResponse>(new OCSPResponse(OCSPResponseStatus.UNAUTHORIZED),
-								HttpStatus.OK);
-					}
-
-			
-				} else {
-					return new ResponseEntity<OCSPResponse>(ocspResp, HttpStatus.OK);
-				}
+//				CAData caData = getCA(bank,
+//						ocspReq.getTbsRequest().getRequestList().get(0).getReqCert().getSeriaNumber());
+//				if (caData != null && caData.getCertificate()!=null) {
+//					byte[] signature = sign(ocspResp.getRespnseBytes().toString().getBytes(), caData.getPrivateKey());
+//					if (verify(ocspResp.getRespnseBytes().toString().getBytes(), signature,
+//							caData.getCertificate().getPublicKey())) {
+//						return new ResponseEntity<OCSPResponse>(ocspResp, HttpStatus.OK);
+//					} else {
+//						return new ResponseEntity<OCSPResponse>(new OCSPResponse(OCSPResponseStatus.UNAUTHORIZED),
+//								HttpStatus.OK);
+//					}
+//
+//			
+//				} else {
+//					return new ResponseEntity<OCSPResponse>(ocspResp, HttpStatus.OK);
+//				}
+				return new ResponseEntity<OCSPResponse>(ocspResp, HttpStatus.OK);
 			} else {
 
 				return new ResponseEntity<OCSPResponse>(new OCSPResponse(OCSPResponseStatus.MALFORMEDREQUEST),
@@ -268,6 +269,7 @@ public class OCSPResponder {
 		return singleResp;
 	}
 	/**
+	 * AKO NEMAMO POTPISIVANJE OCSP-a NE TREBA NAM METODA
 	 * Precuzimanje CAData objekta koji sadrzi privatni kljuc issuer-a da bi mogao da 
 	 * potpise odgovor i njegov sertifikat da bi odgovor mogao biti validiran.
 	 * @param bank
@@ -275,8 +277,9 @@ public class OCSPResponder {
 	 * @return
 	 */
 	public CAData getCA(Bank bank, BigInteger serialNumber) {
-		CertificateInfo certificateInfo = certificateInfoService.findCertificateBySerialNumberAndBank(serialNumber,
-				bank);
+//		CertificateInfo certificateInfo = certificateInfoService.findCertificateBySerialNumberAndBank(serialNumber,
+//				bank);
+		CertificateInfo certificateInfo=certificateInfoService.findBySerialNumber(serialNumber);
 		if (certificateInfo != null && certificateInfo.getCa() != null) {
 			CertificateInfo ca = certificateInfo.getCa();
 			String path = "./files/KEYSTORE-" + ca.getBank().getSwiftCode() + ".jks";
@@ -294,8 +297,8 @@ public class OCSPResponder {
 //						    }
 //					}
 			//		Certificate cert = ks.getCertificate("CERT-" + ca.getBank().getSwiftCode());
-					Certificate cert = ks.getCertificate(ca.getAlias());
-					return new CAData(cert, key);
+				//	Certificate cert = ks.getCertificate(ca.getAlias());
+					return new CAData(null, key);
 				}
 			} catch (KeyStoreException | NoSuchProviderException | NoSuchAlgorithmException | CertificateException
 					| IOException e) {

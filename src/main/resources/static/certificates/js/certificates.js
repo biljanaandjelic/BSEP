@@ -51,6 +51,7 @@ certificateModule.controller("CertificateController", function($http,$scope, $lo
 	$scope.found=false;
 	$scope.aliasForRevoke="";
 	$scope.aliasForCheck="";
+	control.importCert = {};
 	
 	this.generate = function(){
 		if(control.certificate.validFrom < control.certificate.validTo){
@@ -154,7 +155,6 @@ certificateModule.controller("CertificateController", function($http,$scope, $lo
 	}
 	
 	this.loadRequests = function() {
-		
 		$http({
 			method: 'GET',
 			url: '/certificates/getCertificateRequests'
@@ -188,6 +188,24 @@ certificateModule.controller("CertificateController", function($http,$scope, $lo
 		}, function error(response) {
 			control.result = "Unknown error ocurred."
 		});
+	}
+	
+	this.importCertificate = function(){
+		$http({
+		    method: 'POST',
+		    url: '/certificates/importCert',
+		    data: control.importCert
+		}).
+		then(function mySucces(response) {
+			if(response.data == 'ok'){
+				toastr.success('Certificate successfully imported!');
+			}else{
+				toastr.error('Uknown error ocurred!');
+			}
+			
+			control.importCert = {};
+		});
+
 	}
 	
 });

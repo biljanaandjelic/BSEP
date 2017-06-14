@@ -110,12 +110,13 @@ insert into permission values ('86', 'GENERATE_REPORT');
 insert into permission values ('87', 'EXPORT_INTERBANK_TRANSFER');
 insert into permission values ('88', 'EXPORT_ACCOUNT_STATEMENT');
 
-
 insert into permission values ('89', 'LOGOFF');
 
 insert into permission values ('90', 'FIND_ALL_BANK');
 
-
+insert into permission values ('91', 'OPEN_KEYSTORE');
+insert into permission values ('92', 'CLOSE_KEYSTORE');
+insert into permission values ('93', 'IMPORT_CERTIFICATE');
 
 insert into role values (1, 'ADMINISTRATOR_BANK');
 insert into role values (2, 'MANAGER');
@@ -153,7 +154,9 @@ insert into role_permissions values (1, 90);
 
 insert into role_permissions values (1, 73);
 insert into role_permissions values (1, 89);
-
+insert into role_permissions values (1, 91);
+insert into role_permissions values (1, 92);
+insert into role_permissions values (1, 93);
 
 insert into role_permissions values (2, 13);
 
@@ -258,12 +261,14 @@ insert into role_permissions values (3, 35);
 insert into role_permissions values (3, 36);
 insert into role_permissions values (3, 37);
 
+
 insert into role_permissions values (3, 39);
 insert into role_permissions values (3, 40);
 insert into role_permissions values (3, 41);
 insert into role_permissions values (3, 42);
 insert into role_permissions values (3, 43);
 insert into role_permissions values (3, 44);
+
 
 insert into role_permissions values (3, 55);
 insert into role_permissions values (3, 56);
@@ -313,6 +318,9 @@ insert into role_permissions values (4, 53);
 insert into role_permissions values (4, 90);
 
 insert into role_permissions values (4, 89);
+insert into role_permissions values (4, 91);
+insert into role_permissions values (4, 92);
+insert into role_permissions values (4, 93);
 
 
 insert into role_permissions values (5, 13);
@@ -329,6 +337,11 @@ insert into role_permissions values (5, 54);
 insert into role_permissions values (5, 90);
 
 insert into role_permissions values (5, 89);
+
+insert into role_permissions values (5, 91);
+insert into role_permissions values (5, 92);
+insert into role_permissions values (5, 93);
+
 
 
 
@@ -449,5 +462,3 @@ insert into valuta values ('3', 'ALL', 'Lek');
 insert into valuta values ('4', 'USD', 'Americki dolar');
 insert into valuta values ('5', 'EUR', 'Euro');
 insert into valuta values ('6', 'JPY', 'YEN');
-
-

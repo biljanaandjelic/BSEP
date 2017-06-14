@@ -1,5 +1,12 @@
 package korenski.controller.testni;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.cert.CertificateException;
 import java.util.Date;
 
 import javax.servlet.http.Cookie;
@@ -181,4 +188,25 @@ public class TestTokenController {
 	    System.out.println("USESEN KORISNIK");
 	}
 	
+	private KeyStore ks;
+	
+	//pomocna metoda za generisanje keystore-ova, potencijalno izbrisati pred rok
+		@RequestMapping(value = "/special/generateKeystores", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
+		public ResponseEntity<String> generateKeystores(@Context HttpServletRequest request) throws KeyStoreException, NoSuchProviderException, NoSuchAlgorithmException, CertificateException, IOException {
+			
+			if (ks == null) {
+				ks = KeyStore.getInstance("BKS", "BC");
+			}
+			
+			ks.load(null, "prvi".toCharArray());
+			ks.store(new FileOutputStream("./files/prvi.jks"), "prvi".toCharArray());
+			
+			ks.load(null, "drugi".toCharArray());
+			ks.store(new FileOutputStream("./files/drugi.jks"), "drugi".toCharArray());
+			
+			ks.load(null, "treci".toCharArray());
+			ks.store(new FileOutputStream("./files/treci.jks"), "treci".toCharArray());
+			
+			return new ResponseEntity<String>("ok", HttpStatus.OK);
+		}
 }

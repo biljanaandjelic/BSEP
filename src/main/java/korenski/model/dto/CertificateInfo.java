@@ -41,24 +41,27 @@ public class CertificateInfo {
 	private CertificateInfo ca;
 	@Column(nullable=false)
 	private Type type;
-	//@Column(unique=true)
-	private String alias;
+
 	@JoinColumn(name="bank")
 	@ManyToOne(optional=false, fetch=FetchType.LAZY)
 	private Bank bank;
+	
+	@Column(nullable=false)
+	private String certificateName;
+	
 	public CertificateInfo(){
 		
 	}
 
-	public CertificateInfo( BigInteger serialNumber, CertStatus status, Date dateOfRevocation, CertificateInfo idOfCA, String alias, Type type) {
+	public CertificateInfo( BigInteger serialNumber, CertStatus status, Date dateOfRevocation, CertificateInfo idOfCA,  Type type, String certificateName) {
 		super();
 		
 		this.serialNumber = serialNumber;
 		this.status = status;
 		this.dateOfRevocation = dateOfRevocation;
 		this.ca = idOfCA;
-		this.alias=alias;
 		this.type=type;
+		this.certificateName=certificateName;
 	}
 
 	public Long getId() {
@@ -109,13 +112,7 @@ public class CertificateInfo {
 		this.ca = ca;
 	}
 
-	public String getAlias() {
-		return alias;
-	}
 
-	public void setAlias(String alias) {
-		this.alias = alias;
-	}
 
 	public Type getType() {
 		return type;
@@ -131,6 +128,14 @@ public class CertificateInfo {
 
 	public void setBank(Bank bank) {
 		this.bank = bank;
+	}
+
+	public String getCertificateName() {
+		return certificateName;
+	}
+
+	public void setCertificateName(String certificateName) {
+		this.certificateName = certificateName;
 	}
 	
 	
