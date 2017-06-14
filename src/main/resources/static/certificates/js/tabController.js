@@ -33,5 +33,5 @@ certificateModule.controller("TabController", function($scope, $http, $compile, 
 				return;
         	}
         });
-    }
+    };
 });

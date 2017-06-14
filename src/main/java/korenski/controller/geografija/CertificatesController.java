@@ -527,7 +527,7 @@ public class CertificatesController {
 		//potencijalno izmeniti
 		
 		
-		saveKeyStore(filePathString);
+		saveKeyStore2(filePathString, keystoreSession.getPassword());
 		
 		//brisanje csr zahteva
 		f.delete();
