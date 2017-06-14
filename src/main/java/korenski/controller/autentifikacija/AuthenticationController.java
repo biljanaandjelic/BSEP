@@ -299,6 +299,30 @@ public class AuthenticationController {
 							loginObject.setUrl(url);
 							logger.info("User {} LOGIN ", user.getId());
 							return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
+						}else if(user.getRole().getName().equals("LEGAL")){
+
+							
+							String url = "";
+							String scheme = request.getScheme();
+							String host = request.getServerName();
+							int port = request.getServerPort();
+							url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/certificates/openkeystore.html");
+							loginObject.setId(-5);
+							loginObject.setUrl(url);
+							logger.info("User {} LOGIN ", user.getId());
+							return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
+						}else if(user.getRole().getName().equals("ADMINISTRATOR_CENTRAL")){
+
+							
+							String url = "";
+							String scheme = request.getScheme();
+							String host = request.getServerName();
+							int port = request.getServerPort();
+							url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/certificates/openkeystore.html");
+							loginObject.setId(-5);
+							loginObject.setUrl(url);
+							logger.info("User {} LOGIN ", user.getId());
+							return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
 						}
 					}
 					

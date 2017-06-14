@@ -57,3 +57,39 @@
 [INFO ]2017-06-12 16:46:16 k.c.a.AuthenticationController - User 7 LOGIN 
 [INFO ]2017-06-12 16:46:18 k.c.a.NaiveAuthenticationController - User 7 LOGOFF
 [INFO ]2017-06-12 16:46:38 k.c.a.NaiveAuthenticationController - User 8 LOGOFF
+[INFO ]2017-06-14 19:32:15 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 5 
+[INFO ]2017-06-14 19:32:16 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 6 
+[INFO ]2017-06-14 19:32:16 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 7 
+[INFO ]2017-06-14 19:32:16 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 8 
+[INFO ]2017-06-14 19:32:16 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 9 
+[INFO ]2017-06-14 19:35:27 k.c.a.AuthenticationController - User 9 LOGIN 
+[INFO ]2017-06-14 19:52:02 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 5 
+[INFO ]2017-06-14 19:52:02 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 6 
+[INFO ]2017-06-14 19:52:02 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 7 
+[INFO ]2017-06-14 19:52:02 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 8 
+[INFO ]2017-06-14 19:52:02 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 9 
+[INFO ]2017-06-14 19:54:10 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 5 
+[INFO ]2017-06-14 19:54:10 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 6 
+[INFO ]2017-06-14 19:54:10 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 7 
+[INFO ]2017-06-14 19:54:10 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 8 
+[INFO ]2017-06-14 19:54:11 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 9 
+[INFO ]2017-06-14 19:54:57 k.c.a.AuthenticationController - User 8 LOGIN 
+[INFO ]2017-06-14 19:56:06 k.c.a.NaiveAuthenticationController - User 8 LOGOFF
+[INFO ]2017-06-14 19:56:25 k.c.a.AuthenticationController - User 9 LOGIN 
+[INFO ]2017-06-14 19:56:39 k.c.a.NaiveAuthenticationController - User 9 LOGOFF
+[INFO ]2017-06-14 19:59:58 k.c.a.AuthenticationController - User 9 LOGIN 
+[INFO ]2017-06-14 20:09:53 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 5 
+[INFO ]2017-06-14 20:09:53 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 6 
+[INFO ]2017-06-14 20:09:53 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 7 
+[INFO ]2017-06-14 20:09:53 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 8 
+[INFO ]2017-06-14 20:09:53 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 9 
+[INFO ]2017-06-14 20:10:18 k.c.a.AuthenticationController - User 9 LOGIN 
+[INFO ]2017-06-14 20:24:19 k.c.a.AuthenticationController - User 9 LOGIN 
+[INFO ]2017-06-14 20:42:55 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 5 
+[INFO ]2017-06-14 20:42:55 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 6 
+[INFO ]2017-06-14 20:42:55 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 7 
+[INFO ]2017-06-14 20:42:55 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 8 
+[INFO ]2017-06-14 20:42:55 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 9 
+[INFO ]2017-06-14 20:43:43 k.c.a.AuthenticationController - User 8 LOGIN 
+[INFO ]2017-06-14 20:49:04 k.c.a.NaiveAuthenticationController - User 8 LOGOFF
+[INFO ]2017-06-14 20:49:10 k.c.a.AuthenticationController - User 9 LOGIN 

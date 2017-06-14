@@ -874,6 +874,7 @@ public class CertificatesController {
 		return new ResponseEntity<String>(retVal, HttpStatus.OK);
 	}
 	
+	@CustomAnnotation(value = "OPEN_KEYSTORE")
 	@RequestMapping(
 			value = "/openKeystore",
 			method = RequestMethod.POST,
@@ -967,6 +968,7 @@ public class CertificatesController {
 		return new ResponseEntity<KeystoreDTO>(dto, HttpStatus.OK);
 	}
 	
+	@CustomAnnotation(value = "CLOSE_KEYSTORE")
 	@RequestMapping(
 			value = "/closeKeystore",
 			method = RequestMethod.GET,
@@ -999,6 +1001,7 @@ public class CertificatesController {
 		return new ResponseEntity<KeystoreDTO>(keystoreSession, HttpStatus.OK);
 	}
 	
+	@CustomAnnotation(value = "IMPORT_CERTIFICATE")
 	@RequestMapping(
 			value = "/importCert",
 			method = RequestMethod.POST,
@@ -1036,26 +1039,6 @@ public class CertificatesController {
 		ks.setCertificateEntry(dto.getAlias(), certificate);
 		
 		saveKeyStore2("./files/" + keystoreSession.getName() + ".jks", keystoreSession.getPassword());
-		
-		return new ResponseEntity<String>("ok", HttpStatus.OK);
-	}
-	
-	//pomocna metoda za generisanje keystore-ova, potencijalno izbrisati pred rok
-	@RequestMapping(value = "/generateKeystores", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN)
-	public ResponseEntity<String> generateKeystores(@Context HttpServletRequest request) throws KeyStoreException, NoSuchProviderException, NoSuchAlgorithmException, CertificateException, IOException {
-		
-		if (ks == null) {
-			ks = KeyStore.getInstance("BKS", "BC");
-		}
-		
-		ks.load(null, "prvi".toCharArray());
-		ks.store(new FileOutputStream("./files/prvi.jks"), "prvi".toCharArray());
-		
-		ks.load(null, "drugi".toCharArray());
-		ks.store(new FileOutputStream("./files/drugi.jks"), "drugi".toCharArray());
-		
-		ks.load(null, "treci".toCharArray());
-		ks.store(new FileOutputStream("./files/treci.jks"), "treci".toCharArray());
 		
 		return new ResponseEntity<String>("ok", HttpStatus.OK);
 	}
