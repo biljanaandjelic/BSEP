@@ -1,5 +1,7 @@
 package korenski.model.dto;
 
+import java.math.BigInteger;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -29,12 +31,9 @@ public class RevokeRequest {
 	@JoinColumn(name="bank")
 	@ManyToOne(optional=true, fetch=FetchType.LAZY)
 	private Bank bank;
-//	public RevokeRequest(Long id, BigInteger serialNumer, String comment) {
-//		super();
-//		this.id = id;
-//		//this.serialNumer = serialNumer;
-//		this.comment = comment;
-//	}
+
+	@Column(nullable=false)
+	private BigInteger serialNumber;
 	public RevokeRequest(Long id, String alias, String comment, Bank bank) {
 		super();
 		this.id = id;
@@ -68,6 +67,12 @@ public class RevokeRequest {
 	}
 	public void setBank(Bank bank) {
 		this.bank = bank;
+	}
+	public BigInteger getSerialNumber() {
+		return serialNumber;
+	}
+	public void setSerialNumber(BigInteger serialNumber) {
+		this.serialNumber = serialNumber;
 	}
 	
 	

@@ -107,7 +107,7 @@ import util.Base64Utility;
 @RequestMapping("/certificates")
 public class CertificatesController {
 	@Autowired
-	CertificateInfoService certificateIDService;
+	CertificateInfoService certificateInfoService;
 	@Autowired
 	BankRepository bankRepository;
 
@@ -178,14 +178,14 @@ public class CertificatesController {
 		System.out.println(certConverter.getCertificate(certHolder));
 		
 		//potencijalno izmeniti
-		CertificateInfo certificateInfo = new CertificateInfo(serial, CertStatus.GOOD, null, null, "", Type.NationalBank);
+	
 		Bank bank = ((User)request.getSession().getAttribute("user")).getBank();
-		certificateInfo.setBank(bank);
+		
 
 		//smesanje kljuca i sertifikata u keystore
 		ks.setCertificateEntry(dto.alias, certConverter.getCertificate(certHolder));
 		//potencijalno izmeniti
-		certificateInfo.setAlias(dto.alias);
+	
 		int cnt = 1;
 		while(true){
 			if(!ks.isKeyEntry("KEY-" + cnt)){
@@ -216,7 +216,10 @@ public class CertificatesController {
 		w.close();
 		
 		//izmeniti
-		certificateIDService.create(certificateInfo);
+		String certificateName= uid.getFirst().getValue() + "-" + cnt;
+		CertificateInfo certificateInfo = new CertificateInfo(serial, CertStatus.GOOD, null, null,  Type.NationalBank, certificateName);
+		certificateInfo.setBank(bank);
+		certificateInfoService.create(certificateInfo);
 		
 		//cuvanje keystore-a
 		saveKeyStore2(filePathString, keystoreSession.getPassword());
@@ -466,8 +469,8 @@ public class CertificatesController {
 		X509v3CertificateBuilder certGen;
 		CertificateInfo certificateInfo;
 		
-		
 		X509Certificate certificate = (X509Certificate)ks.getCertificate("active");
+		
 		X500Name issuer = X500Name.getInstance(PrincipalUtil.getIssuerX509Principal(certificate));
 		
 		SubjectPublicKeyInfo pkInfo = csr.getSubjectPublicKeyInfo();
@@ -479,24 +482,28 @@ public class CertificatesController {
 		certGen = new JcaX509v3CertificateBuilder(issuer, serial, startDate, endDate, csr.getSubject(),
 				rsaPub);
 		
+		
+		CertificateInfo ca = new CertificateInfo();
+		try {
+			ca = certificateInfoService.findBySerialNumber(certificate.getSerialNumber());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return new ResponseEntity<String>("notok", HttpStatus.OK);
+		}
+		
 		//na osnovu prava ulogovanog korisnika kreira se sertifikat sa ca = true ili false
 		//potencijalno izmeniti
 		if(u.getRole().getName().equals("ADMINISTRATOR_CENTRAL")){
 			certGen.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
-			certificateInfo=new CertificateInfo(serial,CertStatus.GOOD,null,null,"",Type.Bank);
+			certificateInfo=new CertificateInfo(serial,CertStatus.GOOD,null,ca ,Type.Bank,"");
 			certificateInfo.setBank(((User)httpRequest.getSession().getAttribute("user")).getBank());
-			//certificateInfo.setAlias("CERT-"+IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()));
-			CertificateInfo ca=certificateIDService.findByAlias("CERT-"+((User)httpRequest.getSession().getAttribute("user")).getBank().getSwiftCode());
-			certificateInfo.setCa(ca);
 		}else if(u.getRole().getName().equals("ADMINISTRATOR_BANK")){
 			certGen.addExtension(Extension.basicConstraints, true, new BasicConstraints(false));
-			certificateInfo=new CertificateInfo(serial,CertStatus.GOOD,null,null,"",Type.Company);
+			certificateInfo=new CertificateInfo(serial,CertStatus.GOOD,null,ca,Type.Company,"");
 			certificateInfo.setBank(((User)httpRequest.getSession().getAttribute("user")).getBank());
-			//certificateInfo.setAlias("CERT-"+IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()));
-			CertificateInfo ca=certificateIDService.findByAlias("CERT-"+((User)httpRequest.getSession().getAttribute("user")).getBank().getSwiftCode());
-			certificateInfo.setCa(ca);
 		}else{
-			return null;
+			return new ResponseEntity<String>("notok", HttpStatus.OK);
 		}
 		
 		X509CertificateHolder certHolder = certGen.build(contentSigner);
@@ -511,14 +518,14 @@ public class CertificatesController {
 		while(true){
 			if(!ks.isCertificateEntry("CERT-" + IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()) + "-" + cnt)){
 				ks.setCertificateEntry("CERT-" + IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()) + "-" + cnt, certConverter.getCertificate(certHolder));
-				certificateInfo.setAlias("CERT-"+IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()) + "-" + cnt);
+			//	certificateInfo.setAlias("CERT-"+IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()) + "-" + cnt);
 				break;
 			}
 			cnt++;
 		}
 		
 		//potencijalno izmeniti
-		certificateIDService.create(certificateInfo);
+		
 		
 		saveKeyStore(filePathString);
 		
@@ -543,6 +550,10 @@ public class CertificatesController {
 		w.flush();
 		w.close();
 		
+		String certificateName=uid.getFirst().getValue() + "-" + cnt;
+		certificateInfo.setCertificateName(certificateName);
+		certificateInfoService.create(certificateInfo);
+		
 		return new ResponseEntity<String>("ok", HttpStatus.OK);
 	}
 
@@ -554,37 +565,61 @@ public class CertificatesController {
 	 * @return
 	 * @throws KeyStoreException
 	 * @throws NoSuchProviderException
+	 * @throws IOException 
+	 * @throws CertificateException 
 	 */
 	@CustomAnnotation(value = "FIND_CERTIFICATE_BY_ALIAS")
-	@RequestMapping(value = "/certificate/{alias}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON)
-	public ResponseEntity<CertificateDTO> findCertificateDTO(@PathVariable("alias") String alias, @Context HttpServletRequest request)
-			throws KeyStoreException, NoSuchProviderException {
+	@RequestMapping(value = "/certificate/{serialNumber}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON)
+	public ResponseEntity<CertificateDTO> findCertificateDTO(@PathVariable("serialNumber") BigInteger serialNumber, @Context HttpServletRequest request)
+			throws KeyStoreException, NoSuchProviderException, IOException, CertificateException {
 		System.out.println("Pronalazenje sertifikata na osnovu alijasa");
-		User user=(User)request.getSession().getAttribute("user");
-		Bank bank=user.getBank();
-		if (ks == null) {
-			//ks = KeyStore.getInstance("JCEKS", "SunJCE");
-			ks = KeyStore.getInstance("BKS", "BC");
-			System.out.println("Nije prethodno instanciran");
-		}
-		try {
-			//ks.load(new FileInputStream("./files/keystore.jks"), "test".toCharArray());
-			String newFilePath = "./files/KEYSTORE-" + bank.getSwiftCode() + ".jks";
-			ks.load(new FileInputStream(newFilePath), "test".toCharArray());
-			System.out.println("USpijesno je uctan ks");
-		} catch (NoSuchAlgorithmException | CertificateException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		alias="CERT-"+alias;
-		Certificate foundCertificate = ks.getCertificate(alias);
-
-		if (foundCertificate != null) {
-
-
-			CertificateDTO certificateDTO = getDataFromCertificate(foundCertificate);
+		CertificateInfo certInfo=certificateInfoService.findBySerialNumber(serialNumber);
+		String certFileName=certInfo.getCertificateName()+".cer";
+	
+		File f = new File("./files/certificates/" + certFileName);
+		BufferedReader r = new BufferedReader(new FileReader(f.getPath()));
+		PemReader pemReader = new PemReader(r);
+		PEMParser pemParser = new PEMParser(pemReader);
+		Object o = pemParser.readObject();
+		X509CertificateHolder certificateHolder = (X509CertificateHolder)o;
+		
+		pemParser.close();
+		pemReader.close();
+		r.close();
+		
+		JcaX509CertificateConverter certConverter = new JcaX509CertificateConverter();
+		certConverter = certConverter.setProvider("BC");
+		
+		Certificate certificate = certConverter.getCertificate(certificateHolder);
+		CertificateDTO certificateDTO = getDataFromCertificate(certificate);
+		if(certificateDTO!=null){
 			return new ResponseEntity<CertificateDTO>(certificateDTO, HttpStatus.OK);
 		}
+//		User user=(User)request.getSession().getAttribute("user");
+//		Bank bank=user.getBank();
+//		if (ks == null) {
+//			
+//			ks = KeyStore.getInstance("BKS", "BC");
+//			System.out.println("Nije prethodno instanciran");
+//		}
+//		try {
+//			
+//			String newFilePath = "./files/KEYSTORE-" + bank.getSwiftCode() + ".jks";
+//			ks.load(new FileInputStream(newFilePath), "test".toCharArray());
+//			System.out.println("USpijesno je uctan ks");
+//		} catch (NoSuchAlgorithmException | CertificateException | IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		alias="CERT-"+alias;
+//		Certificate foundCertificate = ks.getCertificate(alias);
+//
+//		if (foundCertificate != null) {
+//
+//
+//			CertificateDTO certificateDTO = getDataFromCertificate(foundCertificate);
+//			return new ResponseEntity<CertificateDTO>(certificateDTO, HttpStatus.OK);
+//		}
 
 		return new ResponseEntity<CertificateDTO>(HttpStatus.NOT_FOUND);
 	}
@@ -628,32 +663,35 @@ public class CertificatesController {
 
 
 	
-	/**
-	 * Revoke certificate if private key is lost or for some other reason
-	 * 
-	 * @param serialNumber seijski broj sertifikata cije povlacenje je zatrazeno
-	 * @author Biljana
-	 */
-	@CustomAnnotation(value = "REVOKE_CERTIFICATE")
-	@RequestMapping(value = "/revokeCertificate/{alias}", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN)
-	public ResponseEntity<String> revokeCertificate(@PathVariable("alias") String alias) {
-
-		CertificateInfo certID = certificateIDService.findByAlias(alias);
-		System.out.println("Povlacenje sertifikata");
-		System.out.println("Alijsa sertifikata koji se povlaci " + alias);
-		if (certID != null) {
-			System.out.println("Certifikat je pronadjen i uspijesno se povlaci");
-			Date dateOfRevocation = new Date();
-			certID.setDateOfRevocation(dateOfRevocation);
-			certID.setStatus(CertStatus.REVOKED);
-			certificateIDService.update(certID);
-			return new ResponseEntity<String>("Sertifikat je uspijesno povucen.", HttpStatus.OK);
-
-		} else {
-			System.out.println("Sertifikat nije povucen.");
-			return new ResponseEntity<String>("Sertifika nije pronadjen.", HttpStatus.NO_CONTENT);
-		}
-	}
+//	/**
+//	 * IZBRISATIIIIIIIIIIIIIIIIIIIIIIIIIIIIii
+//	 * Revoke certificate if private key is lost or for some other reason
+//	 * 
+//	 * @param serialNumber seijski broj sertifikata cije povlacenje je zatrazeno
+//	 * @author Biljana
+//	 */
+//	@CustomAnnotation(value = "REVOKE_CERTIFICATE")
+//	@RequestMapping(value = "/revokeCertificate/{serialNumber}", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN)
+//	public ResponseEntity<String> revokeCertificate(@PathVariable("serialNumber") BigInteger serialNumber) {
+//
+//		//CertificateInfo certID = certificateInfoService.findByAlias(alias);
+//		CertificateInfo certID=certificateInfoService.findBySerialNumber(serialNumber);
+//		
+//		System.out.println("Povlacenje sertifikata");
+//		System.out.println("Alijsa sertifikata koji se povlaci " + serialNumber);
+//		if (certID != null) {
+//			System.out.println("Certifikat je pronadjen i uspijesno se povlaci");
+//			Date dateOfRevocation = new Date();
+//			certID.setDateOfRevocation(dateOfRevocation);
+//			certID.setStatus(CertStatus.REVOKED);
+//			certificateInfoService.update(certID);
+//			return new ResponseEntity<String>("Sertifikat je uspijesno povucen.", HttpStatus.OK);
+//
+//		} else {
+//			System.out.println("Sertifikat nije povucen.");
+//			return new ResponseEntity<String>("Sertifika nije pronadjen.", HttpStatus.NO_CONTENT);
+//		}
+//	}
 
 
 	/**
@@ -671,44 +709,61 @@ public class CertificatesController {
 	@RequestMapping(value = "/revokeRequest/{id}/{type}", method = RequestMethod.DELETE, produces = MediaType.TEXT_PLAIN)
 	public ResponseEntity<String> processRevokeRequest(@PathVariable Long id, @PathVariable String type,
 			@Context HttpServletRequest request) {
-		User activUser = (User) request.getSession().getAttribute("user");
-		Bank bank = activUser.getBank();
-		try {
-			String filePath="./files/KEYSTORE-"+bank.getSwiftCode()+".jks";
-			getKeyStore(filePath);
-			if (ks != null) {
-				RevokeRequest revokeRequest = revokeRequestService.findRevokeRequest(id);
-				Certificate certificate = ks.getCertificate(revokeRequest.getAlias());
-				if (certificate != null) {
-			
-					BigInteger serialNumber=((X509Certificate)certificate).getSerialNumber();
-					CertificateInfo certInfo = certificateIDService
-							.findCertificateBySerialNumberAndBank(serialNumber, bank);
-					revokeRequestService.deleteRevokeRequest(id);
-					if (certInfo != null && type.equals("accept")) {
-						if (certInfo.getStatus() == CertStatus.GOOD) {
-							certInfo.setStatus(CertStatus.REVOKED);
-							certificateIDService.update(certInfo);
-
-						} else if (certInfo.getStatus() == CertStatus.REVOKED) {
-							return new ResponseEntity<String>("Sertifikat je vec povucen.", HttpStatus.OK);
-						} else if (certInfo.getStatus() == CertStatus.UNKNOWN) {
-							return new ResponseEntity<String>("Ne postoje informacije o sertifikatu.", HttpStatus.OK);
-						}
-					}
-				} else if (type.equals("decline")) {
-					return new ResponseEntity<String>("Zahtjev za povlacenje sertifikata je odbijen", HttpStatus.OK);
-				}
-			}
-		} catch (KeyStoreException | NoSuchProviderException | NoSuchAlgorithmException | CertificateException
-				| IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		
+		if(type.equals("decline")){
+			return new ResponseEntity<String>("OK", HttpStatus.OK);
 		}
+		//User activUser = (User) request.getSession().getAttribute("user");
+		RevokeRequest revokeRequest=revokeRequestService.findRevokeRequest(id);
+		CertificateInfo certInfo=certificateInfoService.findBySerialNumber(revokeRequest.getSerialNumber());
+		if(certInfo.getStatus()==CertStatus.GOOD){
+			certInfo.setStatus(CertStatus.REVOKED);
+			certInfo.setDateOfRevocation(new Date());
+			
+			if(certInfo.getType() == Type.NationalBank || certInfo.getType() == Type.Bank){
+				changeSubordinateCertificateStatus(certInfo);
+			}
+		}
+
+		certificateInfoService.update(certInfo);
 		return new ResponseEntity<String>("OK", HttpStatus.OK);
 
 	}
 	
+	
+	public void changeSubordinateCertificateStatus(CertificateInfo ca){
+		
+		if(ca.getType()==Type.NationalBank){
+			Set<CertificateInfo> certificates = certificateInfoService.findByCa(ca);
+			for(CertificateInfo certificate : certificates){
+				if(certificate.getStatus() == CertStatus.GOOD){
+					certificate.setStatus(CertStatus.REVOKED);
+					certificate.setDateOfRevocation(new Date());
+					certificateInfoService.update(certificate);
+					Set<CertificateInfo> certificates2 = certificateInfoService.findByCa(certificate);
+					for(CertificateInfo certificate2 : certificates2){
+						if(certificate2.getStatus() == CertStatus.GOOD){
+							certificate2.setStatus(CertStatus.REVOKED);
+							certificate2.setDateOfRevocation(new Date());
+							certificateInfoService.update(certificate2);
+						}
+					}
+				}
+				
+			}
+		}else if(ca.getType()==Type.Bank){
+			Set<CertificateInfo> certificates = certificateInfoService.findByCa(ca);
+			for(CertificateInfo certificate : certificates){
+				if(certificate.getStatus() == CertStatus.GOOD){
+					certificate.setStatus(CertStatus.REVOKED);
+					certificate.setDateOfRevocation(new Date());
+					certificateInfoService.update(certificate);
+				}
+				
+			}
+		}
+		
+	}
 	/**
 	 * 
 	 * @param request
@@ -736,29 +791,31 @@ public class CertificatesController {
 	
 
 	/**
-	 * 
+	 * Slanje zahtjeva za povlacenje......
 	 * @param revokeRequest
 	 * @param request
 	 * @return
 	 * @author Biljana
 	 */
 	@CustomAnnotation(value = "SAVE_REVOKE_REQUEST")
-	@RequestMapping(value = "/revokeRequest", method = RequestMethod.PUT,
+	@RequestMapping(value = "/createRevokeRequest", method = RequestMethod.POST,
 			// consumes=MediaType.APPLICATION_JSON,
 			produces = MediaType.TEXT_PLAIN)
 	public ResponseEntity<String> saveRevokeRequest(@RequestBody RevokeRequest revokeRequest,
 			@Context HttpServletRequest request) {
 		System.out.println("Sacuvaj zahtjev!!!!");
-		User user=(User) request.getSession().getAttribute("user");
-		Bank bank=user.getBank();
-		revokeRequest.setBank(bank);
+
+		CertificateInfo certificateInfo=null;
+	
+		certificateInfo=certificateInfoService.findBySerialNumber(revokeRequest.getSerialNumber());
+		revokeRequest.setBank(certificateInfo.getBank());
 		System.out.println("Request alijas " + revokeRequest.getBank().getName());
 		RevokeRequest revokeRequestPersist = revokeRequestService.save(revokeRequest);
 		if (revokeRequestPersist == null) {
 			return new ResponseEntity<String>("Doslo je do geske. Pokusajte ponovo.", HttpStatus.OK);
 		}
 		return new ResponseEntity<String>("Zahtjev za povlacenje sertifikata je zabiljezen.", HttpStatus.OK);
-		// return null;
+		
 
 	}
 	private void getKeyStore(String filePathString) throws KeyStoreException, NoSuchProviderException, NoSuchAlgorithmException, CertificateException, FileNotFoundException, IOException{

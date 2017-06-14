@@ -17,11 +17,11 @@ public interface CertificateInfoRepository  extends CrudRepository<CertificateIn
 	public CertificateInfo findOne(Long id);
 	public CertificateInfo findBySerialNumberAndCa(BigInteger serialNumber,CertificateInfo ca);
 	public Set<CertificateInfo> findByCa(CertificateInfo ca);
-	public Set<CertificateInfo> findBySerialNumber(BigInteger serialNumber);
+	public CertificateInfo findBySerialNumber(BigInteger serialNumber);
 	public Set<CertificateInfo> findByStatus(CertStatus status);
 	public Set<CertificateInfo> findByDateOfRevocation(Date dateOfRevocation);
 	public Set<CertificateInfo> findAll();
-	public CertificateInfo findByAlias(String alias);
+///	public CertificateInfo findByAlias(String alias);
 	public CertificateInfo findBySerialNumberAndBank(BigInteger serialNumber, Bank bank);
-	public Set<CertificateInfo> findByAliasContainingIgnoreCase(String alias);
+//	public Set<CertificateInfo> findByAliasContainingIgnoreCase(String alias);
 }

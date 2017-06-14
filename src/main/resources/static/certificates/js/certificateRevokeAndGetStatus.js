@@ -55,9 +55,10 @@ certificateModule.controller("CertificateRevokeAndGetStatus", function($http,$sc
 		
 		$log.log("Selected bank "+ $scope.bank.name);
 		
-		var path="/certificates/revokeRequest";
+		var path="/certificates/createRevokeRequest";
+		$scope.revokeRequest.serialNumber=$scope.revokeRequest.alias;
 		$http({
-			method: 'PUT',
+			method: 'POST',
 			url: path,
 			data: $scope.revokeRequest
 		}).then(
