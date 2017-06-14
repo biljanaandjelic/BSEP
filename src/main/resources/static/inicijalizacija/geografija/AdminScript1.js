@@ -52,6 +52,9 @@ administrator.controller('Opsti', function($scope, $http, $compile, $timeout, $r
 	
 	$scope.token = "";
 	
+	$scope.showPhysical = -1;
+	$scope.showLegal = -1;
+	
 	$scope.init = function(){
 	
 		
@@ -65,8 +68,41 @@ administrator.controller('Opsti', function($scope, $http, $compile, $timeout, $r
 			
 			tokenService.setToken(response.data.value);
 		});
+		
+		$http.get('/special/getLoggedAndRole').
+		then(function mySucces(response) {
+			
+			if(!response.data.logged){
+				return;
+			}
+			
+			if(angular.equals(response.data.name, 'MAN')){
+				$scope.showLegal = 1;
+			}else if(angular.equals(response.data.name, 'COU')){
+				$scope.showPhysical = 1;
+			}
+			
+		});
+		
+		
 	
 	};
+	
+//	this.doShowPhysical = function(){
+//		if($scope.showPhysical){
+//			return true;
+//		}
+//		
+//		return false;
+//	};
+//	
+//	this.doShowLegal = function(){
+//		if($scope.showLegal){
+//			return true;
+//		}
+//		
+//		return false;
+//	};
 	
 	this.probajZahtev = function(){
 		

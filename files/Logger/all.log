@@ -162,3 +162,49 @@
 [INFO ]2017-06-13 12:32:35 k.c.a.AuthenticationController - User 6 LOGIN greska: nevalidini kredencijali
 [INFO ]2017-06-13 12:32:40 k.c.a.AuthenticationController - User 6 LOGIN greska: nevalidini kredencijali
 [INFO ]2017-06-13 12:32:43 k.c.a.AuthenticationController - User 6 LOGIN greska: nevalidini kredencijali
+[INFO ]2017-06-14 17:30:18 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 5 
+[INFO ]2017-06-14 17:30:18 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 6 
+[INFO ]2017-06-14 17:30:18 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 7 
+[INFO ]2017-06-14 17:30:18 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 8 
+[INFO ]2017-06-14 17:30:18 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 9 
+[INFO ]2017-06-14 17:31:20 k.c.a.AuthenticationController - User 6 LOGIN 
+[INFO ]2017-06-14 17:31:41 k.c.institutions.RacunController - User 6 INSERT_ACCOUNT tip: fizicko lice broj ziroracuna 123-9788849200070-70
+[INFO ]2017-06-14 17:38:56 k.c.institutions.RacunController - User 6 INSERT_ACCOUNT tip: fizicko lice broj ziroracuna 123-6032462417316-53
+[INFO ]2017-06-14 18:00:44 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 5 
+[INFO ]2017-06-14 18:00:44 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 6 
+[INFO ]2017-06-14 18:00:44 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 7 
+[INFO ]2017-06-14 18:00:44 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 8 
+[INFO ]2017-06-14 18:00:44 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 9 
+[INFO ]2017-06-14 18:01:29 k.c.a.AuthenticationController - User 6 LOGIN 
+[INFO ]2017-06-14 18:02:09 k.c.institutions.RacunController - User 6 INSERT_ACCOUNT tip: fizicko lice broj ziroracuna 123-7984232384315-62
+[INFO ]2017-06-14 18:02:12 k.c.institutions.RacunController - User 6 DEACTIVATE_ACCOUNT tip: pravno lice broj ziroracuna 123-7984232384315-62
+[INFO ]2017-06-14 18:15:48 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 5 
+[INFO ]2017-06-14 18:15:48 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 6 
+[INFO ]2017-06-14 18:15:48 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 7 
+[INFO ]2017-06-14 18:15:48 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 8 
+[INFO ]2017-06-14 18:15:48 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 9 
+[INFO ]2017-06-14 18:16:11 k.c.a.AuthenticationController - User 6 LOGIN 
+[INFO ]2017-06-14 18:39:27 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 5 
+[INFO ]2017-06-14 18:39:27 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 6 
+[INFO ]2017-06-14 18:39:27 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 7 
+[INFO ]2017-06-14 18:39:27 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 8 
+[INFO ]2017-06-14 18:39:27 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 9 
+[INFO ]2017-06-14 18:39:49 k.c.a.AuthenticationController - User 6 LOGIN 
+[INFO ]2017-06-14 18:40:02 k.c.businesslogic.ImportController - User 6 Permisija interna tranasakcija duznik: 123-9338670954849-69 poverilac: 123-8880775775674-13 iznos: 150.23 
+[INFO ]2017-06-14 18:40:03 k.c.businesslogic.ImportController - User 6 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 234-6355718718680-9 iznos: 1500.23  hitno: Ne
+[INFO ]2017-06-14 18:40:04 k.c.businesslogic.ImportController - User 6 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 1200.0  hitno: Ne
+[INFO ]2017-06-14 18:40:04 k.c.businesslogic.ImportController - User 6 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 8000.0  hitno: Ne
+[INFO ]2017-06-14 18:40:04 k.c.businesslogic.ImportController - User 6 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Ne
+[INFO ]2017-06-14 18:40:04 k.c.businesslogic.ImportController - User 6 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Ne
+[INFO ]2017-06-14 18:40:05 k.c.businesslogic.ImportController - User 6 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Ne
+[INFO ]2017-06-14 18:40:07 k.c.businesslogic.ImportController - User 6 Permisija medjubankarska transakcija duznik: 123-9338670954849-69 poverilac: 345-3990849817799-56 iznos: 300.0  hitno: Da
+[INFO ]2017-06-14 18:40:25 k.c.a.NaiveAuthenticationController - User 6 LOGOFF
+[INFO ]2017-06-14 18:40:38 k.c.a.AuthenticationController - User 7 LOGIN 
+[INFO ]2017-06-14 19:21:45 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 5 
+[INFO ]2017-06-14 19:21:46 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 6 
+[INFO ]2017-06-14 19:21:46 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 7 
+[INFO ]2017-06-14 19:21:46 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 8 
+[INFO ]2017-06-14 19:21:46 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 9 
+[INFO ]2017-06-14 19:22:23 k.c.a.AuthenticationController - User 6 LOGIN 
+[INFO ]2017-06-14 19:41:58 k.c.a.NaiveAuthenticationController - User 6 LOGOFF
+[INFO ]2017-06-14 19:42:07 k.c.a.AuthenticationController - User 7 LOGIN 

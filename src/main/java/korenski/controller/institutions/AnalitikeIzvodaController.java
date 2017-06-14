@@ -45,7 +45,13 @@ public class AnalitikeIzvodaController {
 		User u = (User) request.getSession().getAttribute("user");
 		Bank bank = bankRepository.findOne(u.getBank().getId());
 
-		return new ResponseEntity<Collection<AnalitikaIzvoda>>(repository.searchByBank(bank.getId()), HttpStatus.OK);
+		if(u.getRole().getName().equals("MANAGER")){
+			return new ResponseEntity<Collection<AnalitikaIzvoda>>(repository.searchByBank(bank.getId(), false), HttpStatus.OK);
+		}else if(u.getRole().getName().equals("COUNTER_OFFICER")){
+			return new ResponseEntity<Collection<AnalitikaIzvoda>>(repository.searchByBank(bank.getId(), true), HttpStatus.OK);
+		}
+		
+		return null;
 	}
 
 	@CustomAnnotation(value = "FILTER_ANALYTICS")
@@ -183,16 +189,31 @@ public class AnalitikeIzvodaController {
 			filter.setHitno(false);
 		}
 		
-		return new ResponseEntity<Collection<AnalitikaIzvoda>>(
-				repository.filter(bank.getId(), filter.getRacunDuznika(),
-						filter.getModelDuznika(), filter.getPozivNaBrojDuznika(),
-						filter.getRacunPoverioca(), filter.getModelPoverioca(),
-						filter.getPozivNaBrojPoverioca(),
-						filter.isHitno(),
-						pocetakAnalitika, krajAnalitika
-						,pocetakNalog, krajNalog, 
-						pocetakValuta, krajValuta)
-				,HttpStatus.OK);
+		if(u.getRole().getName().equals("MANAGER")){
+			return new ResponseEntity<Collection<AnalitikaIzvoda>>(
+					repository.filter(bank.getId(), filter.getRacunDuznika(),
+							filter.getModelDuznika(), filter.getPozivNaBrojDuznika(),
+							filter.getRacunPoverioca(), filter.getModelPoverioca(),
+							filter.getPozivNaBrojPoverioca(),
+							filter.isHitno(),
+							pocetakAnalitika, krajAnalitika
+							,pocetakNalog, krajNalog, 
+							pocetakValuta, krajValuta, false)
+					,HttpStatus.OK);
+		}else if(u.getRole().getName().equals("COUNTER_OFFICER")){
+			return new ResponseEntity<Collection<AnalitikaIzvoda>>(
+					repository.filter(bank.getId(), filter.getRacunDuznika(),
+							filter.getModelDuznika(), filter.getPozivNaBrojDuznika(),
+							filter.getRacunPoverioca(), filter.getModelPoverioca(),
+							filter.getPozivNaBrojPoverioca(),
+							filter.isHitno(),
+							pocetakAnalitika, krajAnalitika
+							,pocetakNalog, krajNalog, 
+							pocetakValuta, krajValuta, true)
+					,HttpStatus.OK);
+		}
+		
+		return null;
 	}
 
 	@CustomAnnotation(value = "FIND_ANALYTICS_BY_DAILY_STATE")
@@ -206,9 +227,15 @@ public class AnalitikeIzvodaController {
 		Bank bank = bankRepository.findOne(user.getBank().getId());
 		
 		DnevnoStanjeRacuna stanjeRacuna = dnevnoStanjeRepository.findOne(id);
-		Collection<AnalitikaIzvoda> izvodi = repository.filterByDnevnoStanjeAndBanka(bank.getId(), stanjeRacuna.getId());
+		Collection<AnalitikaIzvoda> izvodi;
 		
-		return new ResponseEntity<Collection<AnalitikaIzvoda>>(izvodi, HttpStatus.OK);
+		if(user.getRole().getName().equals("MANAGER")){
+			izvodi = repository.filterByDnevnoStanjeAndBanka(bank.getId(), stanjeRacuna.getId(), false);
+		}else if(user.getRole().getName().equals("COUNTER_OFFICER")){
+			izvodi = repository.filterByDnevnoStanjeAndBanka(bank.getId(), stanjeRacuna.getId(), true);
+		}
+		
+		return null;
 	}
 	
 }

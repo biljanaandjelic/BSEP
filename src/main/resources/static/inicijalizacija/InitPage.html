@@ -73,8 +73,8 @@ integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7T
     <li ng-class="{active: tab === 2}"><a href="#" ng-click="opsti.tabClick(2)"><h4>Naseljena mesta</h4></a></li>
     <li ng-class="{active: tab === 3}"><a href="#" ng-click="opsti.tabClick(3)"><h4>Valute</h4></a></li>
 	<li ng-class="{active: tab === 4}"><a href="#" ng-click="opsti.tabClick(4)"><h4>Djelatnosti</h4></a></li>
-  	<li ng-class="{active: tab === 5}"><a href="#" ng-click="opsti.tabClick(5)"><h4>Fizicka lica</h4></a></li>
-	<li ng-class="{active: tab === 6}"><a href="#" ng-click="opsti.tabClick(6)"><h4>Pravna lica</h4></a></li>
+  	<li ng-class="{active: tab === 5}"><a href="#" ng-click="opsti.tabClick(5)" ng-show="showPhysical == 1"><h4>Fizicka lica</h4></a></li>
+	<li ng-class="{active: tab === 6}"><a href="#" ng-click="opsti.tabClick(6)" ng-show="showLegal == 1"><h4>Pravna lica</h4></a></li>
 	<li ng-class="{active: tab === 7}"><a href="#" ng-click="opsti.tabClick(7)"><h4>Racuni</h4></a></li>
 	<li ng-class="{active: tab === 8}"><a href="#" ng-click="opsti.tabClick(8)"><h4>Zatvaranja</h4></a></li>
 	<li ng-class="{active: tab === 9}"><a href="#" ng-click="opsti.tabClick(9)"><h4>Poruke</h4></a></li>

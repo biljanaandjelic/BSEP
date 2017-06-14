@@ -1,5 +1,6 @@
 package korenski.controller.institutions;
 
+import java.awt.List;
 import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -13,6 +14,7 @@ import java.util.logging.FileHandler;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Context;
 
+import org.hibernate.mapping.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +37,8 @@ import korenski.model.infrastruktura.ZatvaranjeRacuna;
 import korenski.model.klijenti.Klijent;
 import korenski.model.klijenti.PravnoLice;
 import korenski.model.nalog_za_prenos.NalogZaPrenos;
-import korenski.model.nalog_za_prenos.TFinansijskiPodaci;
 import korenski.model.nalog_za_prenos.NalogZaPrenos.PodaciOPlacanju;
+import korenski.model.nalog_za_prenos.TFinansijskiPodaci;
 import korenski.model.nalog_za_prenos.TFizickoLice;
 import korenski.model.nalog_za_prenos.TLice;
 import korenski.model.nalog_za_prenos.TPravnoLice;
@@ -82,6 +84,16 @@ public class RacunController {
 		// User user = (User)request.getSession().getAttribute("user");
 		// LOGOVI
 	
+		if(u.getRole().getName().equals("MANAGER")){
+			if(klijent.isFizickoLice()){
+				return new ResponseEntity<Racun>(new Racun(new Long(-1), "Nemate prava pristupa!", false, null, null, null), HttpStatus.OK);
+			}
+		}else if(u.getRole().getName().equals("COUNTER_OFFICER")){
+			if(!klijent.isFizickoLice()){
+				return new ResponseEntity<Racun>(new Racun(new Long(-1), "Nemate prava pristupa!", false, null, null, null), HttpStatus.OK);
+			}
+		}
+		
 		Bank bank = bankRepository.findOne(u.getBank().getId());
 
 		String brojRacuna = generateBrojRacuna(u.getBank().getCode(), getRacunBase());
@@ -129,8 +141,16 @@ public class RacunController {
 		User u = (User) request.getSession().getAttribute("user");
 		Bank bank = bankRepository.findOne(u.getBank().getId());
 
-		return new ResponseEntity<Collection<Racun>>(repository.findBySearch(dto.status, dto.datumOtvaranjaOd,
-				dto.datumOtvaranjaDo, dto.ime, dto.prezime, bank.getId()), HttpStatus.OK);
+		
+		if(u.getRole().getName().equals("MANAGER")){
+			return new ResponseEntity<Collection<Racun>>(repository.findBySearch(dto.status, dto.datumOtvaranjaOd,
+					dto.datumOtvaranjaDo, dto.ime, dto.prezime, bank.getId(), false), HttpStatus.OK);
+		}else if(u.getRole().getName().equals("COUNTER_OFFICER")){
+			return new ResponseEntity<Collection<Racun>>(repository.findBySearch(dto.status, dto.datumOtvaranjaOd,
+					dto.datumOtvaranjaDo, dto.ime, dto.prezime, bank.getId(), true), HttpStatus.OK);
+		}
+		
+		return null;
 	}
 
 	@CustomAnnotation(value = "FIND_ALL_ACCOUNT")
@@ -139,7 +159,12 @@ public class RacunController {
 		User u = (User) request.getSession().getAttribute("user");
 		Bank bank = bankRepository.findOne(u.getBank().getId());
 
-		return new ResponseEntity<Collection<Racun>>(repository.findByBank(bank), HttpStatus.OK);
+		if(u.getRole().getName().equals("MANAGER")){
+			return new ResponseEntity<Collection<Racun>>(repository.findByBankAndType(bank.getId(), false), HttpStatus.OK);
+		}else if(u.getRole().getName().equals("COUNTER_OFFICER")){
+			return new ResponseEntity<Collection<Racun>>(repository.findByBankAndType(bank.getId(), true), HttpStatus.OK);
+		}
+		return null;
 	}
 
 	@CustomAnnotation(value = "FIND_ACCOUNT_BY_OWNER")
@@ -152,7 +177,19 @@ public class RacunController {
 		User u = (User) request.getSession().getAttribute("user");
 		Bank bank = bankRepository.findOne(u.getBank().getId());
 
-		return new ResponseEntity<Collection<Racun>>(repository.findByKlijentAndBank(klijent, bank), HttpStatus.OK);
+		if(u.getRole().getName().equals("MANAGER")){
+			if(klijent.isFizickoLice()){
+				return null;
+			}
+		}else if(u.getRole().getName().equals("COUNTER_OFFICER")){
+			if(!klijent.isFizickoLice()){
+				return null;
+			}
+		}
+		
+		Collection<Racun> racuni = repository.findByKlijentAndBank(klijent, bank);
+		
+		return new ResponseEntity<Collection<Racun>>(racuni, HttpStatus.OK);
 	}
 
 	private String getRacunBase() {
@@ -193,6 +230,16 @@ public class RacunController {
 
 
 		Bank bank = bankRepository.findOne(user.getBank().getId());
+		
+		if(user.getRole().getName().equals("MANAGER")){
+			if(racun.getKlijent().isFizickoLice()){
+				return new ResponseEntity<Racun>(new Racun(new Long(-1), "Nemate prava pristupa!", false, null, null, null), HttpStatus.OK);
+			}
+		}else if(user.getRole().getName().equals("COUNTER_OFFICER")){
+			if(!racun.getKlijent().isFizickoLice()){
+				return new ResponseEntity<Racun>(new Racun(new Long(-1), "Nemate prava pristupa!", false, null, null, null), HttpStatus.OK);
+			}
+		}
 		
 		if (racun.getStanje() != 0 && pomocni.getRacun().equals("")) {
 			return new ResponseEntity<Racun>(
@@ -372,6 +419,18 @@ public class RacunController {
 			return new ResponseEntity<Racun>(new Racun(new Long(-1), null, false, null, null, null), HttpStatus.OK);
 		}
 
+		User u = (User) request.getSession().getAttribute("user");
+		
+		if(u.getRole().getName().equals("MANAGER")){
+			if(racun.getKlijent().isFizickoLice()){
+				return new ResponseEntity<Racun>(new Racun(new Long(-1), "Nemate prava pristupa!", false, null, null, null), HttpStatus.OK);
+			}
+		}else if(u.getRole().getName().equals("COUNTER_OFFICER")){
+			if(!racun.getKlijent().isFizickoLice()){
+				return new ResponseEntity<Racun>(new Racun(new Long(-1), "Nemate prava pristupa!", false, null, null, null), HttpStatus.OK);
+			}
+		}
+		
 		return new ResponseEntity<Racun>(racun, HttpStatus.OK);
 	}
 

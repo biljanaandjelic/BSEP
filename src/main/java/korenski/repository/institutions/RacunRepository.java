@@ -24,8 +24,8 @@ public interface RacunRepository extends CrudRepository<Racun, Long>{
 	public Set<Racun> findByDatumOtvaranjaBefore(Date datumOtvaranja);
 	public Set<Racun> findByKlijent(Klijent klijent);
 	public Set<Racun> findByKlijentAndBank(Klijent klijent, Bank bank);
-	@Query("select r from Racun r where r.status = ?1 or r.datumOtvaranja between ?2 and ?3 or r.klijent.ime like ?4 or r.klijent.prezime like ?5 and r.bank.id = ?6")
-	public Set<Racun> findBySearch(boolean status, Date datumOtvaranjaOd, Date datumOtvaranjaDo, String ime, String prezime, Long id);
+	@Query("select r from Racun r where r.status = ?1 or r.datumOtvaranja between ?2 and ?3 or r.klijent.ime like ?4 or r.klijent.prezime like ?5 and r.bank.id = ?6 and r.klijent.fizickoLice=?7")
+	public Set<Racun> findBySearch(boolean status, Date datumOtvaranjaOd, Date datumOtvaranjaDo, String ime, String prezime, Long id, boolean fizickoLice);
 	
 	public Racun findByBankAndBrojRacuna(Bank bank, String brojRacuna);
 	/*
@@ -36,6 +36,10 @@ public interface RacunRepository extends CrudRepository<Racun, Long>{
 //	public Racun findByMaxDate();
 	@Query("select r from Racun r where r.datumOtvaranja=?1 ")
 	public Racun findByMaxDate(Date maxDatumOtvaranja);
+	
+	@Query("select r from Racun r where r.bank.id=?1 and r.klijent.fizickoLice=?2")
+	public Set<Racun> findByBankAndType(Long id, boolean fizicko);
+	
 	@Query("select max(r.datumOtvaranja) from Racun r")
 	public Date findMaxDate();
 }

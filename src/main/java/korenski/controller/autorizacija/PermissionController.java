@@ -15,9 +15,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import korenski.controller.autorizacija.dtos.LoggedAndRole;
 import korenski.intercepting.CustomAnnotation;
 import korenski.model.autorizacija.Permission;
+import korenski.model.autorizacija.User;
 import korenski.repository.autorizacija.PermissionRepository;
+import korenski.repository.autorizacija.UserRepository;
 
 
 @Controller
@@ -25,6 +28,8 @@ public class PermissionController {
 
 	@Autowired
 	PermissionRepository repository;
+	@Autowired
+	UserRepository userRepository;
 	
 	@CustomAnnotation(value = "INSERT_PERMISSION")
 	@RequestMapping(
@@ -101,6 +106,33 @@ public class PermissionController {
 
 		
 		return new ResponseEntity<Collection<Permission>>( repository.findAll(), HttpStatus.OK);
+	}
+	
+	@RequestMapping(
+			value = "/special/getLoggedAndRole",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<LoggedAndRole> loggedAndRole( @Context HttpServletRequest request) throws Exception {
+
+		User user = (User) request.getSession().getAttribute("user");
+		
+		if(user != null){
+			
+			if(user.getId()==null){
+				return new ResponseEntity<LoggedAndRole>(new LoggedAndRole(false, null), HttpStatus.OK);
+			}
+			
+			user = userRepository.findByUsername(user.getUsername());
+			
+			if(user== null){
+				return new ResponseEntity<LoggedAndRole>(new LoggedAndRole(false, null), HttpStatus.OK);
+			}
+			
+			
+			return new ResponseEntity<LoggedAndRole>( new LoggedAndRole(true, user.getRole().getName().substring(0, 3)), HttpStatus.OK);
+		}
+		
+		return new ResponseEntity<LoggedAndRole>( new LoggedAndRole(false, null), HttpStatus.OK);
 	}
 	
 	
