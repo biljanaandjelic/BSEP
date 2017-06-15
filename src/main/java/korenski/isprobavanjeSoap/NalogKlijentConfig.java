@@ -43,35 +43,35 @@ public class NalogKlijentConfig {
 	    WebServiceTemplate webServiceTemplate = new WebServiceTemplate();
 	    webServiceTemplate.setMarshaller(jaxb2Marshaller());
 	    webServiceTemplate.setUnmarshaller(jaxb2Marshaller());
-	    webServiceTemplate.setDefaultUri("http://localhost:8090/ws/nalozi");
+	    webServiceTemplate.setDefaultUri("https://localhost:8443/ws/nalozi");
 	    
-//	    KeyStore ks = KeyStore.getInstance("JKS");
-//        ks.load(new FileInputStream("./files/javaclient.jks"), "password".toCharArray());
-//	    
-//        KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-//        keyManagerFactory.init(ks, "password".toCharArray());
-//        
-//        KeyStore ts = KeyStore.getInstance("JKS");
-//        ts.load(new FileInputStream("./files/truststore2.jks"), "password".toCharArray());
-//        
-//        TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-//        trustManagerFactory.init(ts);
-//        
-//        HttpsUrlConnectionMessageSender messageSender = new HttpsUrlConnectionMessageSender();
-//        messageSender.setKeyManagers(keyManagerFactory.getKeyManagers());
-//        messageSender.setTrustManagers(trustManagerFactory.getTrustManagers());
-//        
-//        
-//        messageSender.setHostnameVerifier((hostname, sslSession) -> {
-//            if (hostname.equals("localhost")) {
-//                return true;
-//            }
-//            return false;
-//        });
-//
-//        webServiceTemplate.setMessageSender(messageSender);
-//
-//        
+	    KeyStore ks = KeyStore.getInstance("JKS");
+        ks.load(new FileInputStream("./files/ssl/javaclient.jks"), "password".toCharArray());
+	    
+        KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+        keyManagerFactory.init(ks, "password".toCharArray());
+        
+        KeyStore ts = KeyStore.getInstance("JKS");
+        ts.load(new FileInputStream("./files/ssl/clienttruststore.jks"), "password".toCharArray());
+        
+        TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        trustManagerFactory.init(ts);
+        
+        HttpsUrlConnectionMessageSender messageSender = new HttpsUrlConnectionMessageSender();
+        messageSender.setKeyManagers(keyManagerFactory.getKeyManagers());
+        messageSender.setTrustManagers(trustManagerFactory.getTrustManagers());
+        
+        
+        messageSender.setHostnameVerifier((hostname, sslSession) -> {
+            if (hostname.equals("localhost")) {
+                return true;
+            }
+            return false;
+        });
+
+        webServiceTemplate.setMessageSender(messageSender);
+	
+        
 	    return webServiceTemplate;
 	  }
 }

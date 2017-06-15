@@ -317,7 +317,7 @@ public class CertificatesController {
 		w.close();
 		
 		//preuzimanje sertifikata za privremeni potpis privatnog kljuca
-		f = new File("./files/certificates/12345678-1.cer");
+		f = new File("./files/temp/temp.cer");
 		BufferedReader r = new BufferedReader(new FileReader(f.getPath()));
 		PemReader pemReader = new PemReader(r);
 		PEMParser pemParser = new PEMParser(pemReader);
