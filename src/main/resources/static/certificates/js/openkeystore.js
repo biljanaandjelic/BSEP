@@ -48,6 +48,16 @@ keystoreModule.controller("KeystoreController",['$http', '$scope', '$log', '$win
 		});
     };
 	
+    this.logoff = function(){
+		
+		$http.get('/logoff').
+		then(function mySucces(response) {
+			
+				//$window.location.href="http://localhost:8080/authentification/login.html";
+				toastr.success("IZLOGOVAN");
+				$window.location.href=response.data.username;
+		});
+	};
 	
 	this.open = function(){
 		$http({

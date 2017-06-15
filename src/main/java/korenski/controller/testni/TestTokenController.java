@@ -13,6 +13,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Context;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.client.RestTemplate;
 
+import io.spring.guides.gs_producing_web_service2.NalogZaPrenos;
+import korenski.isprobavanjeSoap.NalogKlijent;
 import korenski.model.autorizacija.Role;
 import korenski.model.autorizacija.User;
 import korenski.model.infrastruktura.Bank;
@@ -44,6 +48,12 @@ public class TestTokenController {
 	EmployeeRepository employeeRepository;
 	@Autowired
 	UserRepository userRepository;
+
+	@Autowired
+	NalogKlijent klijent;
+	
+
+
 
 	@RequestMapping(
 			value = "/special/napraviToken",
@@ -208,5 +218,26 @@ public class TestTokenController {
 			ks.store(new FileOutputStream("./files/treci.jks"), "treci".toCharArray());
 			
 			return new ResponseEntity<String>("ok", HttpStatus.OK);
+		}
+		
+		
+		@RequestMapping(
+				value = "/special/posaljiZahtev",
+				method = RequestMethod.GET,
+				produces = MediaType.APPLICATION_JSON_VALUE)
+		public ResponseEntity<String> PosaljiZahtev(@Context HttpServletRequest request, HttpServletResponse response) throws Exception {
+			
+			System.out.println("SALJEM!");
+			
+			NalogZaPrenos nzp = klijent.nadji();
+			
+			System.out.println("Stigao nalog!");
+			
+			JAXBContext context = JAXBContext.newInstance("io.spring.guides.gs_producing_web_service2");
+			Marshaller marshaller = context.createMarshaller();
+		    marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		    marshaller.marshal(nzp, System.out);
+			
+			return new ResponseEntity<String>( "Sve ok", HttpStatus.OK);
 		}
 }

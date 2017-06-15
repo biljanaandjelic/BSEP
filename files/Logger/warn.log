@@ -77,3 +77,24 @@
 [WARN ]2017-06-15 02:31:26 k.c.autorizacija.UserController - User 5 PASSWORD_CHANGE_USER greska: neuspijesna promjena lozinke korisnicko ime se ne poklapa sa unesenim
 [INFO ]2017-06-15 02:31:35 k.c.autorizacija.UserController - User -5 PASSWORD_CHANGE_USER 
 [INFO ]2017-06-15 02:31:43 k.c.a.AuthenticationController - User 5 LOGIN 
+[INFO ]2017-06-15 15:43:39 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 5 
+[INFO ]2017-06-15 15:43:39 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 6 
+[INFO ]2017-06-15 15:43:39 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 7 
+[INFO ]2017-06-15 15:43:39 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 8 
+[INFO ]2017-06-15 15:43:39 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 9 
+[INFO ]2017-06-15 15:44:21 k.c.a.AuthenticationController - User 9 LOGIN 
+[INFO ]2017-06-15 15:58:25 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 5 
+[INFO ]2017-06-15 15:58:25 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 6 
+[INFO ]2017-06-15 15:58:26 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 7 
+[INFO ]2017-06-15 15:58:26 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 8 
+[INFO ]2017-06-15 15:58:26 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 9 
+[INFO ]2017-06-15 16:00:19 k.c.a.AuthenticationController - User 9 LOGIN 
+[INFO ]2017-06-15 16:01:37 k.c.a.NaiveAuthenticationController - User 9 LOGOFF
+[INFO ]2017-06-15 16:06:26 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 5 
+[INFO ]2017-06-15 16:06:26 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 6 
+[INFO ]2017-06-15 16:06:26 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 7 
+[INFO ]2017-06-15 16:06:26 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 8 
+[INFO ]2017-06-15 16:06:26 k.c.autorizacija.UserController - User  INSERT_INITAL_ADMIN admin profile 9 
+[INFO ]2017-06-15 16:07:00 k.c.a.AuthenticationController - User 5 LOGIN info: promjena inicijalne lozinke
+[INFO ]2017-06-15 16:07:36 k.c.autorizacija.UserController - User -5 PASSWORD_CHANGE_USER 
+[INFO ]2017-06-15 16:07:45 k.c.a.AuthenticationController - User 5 LOGIN 
