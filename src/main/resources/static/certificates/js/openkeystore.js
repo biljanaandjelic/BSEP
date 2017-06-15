@@ -40,6 +40,15 @@ keystoreModule.controller("KeystoreController",['$http', '$scope', '$log', '$win
 	var control = this;
 	control.keystore = {};
 	
+	this.goBack = function(){
+    	$http.get('/goBack').
+		then(function mySucces(response) {
+			
+				$window.location.href=response.data.username;
+		});
+    };
+	
+	
 	this.open = function(){
 		$http({
 		    method: 'POST',

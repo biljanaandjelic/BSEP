@@ -23,6 +23,7 @@
 		<script type = "text/javascript" src="js/certificateRevokeAndGetStatus.js"></script> 
 		
 		<script type = "text/javascript" src="js/certificateStatus.js"></script> 
+		<script type = "text/javascript" src="izmena/izmenaScript.js"></script>
 		
 		<link rel="stylesheet" href="css/certificates.css" > 
 	</head>
@@ -49,7 +50,9 @@
 
 		    			<li ng-class="{active:tab.isSet(7)}"><a class="navbar-brand" href ng-click="tab.setTab(7)">Process CSR request</a></li>
 						<li ng-class="{active:tab.isSet(9)}"><a class="navbar-brand" href ng-click="tab.setTab(9)">Import certificate</a></li>
-
+						
+						<li ng-class="{active: tab.isSet(13)}"><a class="navbar-brand" href ng-click="tab.setTab(13)"><h4>Izmena lozinke</h4></a></li>
+						
 		    		</ul>
 	    		</section>
 	    		<ul class="nav navbar-nav navbar-right">
@@ -93,4 +96,9 @@
 		<div ng-show="tab.isSet(9)">
 			<div ng-include="'importCertificate.html'"></div>
 		</div>
+		
+		<div id="izmena" class="tab-pane fade in active" ng-show='tab.isSet(13)'>
+      
+	      <div ng-include="'izmena/izmenaHTML.html'"></div>
+	    </div>
 </html>

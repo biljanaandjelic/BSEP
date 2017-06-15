@@ -104,6 +104,8 @@ administrator.controller('Opsti', function($scope, $http, $compile, $timeout, $r
 //		return false;
 //	};
 	
+	
+	
 	this.probajZahtev = function(){
 		
 		

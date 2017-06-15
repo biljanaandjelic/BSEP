@@ -135,5 +135,38 @@ public class PermissionController {
 		return new ResponseEntity<LoggedAndRole>( new LoggedAndRole(false, null), HttpStatus.OK);
 	}
 	
+	@CustomAnnotation(value = "INSERT_PERMISSION")
+	@RequestMapping(
+			value = "/goToApp",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<User> goToApp( @Context HttpServletRequest request) throws Exception {
+
+		String url = "";
+		String scheme = request.getScheme();
+		String host = request.getServerName();
+		int port = request.getServerPort();
+		url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/certificates/openkeystore.html");
+		User user = new User();
+		user.setUsername(url);
+		
+		return new ResponseEntity<User>(user, HttpStatus.OK);
+	}
+	
+	@CustomAnnotation(value = "INSERT_PERMISSION")
+	@RequestMapping(
+			value = "/goBack",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<User> goBack( @Context HttpServletRequest request) throws Exception {
+		String url = "";
+		String scheme = request.getScheme();
+		String host = request.getServerName();
+		int port = request.getServerPort();
+		url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/adminResources/AdminPage.html");
+		User user = new User();
+		user.setUsername(url);
+		return new ResponseEntity<User>(user, HttpStatus.OK);
+	}
 	
 }

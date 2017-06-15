@@ -241,6 +241,11 @@ public class AuthenticationController {
 		try {
 			user = repository.findByUsername(loginObject.getUsername());
 			
+			if(!loginObject.getUsername().equals(user.getUsername())){
+				loginObject.setId(-1);
+				logger.warn("Neuspijesno logovanje");
+				return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
+			}
 			
 			if(user != null){
 			

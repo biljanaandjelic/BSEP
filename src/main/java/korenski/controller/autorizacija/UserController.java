@@ -430,6 +430,14 @@ public class UserController {
 				
 				
 			}
+			
+			if(!user.getUsername().equals(data.getUsername())){
+				user = new User();
+				user.setId(new Long(-3));
+				logger.warn("User {} {} greska: ne postoji u bazi", userfromsession.getId(), mime);
+				return new ResponseEntity<User>(user, HttpStatus.OK);
+			}
+			
 			boolean valid = userService.authenticate(data.getPassword(), user.getPassword(), user.getSalt());
 			
 			if(!valid){
