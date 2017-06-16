@@ -64,10 +64,7 @@
 		<appender-ref ref="FILE" />
 		<appender-ref ref="STDOUT" />
 	</logger>
-	<logger name="korenski.controller" level="all">
-		<appender-ref ref="FILE_all" />
-		<appender-ref ref="STDOUT" />
-	</logger>
+	
 	<logger name="korenski.controller" level="DEBUG">
 		<appender-ref ref="FILE_warn" />
 		<appender-ref ref="STDOUT" />

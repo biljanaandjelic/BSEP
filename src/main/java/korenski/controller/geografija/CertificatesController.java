@@ -93,11 +93,11 @@ import korenski.DTOs.KeystoreDTO;
 import korenski.controller.autentifikacija.pomocneKlase.LoginObject;
 import korenski.intercepting.CustomAnnotation;
 import korenski.model.autorizacija.User;
-import korenski.model.dto.CertificateInfo;
-import korenski.model.dto.CertificateInfo.CertStatus;
-import korenski.model.dto.CertificateInfo.Type;
-import korenski.model.dto.RevokeRequest;
 import korenski.model.infrastruktura.Bank;
+import korenski.model.util.CertificateInfo;
+import korenski.model.util.RevokeRequest;
+import korenski.model.util.CertificateInfo.CertStatus;
+import korenski.model.util.CertificateInfo.Type;
 import korenski.repository.institutions.BankRepository;
 import korenski.service.dtos.CertificateInfoService;
 import korenski.service.dtos.RevokeRequestService;
@@ -219,8 +219,15 @@ public class CertificatesController {
 		String certificateName= uid.getFirst().getValue() + "-" + cnt;
 		CertificateInfo certificateInfo = new CertificateInfo(serial, CertStatus.GOOD, null, null,  Type.NationalBank, certificateName);
 		certificateInfo.setBank(bank);
+		certificateInfo.setKeyStorName(keystoreSession.getName());
+		certificateInfo.advancedSetKeyStorePassword(keystoreSession.getPassword());
+		certificateInfo.setCaKeyStoreName(keystoreSession.getName());
+		certificateInfo.advancedSetCaKeyStorePassword(keystoreSession.getPassword());
+		try{
 		certificateInfoService.create(certificateInfo);
-		
+		}catch(Exception e){
+			return new  ResponseEntity<String>("notok", HttpStatus.OK);
+		}
 		//cuvanje keystore-a
 		saveKeyStore2(filePathString, keystoreSession.getPassword());
 		
@@ -285,14 +292,7 @@ public class CertificatesController {
 		if(!folder.exists()){
 			folder.mkdirs();
 		}
-		/*
-		File[] listOfFiles = folder.listFiles();
-		int num = 0;
-		if(listOfFiles!=null){
-			 num=listOfFiles.length;
-		}
-		num++;
-		*/
+		
 		
 		//kreiranje csr zahteva i njegovo smestanje u fajl
 		int cnt = 1;
@@ -518,7 +518,7 @@ public class CertificatesController {
 		while(true){
 			if(!ks.isCertificateEntry("CERT-" + IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()) + "-" + cnt)){
 				ks.setCertificateEntry("CERT-" + IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()) + "-" + cnt, certConverter.getCertificate(certHolder));
-			//	certificateInfo.setAlias("CERT-"+IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()) + "-" + cnt);
+			
 				break;
 			}
 			cnt++;
@@ -552,8 +552,14 @@ public class CertificatesController {
 		
 		String certificateName=uid.getFirst().getValue() + "-" + cnt;
 		certificateInfo.setCertificateName(certificateName);
+		certificateInfo.setCaKeyStoreName(keystoreSession.getName());
+		certificateInfo.advancedSetCaKeyStorePassword(keystoreSession.getPassword());
+		try{
 		certificateInfoService.create(certificateInfo);
-		
+		}catch (Exception e) {
+			// TODO: handle exception
+			return new ResponseEntity<String>("notok", HttpStatus.OK);
+		}
 		return new ResponseEntity<String>("ok", HttpStatus.OK);
 	}
 
@@ -663,35 +669,6 @@ public class CertificatesController {
 
 
 	
-//	/**
-//	 * IZBRISATIIIIIIIIIIIIIIIIIIIIIIIIIIIIii
-//	 * Revoke certificate if private key is lost or for some other reason
-//	 * 
-//	 * @param serialNumber seijski broj sertifikata cije povlacenje je zatrazeno
-//	 * @author Biljana
-//	 */
-//	@CustomAnnotation(value = "REVOKE_CERTIFICATE")
-//	@RequestMapping(value = "/revokeCertificate/{serialNumber}", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN)
-//	public ResponseEntity<String> revokeCertificate(@PathVariable("serialNumber") BigInteger serialNumber) {
-//
-//		//CertificateInfo certID = certificateInfoService.findByAlias(alias);
-//		CertificateInfo certID=certificateInfoService.findBySerialNumber(serialNumber);
-//		
-//		System.out.println("Povlacenje sertifikata");
-//		System.out.println("Alijsa sertifikata koji se povlaci " + serialNumber);
-//		if (certID != null) {
-//			System.out.println("Certifikat je pronadjen i uspijesno se povlaci");
-//			Date dateOfRevocation = new Date();
-//			certID.setDateOfRevocation(dateOfRevocation);
-//			certID.setStatus(CertStatus.REVOKED);
-//			certificateInfoService.update(certID);
-//			return new ResponseEntity<String>("Sertifikat je uspijesno povucen.", HttpStatus.OK);
-//
-//		} else {
-//			System.out.println("Sertifikat nije povucen.");
-//			return new ResponseEntity<String>("Sertifika nije pronadjen.", HttpStatus.NO_CONTENT);
-//		}
-//	}
 
 
 	/**
@@ -713,7 +690,7 @@ public class CertificatesController {
 		if(type.equals("decline")){
 			return new ResponseEntity<String>("OK", HttpStatus.OK);
 		}
-		//User activUser = (User) request.getSession().getAttribute("user");
+	
 		RevokeRequest revokeRequest=revokeRequestService.findRevokeRequest(id);
 		CertificateInfo certInfo=certificateInfoService.findBySerialNumber(revokeRequest.getSerialNumber());
 		if(certInfo.getStatus()==CertStatus.GOOD){
@@ -799,7 +776,6 @@ public class CertificatesController {
 	 */
 	@CustomAnnotation(value = "SAVE_REVOKE_REQUEST")
 	@RequestMapping(value = "/createRevokeRequest", method = RequestMethod.POST,
-			// consumes=MediaType.APPLICATION_JSON,
 			produces = MediaType.TEXT_PLAIN)
 	public ResponseEntity<String> saveRevokeRequest(@RequestBody RevokeRequest revokeRequest,
 			@Context HttpServletRequest request) {
@@ -1029,7 +1005,28 @@ public class CertificatesController {
 		certConverter = certConverter.setProvider("BC");
 		
 		Certificate certificate = certConverter.getCertificate(certificateHolder);
-		
+		/*
+		 * Preuzimanje serijskog broja iz sertifikata da bi mu mogli pristupiti u bazi i da 
+		 * bi mogli da mu setujemo keystore name i keystore password  u kom se nalazi privatni
+		 * kljuc sertifikata
+		 */
+		BigInteger serialNumber=null;
+		X500Name x500name = new JcaX509CertificateHolder((X509Certificate) certificate).getSubject();
+			if (x500name != null) {
+				X509Certificate x509Cert = (X509Certificate) certificate;
+				 serialNumber = x509Cert.getSerialNumber();
+			}
+		if(serialNumber!=null){
+		CertificateInfo certificateInfo=certificateInfoService.findBySerialNumber(serialNumber);
+		certificateInfo.advancedSetKeyStorePassword(keystoreSession.getPassword());
+		certificateInfo.setKeyStorName(keystoreSession.getName());
+		try{
+			certificateInfoService.create(certificateInfo);
+		}catch (Exception e) {
+			// TODO: handle exception
+			return new ResponseEntity<String>("notok", HttpStatus.OK);
+		}
+		}
 		getKeyStore2("./files/" + keystoreSession.getName() + ".jks", keystoreSession.getPassword());
 		
 		//smestanje sertifikata pod zadatim alijasom

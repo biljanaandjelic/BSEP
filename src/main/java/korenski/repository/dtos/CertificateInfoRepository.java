@@ -6,10 +6,9 @@ import java.util.Set;
 
 import org.springframework.data.repository.CrudRepository;
 
-import korenski.model.dto.CertificateInfo;
-import korenski.model.dto.CertificateInfo.CertStatus;
-
 import korenski.model.infrastruktura.Bank;
+import korenski.model.util.CertificateInfo;
+import korenski.model.util.CertificateInfo.CertStatus;
 
 public interface CertificateInfoRepository  extends CrudRepository<CertificateInfo,Long>{
 	public CertificateInfo save(CertificateInfo certificateID);
@@ -21,7 +20,7 @@ public interface CertificateInfoRepository  extends CrudRepository<CertificateIn
 	public Set<CertificateInfo> findByStatus(CertStatus status);
 	public Set<CertificateInfo> findByDateOfRevocation(Date dateOfRevocation);
 	public Set<CertificateInfo> findAll();
-///	public CertificateInfo findByAlias(String alias);
+
 	public CertificateInfo findBySerialNumberAndBank(BigInteger serialNumber, Bank bank);
-//	public Set<CertificateInfo> findByAliasContainingIgnoreCase(String alias);
+
 }

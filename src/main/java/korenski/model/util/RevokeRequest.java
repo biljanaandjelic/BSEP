@@ -1,4 +1,4 @@
-package korenski.model.dto;
+package korenski.model.util;
 
 import java.math.BigInteger;
 

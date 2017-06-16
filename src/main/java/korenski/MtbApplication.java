@@ -11,6 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 import korenski.intercepting.AuthorizationInterceptor;
 import korenski.intercepting.SpecialInterceptor;
+import korenski.util.CustomSecureRandom;
 
 @SpringBootApplication
 @EnableScheduling
@@ -29,6 +30,7 @@ public class MtbApplication extends WebMvcConfigurerAdapter {
     }
     */
 	public static void main(String[] args) {
+		//CustomSecureRandom.getInstance();
 		SpringApplication.run(MtbApplication.class, args);
 	}
 }

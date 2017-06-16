@@ -512,22 +512,7 @@ public class BusinessLogicService {
 				nalog.getPodaciOPlacanju().getIznos(), nalog.getPodaciOPlacanju().getValuta(), hitno,
 				dnevnoStanjeDuznika);
 
-//		AnalitikaIzvoda analitikaPoverioca = new AnalitikaIzvoda(new Date(new Date().getTime()), "K",
-//				nalog.getPodaciODuzniku().getAdresa(), nalog.getSvrhaPlacanja(),
-//				nalog.getPodaciOPoveriocu().getAdresa(), nalog.getPodaciOPlacanju().getDatumValute(),
-//				nalog.getPodaciOPlacanju().getDatumValute(), racunDuznika.getBrojRacuna(),
-//				nalog.getPodaciOPlacanju().getFinansijskiPodaciDuznik().getModel(),
-//				nalog.getPodaciOPlacanju().getFinansijskiPodaciDuznik().getPozivNaBroj(),
-//				racunPoverioca.getBrojRacuna(), nalog.getPodaciOPlacanju().getFinansijskiPodaciPoverilac().getModel(),
-//				nalog.getPodaciOPlacanju().getFinansijskiPodaciPoverilac().getPozivNaBroj(),
-//				nalog.getPodaciOPlacanju().getIznos(), nalog.getPodaciOPlacanju().getValuta(), hitno,
-//				dnevnoStanjePoverioca);
 
-		// if((dnevnoStanjeDuznika.getNovoStanje()-analitikaDuznika.getIznos())
-		// < 0){
-		// System.out.println("Nema dovoljno sredstava!");
-		// return;
-		// }
 
 		try {
 			
@@ -541,12 +526,7 @@ public class BusinessLogicService {
 			dnevnoStanjeDuznika.getAnalitike().add(analitikaDuznika);
 			dnevnoStanjeRepository.save(dnevnoStanjeDuznika);
 
-//			analitikaPoverioca=analitikaIzvodaRepository.save(analitikaPoverioca);
-//			dnevnoStanjePoverioca.setNovoStanje(dnevnoStanjePoverioca.getNovoStanje() + analitikaPoverioca.getIznos());
-//			dnevnoStanjePoverioca
-//					.setPrometUKorist(dnevnoStanjePoverioca.getPrometUKorist() + analitikaPoverioca.getIznos());
-//			dnevnoStanjePoverioca.getAnalitike().add(analitikaPoverioca);
-//			dnevnoStanjeRepository.save(dnevnoStanjePoverioca);
+
 		} catch (Exception e) {
 			// TODO: handle exception
 			return false;
@@ -555,7 +535,7 @@ public class BusinessLogicService {
 	}
 	public boolean export(MedjubankarskiPrenos foundMedjubankarskiPrenos){
 		try{
-		//	MedjubankarskiPrenos foundMedjubankarskiPrenos=mbPrenosRepository.findOne(id);
+		
 			File file = new File("./files/xmls/medjubankarskiPrenos"+foundMedjubankarskiPrenos.getId().toString()+".xml");
 			JAXBContext jaxbContext = JAXBContext.newInstance(MedjubankarskiPrenos.class);
 			Marshaller jaxbMarshaller =  jaxbContext.createMarshaller();
@@ -566,7 +546,7 @@ public class BusinessLogicService {
 			jaxbMarshaller.marshal(foundMedjubankarskiPrenos, file);
 			foundMedjubankarskiPrenos.setSend(true);
 			mBRepository.save(foundMedjubankarskiPrenos);
-			//return new ResponseEntity<String>("OK",HttpStatus.OK);
+			
 			return true;
 		}catch (Exception e) {
 			// TODO: handle exception

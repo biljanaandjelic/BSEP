@@ -5,8 +5,8 @@ import java.util.Set;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import korenski.model.dto.RevokeRequest;
 import korenski.model.infrastruktura.Bank;
+import korenski.model.util.RevokeRequest;
 
 @Repository
 public interface RevokeRequestRepository extends CrudRepository<RevokeRequest,Long>{

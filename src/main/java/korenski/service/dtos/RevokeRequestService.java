@@ -5,8 +5,8 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import korenski.model.dto.RevokeRequest;
 import korenski.model.infrastruktura.Bank;
+import korenski.model.util.RevokeRequest;
 import korenski.repository.dtos.RevokeRequestRepository;
 
 @Service

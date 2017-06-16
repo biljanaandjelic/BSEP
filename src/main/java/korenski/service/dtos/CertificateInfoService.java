@@ -6,10 +6,9 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import korenski.model.dto.CertificateInfo;
-import korenski.model.dto.CertificateInfo.CertStatus;
-
 import korenski.model.infrastruktura.Bank;
+import korenski.model.util.CertificateInfo;
+import korenski.model.util.CertificateInfo.CertStatus;
 import korenski.repository.dtos.CertificateInfoRepository;
 
 @Service

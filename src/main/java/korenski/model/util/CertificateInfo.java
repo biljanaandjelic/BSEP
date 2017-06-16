@@ -1,8 +1,12 @@
-package korenski.model.dto;
+package korenski.model.util;
 
 import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Date;
 
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,6 +18,10 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import korenski.model.infrastruktura.Bank;
+import korenski.util.Base64Utility;
+import korenski.util.CustomSecureRandom;
+import korenski.util.Decryption;
+import korenski.util.Encryption;
 
 
 
@@ -48,6 +56,14 @@ public class CertificateInfo {
 	
 	@Column(nullable=false)
 	private String certificateName;
+	
+	private String caKeyStoreName;
+	
+	private byte[] caKeyStorePassword;
+	
+	private String keyStorName;
+	
+	private byte[] keyStorePassword;
 	
 	public CertificateInfo(){
 		
@@ -137,7 +153,126 @@ public class CertificateInfo {
 	public void setCertificateName(String certificateName) {
 		this.certificateName = certificateName;
 	}
+
+	public String getCaKeyStoreName() {
+		return caKeyStoreName;
+	}
+
+	public void setCaKeyStoreName(String caKeyStoreName) {
+		this.caKeyStoreName = caKeyStoreName;
+	}
+
+	public byte[] getCaKeyStorePassword() {
+		return caKeyStorePassword;
+	}
+
+	public void setCaKeyStorePassword(byte[] caKeyStorePassword) {
+		this.caKeyStorePassword = caKeyStorePassword;
+	}
+
+	public String getKeyStorName() {
+		return keyStorName;
+	}
+
+	public void setKeyStorName(String keyStorName) {
+		this.keyStorName = keyStorName;
+	}
+
+	public byte[] getKeyStorePassword() {
+		return keyStorePassword;
+	}
+
+	public void setKeyStorePassword(byte[] keyStorePassword) {
+		this.keyStorePassword = keyStorePassword;
+	}
 	
+	public void advancedSetCaKeyStorePassword(String password){
+		// SecureRandom random=CustomSecureRandom.getInstance().getSecureRadnom();
+		 SecretKey secretKey=CustomSecureRandom.getInstance().getSecretKey();
+		 // KeyGenerator keygen;
+	//	try {
+		
+			 System.out.println("_______________________________________________");
+			 System.out.println("Plain password "+password);
+			byte[] cipeherText=Encryption.encrypt(password, secretKey);
+			System.out.println("Kriptovan password  "+Base64Utility.encode(cipeherText));
+			 System.out.println("_______________________________________________");
+			setCaKeyStorePassword(cipeherText);
+	//	} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+		//	e.printStackTrace();
+		//}
+		
+	}
+	/**
+	 * Kriptovanje passworda za keystore u kom se nalazi 
+	 * @param password
+	 */
+	public void advancedSetKeyStorePassword(String password){
+		// SecureRandom random=CustomSecureRandom.getInstance().getSecureRadnom();
+		 SecretKey secretKey=CustomSecureRandom.getInstance().getSecretKey();
+//		try {
+//			keygen = KeyGenerator.getInstance("AES");
+//			 keygen.init(128, random);
+//			 SecretKey secretKey = keygen.generateKey();
+			 System.out.println("_______________________________________________");
+			 System.out.println("Plain password "+password);
+			byte[] cipeherText=Encryption.encrypt(password, secretKey);
+			System.out.println("Kriptovan password  "+Base64Utility.encode(cipeherText));
+			 System.out.println("_______________________________________________");
+			setKeyStorePassword(cipeherText);
+//		} catch (NoSuchAlgorithmException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
+	}
 	
+	public String advancedGetCaKeyStorePassword(){
+		// SecureRandom random=CustomSecureRandom.getInstance().getSecureRadnom();
+		 SecretKey secretKey=CustomSecureRandom.getInstance().getSecretKey();
+	//	try {
+			// keygen = KeyGenerator.getInstance("AES");
+			// keygen.init(128, random);
+			// SecretKey secretKey = keygen.generateKey();
+			 System.out.println("_______________________________________________");
+			
+			 byte[] cipherPassword=getCaKeyStorePassword();
+			 System.out.println("Plain password "+Base64Utility.encode(cipherPassword));
+			//byte[] cipeherText=Encryption.encrypt(password, secretKey);
+			 byte[] plainPassword=Decryption.decrypt(cipherPassword, secretKey); 
+			 String password=Base64Utility.encode(plainPassword);
+			System.out.println("Kriptovan password  "+password);
+			 System.out.println("_______________________________________________");
+			 return password;
+		//}catch(Exception e){
+		//	e.printStackTrace();
+		///	return "";
+		//}
+		
+	}
+	
+	public String advancedGetKeyStorePassword(){
+		// SecureRandom random=CustomSecureRandom.getInstance().getSecureRadnom();
+		 SecretKey secretKey=CustomSecureRandom.getInstance().getSecretKey();
+	//	try {
+		//	keygen = KeyGenerator.getInstance("AES");
+		//	 keygen.init(128, random);
+			 //secretKey = keygen.generateKey();
+			 System.out.println("_______________________________________________");
+			
+			 byte[] cipherPassword=getKeyStorePassword();
+			 System.out.println("Cipher  password "+Base64Utility.encode(cipherPassword));
+			//byte[] cipeherText=Encryption.encrypt(password, secretKey);
+			 byte[] plainPassword=Decryption.decrypt(cipherPassword, secretKey); 
+			 String password=Base64Utility.encode(plainPassword);
+			System.out.println("Plain password  "+password);
+			 System.out.println("_______________________________________________");
+			 return password;
+		//}catch(Exception e){
+		//	e.printStackTrace();
+		//	return "";
+		//}
+	}
 
 }
