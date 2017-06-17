@@ -28,6 +28,8 @@ import javax.ws.rs.core.MediaType;
 
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -121,7 +123,7 @@ public class OCSPResponder {
 	@RequestMapping(value = "/ocspResponse/{serialNumber}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
 	public ResponseEntity<OCSPResponse> processOcspRequest(@PathVariable BigInteger serialNumber,
 			@Context HttpServletRequest request) {
-
+		//Logger logger=LoggerFactory.getInstance();
 		User user = (User) request.getSession().getAttribute("user");
 		Bank bank;
 		String name = "";
@@ -292,7 +294,9 @@ public class OCSPResponder {
 
 					PrivateKey key = (PrivateKey) ks.getKey(aliasForPrivateKey, "test".toCharArray());
 					Certificate cert=certKs.getCertificate(aliasForCert);
-				
+					System.out.println("__________________________________");
+					System.out.println("GET__CA___DATA");
+					System.out.println("__________________________________");
 					return new CAData(cert, key);
 				}
 			} catch (KeyStoreException | NoSuchProviderException | NoSuchAlgorithmException | CertificateException
@@ -318,6 +322,7 @@ public class OCSPResponder {
 	 */
 	private byte[] sign(byte[] data, PrivateKey privateKey) {
 		try {
+			System.out.println("POTPISIVANJE");
 			// Kreiranje objekta koji nudi funkcionalnost digitalnog
 			// potpisivanja
 			// Prilikom getInstance poziva prosledjujemo algoritam koji cemo
@@ -355,6 +360,7 @@ public class OCSPResponder {
 	 */
 	private boolean verify(byte[] data, byte[] signature, PublicKey publicKey) {
 		try {
+			System.out.println("PROVJERA");
 			// Kreiranje objekta koji nudi funkcionalnost digitalnog
 			// potpisivanja
 			// Prilikom getInstance poziva prosledjujemo algoritam koji cemo

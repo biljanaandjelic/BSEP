@@ -75,6 +75,8 @@ import org.bouncycastle.pkcs.jcajce.JcaPKCS10CertificationRequestBuilder;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemReader;
 import org.bouncycastle.util.io.pem.PemWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -91,6 +93,7 @@ import korenski.DTOs.CertificateRequestDTO;
 import korenski.DTOs.ImportCertificateDTO;
 import korenski.DTOs.KeystoreDTO;
 import korenski.controller.autentifikacija.pomocneKlase.LoginObject;
+import korenski.controller.businesslogic.ImportController;
 import korenski.intercepting.CustomAnnotation;
 import korenski.model.autorizacija.User;
 import korenski.model.infrastruktura.Bank;
@@ -1040,6 +1043,7 @@ public class CertificatesController {
 	//pomocna metoda za generisanje keystore-ova, potencijalno izbrisati pred rok
 	@RequestMapping(value = "/generateKeystores", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN)
 	public ResponseEntity<String> generateKeystores(@Context HttpServletRequest request) throws KeyStoreException, NoSuchProviderException, NoSuchAlgorithmException, CertificateException, IOException {
+		
 		
 		if (ks == null) {
 			ks = KeyStore.getInstance("BKS", "BC");
