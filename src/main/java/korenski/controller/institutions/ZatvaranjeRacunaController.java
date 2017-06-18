@@ -48,9 +48,18 @@ public class ZatvaranjeRacunaController {
 		User u = (User)request.getSession().getAttribute("user");
 		Bank bank = bankRepository.findOne(u.getBank().getId());
 		
-		Collection<ZatvaranjeRacuna> zatvaranja = repository.findBySearch(bank.getId());
 		
-		return new ResponseEntity<Collection<ZatvaranjeRacuna>>( zatvaranja, HttpStatus.OK);
+		
+		if(u.getRole().getName().equals("MANAGER")){
+			Collection<ZatvaranjeRacuna> zatvaranja = repository.findBySearch(bank.getId(), false);
+			return new ResponseEntity<Collection<ZatvaranjeRacuna>>( zatvaranja, HttpStatus.OK);
+		}else if(u.getRole().getName().equals("COUNTER_OFFICER")){
+			Collection<ZatvaranjeRacuna> zatvaranja = repository.findBySearch(bank.getId(), true);
+			return new ResponseEntity<Collection<ZatvaranjeRacuna>>( zatvaranja, HttpStatus.OK);
+		}
+		
+		
+		return null;
 	}
 	
 	@CustomAnnotation(value = "FILTER_DEACTIVATION_BY_ACCOUNT")
@@ -61,9 +70,17 @@ public class ZatvaranjeRacunaController {
 	public ResponseEntity<Collection<ZatvaranjeRacuna>> filtrirajRacune(@PathVariable("racun") Long id, @Context HttpServletRequest request) throws Exception {
 		
 		Racun racun = racunRepository.findOne(id);
-		Collection<ZatvaranjeRacuna> zatvaranje = repository.findByRacun(racun);
+		User u = (User) request.getSession().getAttribute("user"); 
 		
-		return new ResponseEntity<Collection<ZatvaranjeRacuna>>(zatvaranje, HttpStatus.OK);
+		if(u.getRole().getName().equals("MANAGER")){
+			Collection<ZatvaranjeRacuna> zatvaranje = repository.findByRacunAndType(racun.getId(), false);
+			return new ResponseEntity<Collection<ZatvaranjeRacuna>>( zatvaranje, HttpStatus.OK);
+		}else if(u.getRole().getName().equals("COUNTER_OFFICER")){
+			Collection<ZatvaranjeRacuna> zatvaranje = repository.findByRacunAndType(racun.getId(), true);
+			return new ResponseEntity<Collection<ZatvaranjeRacuna>>( zatvaranje, HttpStatus.OK);
+		}
+		
+		return null;
 	}
 	
 	@CustomAnnotation(value = "FILTER_DEACTIVATION")
@@ -117,7 +134,15 @@ public class ZatvaranjeRacunaController {
 		
 		System.out.println("Pocetak "+pocetak.toString());
 		System.out.println("Kraj "+kraj.toString());
-		return new ResponseEntity<Collection<ZatvaranjeRacuna>>( repository.filter(id,zatvaranjeFilter.getRacunZatvaranja(), zatvaranjeFilter.getRacunPrenosa(), pocetak, kraj), HttpStatus.OK);
+		
+		User u = (User)request.getSession().getAttribute("user");
+		if(u.getRole().getName().equals("MANAGER")){
+			return new ResponseEntity<Collection<ZatvaranjeRacuna>>( repository.filter(id,zatvaranjeFilter.getRacunZatvaranja(), zatvaranjeFilter.getRacunPrenosa(), pocetak, kraj, false), HttpStatus.OK);
+		}else if(u.getRole().getName().equals("COUNTER_OFFICER")){
+			return new ResponseEntity<Collection<ZatvaranjeRacuna>>( repository.filter(id,zatvaranjeFilter.getRacunZatvaranja(), zatvaranjeFilter.getRacunPrenosa(), pocetak, kraj, true), HttpStatus.OK);
+		}
+		
+		return null;
 		//return new ResponseEntity<Collection<ZatvaranjeRacuna>>( repository.filter(id,zatvaranjeFilter.getRacunZatvaranja()), HttpStatus.OK);
 		//return new ResponseEntity<Collection<ZatvaranjeRacuna>>( repository.filter(id,zatvaranjeFilter.getRacunZatvaranja(), zatvaranjeFilter.getRacunPrenosa()), HttpStatus.OK);
 	}

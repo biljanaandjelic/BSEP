@@ -15,15 +15,20 @@ public interface ZatvaranjeRacunaRepository extends CrudRepository<ZatvaranjeRac
 	public ZatvaranjeRacuna findOne(Long id);
 	public void delete(Long id);
 	public Set<ZatvaranjeRacuna> findAll();
-	public Set<ZatvaranjeRacuna> findByRacun(Racun racun);
-	@Query("select z from ZatvaranjeRacuna z where z.racun.bank.id = ?1")
-	public Set<ZatvaranjeRacuna> findBySearch(Long id);
+	
+	@Query("select z from ZatvaranjeRacuna z where z.racun.id = ?1 and z.racun.klijent.fizickoLice=?2")
+	public Set<ZatvaranjeRacuna> findByRacunAndType(Long id, boolean fizickoLice);
+	
+	@Query("select z from ZatvaranjeRacuna z where z.racun.bank.id = ?1 and z.racun.klijent.fizickoLice=?2")
+	public Set<ZatvaranjeRacuna> findBySearch(Long id, boolean fizickoLice);
 	
 	@Query("select z from ZatvaranjeRacuna z where z.racun.bank.id = ?1 "
 			+"and z in (select z1 from ZatvaranjeRacuna z1 where z1.racun.brojRacuna like %?2% )"
 			+"and z in (select z2 from ZatvaranjeRacuna z2 where z2.racunPrebacenihSredstava like %?3% )"
-			+"and z in (select z3 from ZatvaranjeRacuna z3 where z3.datumDeaktivacije between ?4 and ?5)")
-	public Set<ZatvaranjeRacuna> filter(Long id,String racunZatvaranja, String racunPrebacaja, Date pocetak,Date kraj);
+			+"and z in (select z3 from ZatvaranjeRacuna z3 where z3.datumDeaktivacije between ?4 and ?5)"
+			+"and z in (select z4 from ZatvaranjeRacuna z4 where z4.racun.klijent.fizickoLice=?6)"
+			)
+	public Set<ZatvaranjeRacuna> filter(Long id,String racunZatvaranja, String racunPrebacaja, Date pocetak,Date kraj, boolean type);
 	
 
 }

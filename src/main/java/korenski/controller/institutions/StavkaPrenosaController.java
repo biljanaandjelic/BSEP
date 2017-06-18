@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import korenski.intercepting.CustomAnnotation;
 import korenski.model.infrastruktura.MedjubankarskiPrenos;
 import korenski.model.infrastruktura.StavkaPrenosa;
 import korenski.repository.institutions.StavkaPrenosaRepository;
@@ -22,6 +23,8 @@ import korenski.repository.institutions.StavkaPrenosaRepository;
 public class StavkaPrenosaController {
 	@Autowired
 	StavkaPrenosaRepository stavkaPrenosaRepository;
+	
+	@CustomAnnotation(value = "TRANSACTION_ITEMS")
 	@RequestMapping(
 			value="/stavkePrenosa",
 			method=RequestMethod.POST,

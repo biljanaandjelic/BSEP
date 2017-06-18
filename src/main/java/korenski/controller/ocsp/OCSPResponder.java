@@ -232,9 +232,11 @@ public class OCSPResponder {
 	 * @return
 	 */
 	public SingleResponse generateSingleResponse(Bank bank, BigInteger serialNumber) {
+
 		// CertificateInfo certInfo =
 		// certificateInfoService.findCertificateBySerialNumberAndBank(serialNumber,
 		// bank);
+
 		CertificateInfo certInfo = certificateInfoService.findBySerialNumber(serialNumber);
 		SingleResponse singleResp;
 		if (certInfo == null) {

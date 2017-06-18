@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import korenski.intercepting.CustomAnnotation;
 import korenski.model.infrastruktura.Bank;
 import korenski.repository.institutions.BankRepository;
 
@@ -31,7 +32,7 @@ public class BankController {
 	@Autowired
     private Validator validator;
 
-	
+	@CustomAnnotation(value = "FIND_ALL_BANK")
 	@RequestMapping(
 			value = "/allBanks",
 			method = RequestMethod.GET,

@@ -15,9 +15,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import korenski.controller.autorizacija.dtos.LoggedAndRole;
 import korenski.intercepting.CustomAnnotation;
 import korenski.model.autorizacija.Permission;
+import korenski.model.autorizacija.User;
 import korenski.repository.autorizacija.PermissionRepository;
+import korenski.repository.autorizacija.UserRepository;
 
 
 @Controller
@@ -25,6 +28,8 @@ public class PermissionController {
 
 	@Autowired
 	PermissionRepository repository;
+	@Autowired
+	UserRepository userRepository;
 	
 	@CustomAnnotation(value = "INSERT_PERMISSION")
 	@RequestMapping(
@@ -103,5 +108,65 @@ public class PermissionController {
 		return new ResponseEntity<Collection<Permission>>( repository.findAll(), HttpStatus.OK);
 	}
 	
+	@RequestMapping(
+			value = "/special/getLoggedAndRole",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<LoggedAndRole> loggedAndRole( @Context HttpServletRequest request) throws Exception {
+
+		User user = (User) request.getSession().getAttribute("user");
+		
+		if(user != null){
+			
+			if(user.getId()==null){
+				return new ResponseEntity<LoggedAndRole>(new LoggedAndRole(false, null), HttpStatus.OK);
+			}
+			
+			user = userRepository.findByUsername(user.getUsername());
+			
+			if(user== null){
+				return new ResponseEntity<LoggedAndRole>(new LoggedAndRole(false, null), HttpStatus.OK);
+			}
+			
+			
+			return new ResponseEntity<LoggedAndRole>( new LoggedAndRole(true, user.getRole().getName().substring(0, 3)), HttpStatus.OK);
+		}
+		
+		return new ResponseEntity<LoggedAndRole>( new LoggedAndRole(false, null), HttpStatus.OK);
+	}
+	
+	@CustomAnnotation(value = "INSERT_PERMISSION")
+	@RequestMapping(
+			value = "/goToApp",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<User> goToApp( @Context HttpServletRequest request) throws Exception {
+
+		String url = "";
+		String scheme = request.getScheme();
+		String host = request.getServerName();
+		int port = request.getServerPort();
+		url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/certificates/openkeystore.html");
+		User user = new User();
+		user.setUsername(url);
+		
+		return new ResponseEntity<User>(user, HttpStatus.OK);
+	}
+	
+	@CustomAnnotation(value = "INSERT_PERMISSION")
+	@RequestMapping(
+			value = "/goBack",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<User> goBack( @Context HttpServletRequest request) throws Exception {
+		String url = "";
+		String scheme = request.getScheme();
+		String host = request.getServerName();
+		int port = request.getServerPort();
+		url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/adminResources/AdminPage.html");
+		User user = new User();
+		user.setUsername(url);
+		return new ResponseEntity<User>(user, HttpStatus.OK);
+	}
 	
 }

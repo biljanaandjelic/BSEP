@@ -18,8 +18,8 @@ public interface AnalitikaIzvodaRepository extends CrudRepository<AnalitikaIzvod
 	public void delete(Long id);
 	public Set<AnalitikaIzvoda> findAll();
 	
-	@Query("select a from AnalitikaIzvoda a where a.dnevnoStanjeRacuna.racun.bank.id = ?1 ")
-	public Set<AnalitikaIzvoda> searchByBank(Long id);
+	@Query("select a from AnalitikaIzvoda a where a.dnevnoStanjeRacuna.racun.bank.id = ?1 and a.dnevnoStanjeRacuna.racun.klijent.fizickoLice=?2 ")
+	public Set<AnalitikaIzvoda> searchByBank(Long id, boolean type);
 	
 	//	@Query("select r from Racun r where r.status = ?1 or r.datumOtvaranja between ?2 and ?3 or r.klijent.ime like ?4 or r.klijent.prezime like ?5 and r.bank.id = ?6")
 	//public Set<Racun> findBySearch(boolean status, Date datumOtvaranjaOd, Date datumOtvaranjaDo, String ime, String prezime, Long id);
@@ -44,6 +44,8 @@ public interface AnalitikaIzvodaRepository extends CrudRepository<AnalitikaIzvod
 			+"and a in (select a8 from AnalitikaIzvoda a8 where a8.datumAnalitike between ?9 and ?10 )" 
 			+"and a in (select a9 from AnalitikaIzvoda a9 where a9.datumNaloga between ?11 and ?12 ) "
 			+"and a in (select a10 from AnalitikaIzvoda a10 where a10.datumValute between ?13 and ?14 ) "
+			+"and a in (select a11 from AnalitikaIzvoda a11 where a11.dnevnoStanjeRacuna.racun.klijent.fizickoLice=?15 ) "
+			
 			)
 	public Set<AnalitikaIzvoda> filter(Long id, String racunDuznika, String modelDuznika, 
 			String pozivNaBrojDuznika,
@@ -52,10 +54,13 @@ public interface AnalitikaIzvodaRepository extends CrudRepository<AnalitikaIzvod
 			,Date datumAnalitikePocetak,Date datumAnalitikeKraj
 			,Date datumNalogaPocetak, Date datumNalogaKraj
 			,Date datumValutePocetak, Date datumValuteKraj
+			,boolean type
 			);
 	
 	@Query("select a from AnalitikaIzvoda a where a.dnevnoStanjeRacuna.racun.bank.id = ?1"
-			+" and a in (select a1 from AnalitikaIzvoda a1 where a1.dnevnoStanjeRacuna.id = ?2 ) ")
+			+" and a in (select a1 from AnalitikaIzvoda a1 where a1.dnevnoStanjeRacuna.id = ?2 ) "
+			+" and a in (select a2 from AnalitikaIzvoda a2 where a2.dnevnoStanjeRacuna.racun.klijent.fizickoLice = ?3 ) "
+			)
 	
-	public Collection<AnalitikaIzvoda> filterByDnevnoStanjeAndBanka(Long id, Long id2);
+	public Collection<AnalitikaIzvoda> filterByDnevnoStanjeAndBanka(Long id, Long id2, boolean type);
 }

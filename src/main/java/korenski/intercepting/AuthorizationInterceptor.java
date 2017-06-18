@@ -66,10 +66,10 @@ public class AuthorizationInterceptor implements HandlerInterceptor  {
 			return false;
 		}
 		
-		
+		User userFromDB = null;
 		if(userRepository != null){
 
-			User userFromDB = userRepository.findOne(user.getId());
+			userFromDB = userRepository.findOne(user.getId());
 			
 			System.out.println("Ima ulogovanog korisnika");
 			
@@ -98,6 +98,12 @@ public class AuthorizationInterceptor implements HandlerInterceptor  {
 				annotationValue = ano.value();
 				System.out.println("IMA I ANOTACIJU. Njena vrednost je "+annotationValue);
 			}else{
+				return false;
+			}
+		}
+		
+		if(!userFromDB.isChangedFirstPassword()){
+			if(!annotationValue.equals("PASSWORD_CHANGE_USER") && !annotationValue.equals("LOGOFF")){
 				return false;
 			}
 		}

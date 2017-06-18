@@ -320,7 +320,7 @@ public class CertificatesController {
 		w.close();
 		
 		//preuzimanje sertifikata za privremeni potpis privatnog kljuca
-		f = new File("./files/certificates/12345678-1.cer");
+		f = new File("./files/temp/temp.cer");
 		BufferedReader r = new BufferedReader(new FileReader(f.getPath()));
 		PemReader pemReader = new PemReader(r);
 		PEMParser pemParser = new PEMParser(pemReader);
@@ -530,7 +530,7 @@ public class CertificatesController {
 		//potencijalno izmeniti
 		
 		
-		saveKeyStore(filePathString);
+		saveKeyStore2(filePathString, keystoreSession.getPassword());
 		
 		//brisanje csr zahteva
 		f.delete();
@@ -853,6 +853,7 @@ public class CertificatesController {
 		return new ResponseEntity<String>(retVal, HttpStatus.OK);
 	}
 	
+	@CustomAnnotation(value = "OPEN_KEYSTORE")
 	@RequestMapping(
 			value = "/openKeystore",
 			method = RequestMethod.POST,
@@ -946,6 +947,7 @@ public class CertificatesController {
 		return new ResponseEntity<KeystoreDTO>(dto, HttpStatus.OK);
 	}
 	
+	@CustomAnnotation(value = "CLOSE_KEYSTORE")
 	@RequestMapping(
 			value = "/closeKeystore",
 			method = RequestMethod.GET,
@@ -978,6 +980,7 @@ public class CertificatesController {
 		return new ResponseEntity<KeystoreDTO>(keystoreSession, HttpStatus.OK);
 	}
 	
+	@CustomAnnotation(value = "IMPORT_CERTIFICATE")
 	@RequestMapping(
 			value = "/importCert",
 			method = RequestMethod.POST,
@@ -1039,6 +1042,7 @@ public class CertificatesController {
 		
 		return new ResponseEntity<String>("ok", HttpStatus.OK);
 	}
+
 	
 	//pomocna metoda za generisanje keystore-ova, potencijalno izbrisati pred rok
 	@RequestMapping(value = "/generateKeystores", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN)
@@ -1060,4 +1064,5 @@ public class CertificatesController {
 		
 		return new ResponseEntity<String>("ok", HttpStatus.OK);
 	}
+
 }

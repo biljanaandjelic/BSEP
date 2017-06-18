@@ -16,6 +16,8 @@ certificateModule.controller("TabController", function($scope, $http, $compile, 
 		});
     };
     
+    
+    
     this.isSet = function(checkTab) {
       return this.tab === checkTab;
     };
@@ -33,5 +35,5 @@ certificateModule.controller("TabController", function($scope, $http, $compile, 
 				return;
         	}
         });
-    }
+    };
 });

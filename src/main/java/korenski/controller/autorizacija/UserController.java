@@ -202,7 +202,7 @@ public class UserController {
 		
 		User user = new User();
 		user.setUsername("adminPoslovne");
-		user.setChangedFirstPassword(true);
+		user.setChangedFirstPassword(false);
 		user.setRole(roleRepository.findOne(new Long(1)));
 		user.setEmail("adminPoslovne@kkk.kkk");
 		
@@ -285,7 +285,7 @@ public class UserController {
 	public ResponseEntity<User> deleteUser(@PathVariable("id") Long id , @Context HttpServletRequest request) throws Exception {
 		User userfromsession = (User) request.getSession().getAttribute("user");
 		Logger logger=LoggerFactory.getLogger(UserController.class);
-		java.lang.reflect.Method m =UserController.class.getMethod("deleteUserr",Long.class, 
+		java.lang.reflect.Method m =UserController.class.getMethod("deleteUser",Long.class, 
 				HttpServletRequest.class);
 		String mime = m.getAnnotation(CustomAnnotation.class).value();
 		User user = repository.findOne(id);
@@ -430,6 +430,14 @@ public class UserController {
 				
 				
 			}
+			
+			if(!user.getUsername().equals(data.getUsername())){
+				user = new User();
+				user.setId(new Long(-3));
+				logger.warn("User {} {} greska: ne postoji u bazi", userfromsession.getId(), mime);
+				return new ResponseEntity<User>(user, HttpStatus.OK);
+			}
+			
 			boolean valid = userService.authenticate(data.getPassword(), user.getPassword(), user.getSalt());
 			
 			if(!valid){
@@ -438,6 +446,10 @@ public class UserController {
 				return new ResponseEntity<User>(user, HttpStatus.OK);
 			}else{
 				
+				if(!proveriPassword(data.getNewPassword())){
+					user.setId(new Long(-3));
+					return new ResponseEntity<User>(user, HttpStatus.OK);
+				}
 				
 				user = userService.handleThePassword(user, data.getNewPassword());
 				
@@ -617,8 +629,16 @@ public class UserController {
 				
 				
 				user.setBank(bank);
-				Employee employee = employeeRepository.findOne(new Long(3+i));
-				user.setSubject(employee);
+				Employee employee;
+				PravnoLice pl;
+				if(i!=4){
+					employee = employeeRepository.findOne(new Long(3+i));
+					user.setSubject(employee);
+				}else{
+					pl = pravnoRepository.findOne(new Long(17));
+					user.setSubject(pl);
+				}
+				
 				Date current = new Date();
 				
 				user.setCreationTime(new java.sql.Date(current.getTime()));
@@ -632,5 +652,42 @@ public class UserController {
 			
 			
 		}
+	}
+	
+	public boolean proveriPassword(String newValue){
+		
+		String brojMin = new String("^([A-Za-z0-9]{0,7})$");
+		String brojMax = new String("^([A-Za-z0-9]{26,})$");
+		String samoVelika = new String("^([A-Z]{8,25})$");
+		String samoMala = new String("^([a-z]{8,25})$");
+		String samoCifre = new String("^([0-9]{8,25})$");
+		
+		String samoMalaIVelika = new String("^([a-zA-Z]{8,25})$");
+		String samoMalaICifre = new String("^([a-z0-9]{8,25})$");
+		String samoVelikaICifre = new String("^([0-9A-Z]{8,25})$");
+		
+		String uobicajeni = new String("^[A-Z]([a-z]{6,23})[0-9]$");
+		
+		if (newValue.matches(brojMin)) {
+			
+			return false;
+		}else if(newValue.matches(brojMax)){
+			return false;
+		}else if(newValue.matches(samoVelika)){
+			return false;
+		}else if(newValue.matches(samoMala)){
+			return false;
+		}else if(newValue.matches(samoCifre)){
+			return false;
+		}else if(newValue.matches(samoMalaIVelika)){
+			return false;
+		}else if(newValue.matches(samoMalaICifre)){
+			return false;
+		}else if(newValue.matches(samoVelikaICifre)){
+			return false;
+		}
+		
+		
+		return true;
 	}
 }

@@ -1,11 +1,20 @@
 package korenski.controller.testni;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.cert.CertificateException;
 import java.util.Date;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Context;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.client.RestTemplate;
 
+import io.spring.guides.gs_producing_web_service2.NalogZaPrenos;
+import korenski.isprobavanjeSoap.NalogKlijent;
 import korenski.model.autorizacija.Role;
 import korenski.model.autorizacija.User;
 import korenski.model.infrastruktura.Bank;
@@ -37,6 +48,12 @@ public class TestTokenController {
 	EmployeeRepository employeeRepository;
 	@Autowired
 	UserRepository userRepository;
+
+	@Autowired
+	NalogKlijent klijent;
+	
+
+
 
 	@RequestMapping(
 			value = "/special/napraviToken",
@@ -181,4 +198,46 @@ public class TestTokenController {
 	    System.out.println("USESEN KORISNIK");
 	}
 	
+	private KeyStore ks;
+	
+	//pomocna metoda za generisanje keystore-ova, potencijalno izbrisati pred rok
+		@RequestMapping(value = "/special/generateKeystores", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
+		public ResponseEntity<String> generateKeystores(@Context HttpServletRequest request) throws KeyStoreException, NoSuchProviderException, NoSuchAlgorithmException, CertificateException, IOException {
+			
+			if (ks == null) {
+				ks = KeyStore.getInstance("BKS", "BC");
+			}
+			
+			ks.load(null, "prvi".toCharArray());
+			ks.store(new FileOutputStream("./files/prvi.jks"), "prvi".toCharArray());
+			
+			ks.load(null, "drugi".toCharArray());
+			ks.store(new FileOutputStream("./files/drugi.jks"), "drugi".toCharArray());
+			
+			ks.load(null, "treci".toCharArray());
+			ks.store(new FileOutputStream("./files/treci.jks"), "treci".toCharArray());
+			
+			return new ResponseEntity<String>("ok", HttpStatus.OK);
+		}
+		
+		
+		@RequestMapping(
+				value = "/special/posaljiZahtev",
+				method = RequestMethod.GET,
+				produces = MediaType.APPLICATION_JSON_VALUE)
+		public ResponseEntity<String> PosaljiZahtev(@Context HttpServletRequest request, HttpServletResponse response) throws Exception {
+			
+			System.out.println("SALJEM!");
+			
+			NalogZaPrenos nzp = klijent.nadji();
+			
+			System.out.println("Stigao nalog!");
+			
+			JAXBContext context = JAXBContext.newInstance("io.spring.guides.gs_producing_web_service2");
+			Marshaller marshaller = context.createMarshaller();
+		    marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		    marshaller.marshal(nzp, System.out);
+			
+			return new ResponseEntity<String>( "Sve ok", HttpStatus.OK);
+		}
 }

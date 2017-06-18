@@ -99,6 +99,15 @@ administratorBanke.controller('Opsti', function($window, $scope, $http, $compile
 	
 	};
 	
+	
+	this.goToApp = function(){
+		$http.get('/goToApp').
+		then(function mySucces(response) {
+			
+				$window.location.href=response.data.username;
+		});
+	}
+	
 	this.logoff = function(){
 		
 		$http.get('/logoff').

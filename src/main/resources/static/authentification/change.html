@@ -49,7 +49,13 @@ integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7T
  <body ng-controller="IzmenaCtrl as izmena" ng-init="init()"> 
  
  <button ng-click = "izmena.logoff()">LOGOFF</button>
- 
+ 	
+ 	
+ 	<div class="panel panel-info">
+        								
+        						<div class="panel-heading">Uputstvo za formiranje lozinke</div>
+      							<div class="panel-body">Lozinka se mora sastojati iz slova i barem jedne cifre. Barem jedno od slova mora biti veliko.</div>
+        </div>
  
 	<div class="container">
 	  <div class="jumbotron">
@@ -63,7 +69,8 @@ integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7T
 			    
 			    <div class="input-group">
 			      <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-			      <input type="password" class="form-control" placeholder="Trenutna lozinka" ng-model="userToChange.password" required>
+			      <input type="password" class="form-control" placeholder="Trenutna lozinka" ng-model="userToChange.password" 
+			      minLength="8" maxlength="25" required>
 			    </div>
 			    
 			    <div class="input-group">
@@ -71,15 +78,19 @@ integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7T
 			      <!-- <input type="password" class="form-control" placeholder="Nova lozinka" ng-model="userToChange.password" required> -->
 			      <input name="oldPassword" id="lozinka" type="password" class="form-control"
 				   							 placeholder="Nova lozinka" ng-model="userToChange.newPassword"
-				   							  maxlength="25" required></p>
+				   							  minLength="8" maxlength="25" required></p>
 			    </div>
-			    
+			    <div class="panel panel-warning">
+        								
+        						<div class="panel-heading">Analiza lozinke</div>
+      							<div class="panel-body">{{poruka}}</div>
+        		</div>
 			    <div class="input-group">
 			      <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
 			      <!-- <input type="password" class="form-control" placeholder="Potvrda nove lozinke" ng-model="userToChange.password" required> -->
 			      <input ng-model="lozinka1" class="form-control" placeholder="Potvrda nove lozinke"
 			       				name='confirm_password' data-password-verify="userToChange.newPassword" type="password" 
-			       				maxlength="25" required></p>
+			       				minLength="8" maxlength="25" required></p>
 				   			
 			    </div>
 			    
