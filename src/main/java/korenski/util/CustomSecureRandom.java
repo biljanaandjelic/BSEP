@@ -35,9 +35,9 @@ public class CustomSecureRandom {
 			Date date = new Date();
 			Long seed = date.getTime();
 			//SecretKey secretKey = null;
-			System.out.println("*************************");
-			System.out.println("Seed " + seed);
-			System.out.println("*************************");
+		//	System.out.println("*************************");
+		//	System.out.println("Seed " + seed);
+		//	System.out.println("*************************");
 			KeyGenerator keygen;
 			customSecureRadnom=new CustomSecureRandom();
 			try {

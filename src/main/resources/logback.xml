@@ -43,11 +43,7 @@
        		 <onMatch>DENY</onMatch>
         	 <onMismatch>NEUTRAL</onMismatch>
     	</filter>
-    	<filter class="ch.qos.logback.classic.filter.LevelFilter">
-       		 <level>DEBUG</level>
-       		 <onMatch>DENY</onMatch>
-        	 <onMismatch>NEUTRAL</onMismatch>
-    	</filter>
+    
 	</appender>
 	
 	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
@@ -70,18 +66,21 @@
 		
 	</appender>
 
-	<logger name="korenski.controller" level="WARN">
+	 <logger name="korenski.controller" level="WARN">
 		<appender-ref ref="FILE_warn" />
-	</logger>
+		<appender-ref ref="STDOUT" />	
+	</logger> 
 	
 	<logger name="korenski.controller" level="INFO">
 		<appender-ref ref="FILE" />
+		<appender-ref ref="STDOUT" />	
 	</logger>
 	
 	
 	<logger name="jdbc" level="OFF" />
 	 <root level="info">
     	<appender-ref ref="STDOUT" />	
+    	<appender-ref ref="FILE_all" />	
   	</root> 
 
 

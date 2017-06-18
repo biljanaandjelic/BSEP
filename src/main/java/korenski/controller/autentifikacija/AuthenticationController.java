@@ -277,6 +277,10 @@ public class AuthenticationController {
 						url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/authentification/change.html");
 						
 						loginObject.setUrl(url);
+						logger.warn("WARN pouka");
+						logger.warn("twenty-one%0a%0aINFO:+User+logged+out%3dbadguy");
+						
+						logger.info("INFO");
 						logger.info("User {} LOGIN info: promjena inicijalne lozinke", user.getId());
 						return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
 					}else{
@@ -300,9 +304,10 @@ public class AuthenticationController {
 							String host = request.getServerName();
 							int port = request.getServerPort();
 							url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/inicijalizacija/InitPage.html");
+							logger.info("User {} LOGIN ", user.getId());
 							loginObject.setId(-5);
 							loginObject.setUrl(url);
-							logger.info("User {} LOGIN ", user.getId());
+							
 							return new ResponseEntity<LoginObject>(loginObject, HttpStatus.OK);
 						}else if(user.getRole().getName().equals("LEGAL")){
 

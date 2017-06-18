@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.math.BigInteger;
@@ -39,6 +40,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.xml.XMLConstants;
@@ -47,6 +49,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
+import org.apache.commons.compress.utils.IOUtils;
 import org.bouncycastle.asn1.x500.RDN;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
@@ -92,6 +95,7 @@ import korenski.DTOs.CertificateDTO;
 import korenski.DTOs.CertificateRequestDTO;
 import korenski.DTOs.ImportCertificateDTO;
 import korenski.DTOs.KeystoreDTO;
+import korenski.controller.autentifikacija.NaiveAuthenticationController;
 import korenski.controller.autentifikacija.pomocneKlase.LoginObject;
 import korenski.controller.businesslogic.ImportController;
 import korenski.intercepting.CustomAnnotation;
@@ -204,7 +208,7 @@ public class CertificatesController {
 		X500Name x500name = new JcaX509CertificateHolder(cert).getSubject();
 		RDN uid = x500name.getRDNs(BCStyle.UID)[0];
 		
-		File f = new File("./files/certificates/" + uid.getFirst().getValue() + "-" + cnt +  ".cer");
+		File f = new File("./files/certificates/" + dto.getUid()+"-"+cnt+ ".cer");
 		BufferedWriter w = new BufferedWriter(new FileWriter(f.getPath()));
 		
 		StringWriter writer = new StringWriter();
@@ -222,10 +226,13 @@ public class CertificatesController {
 		String certificateName= uid.getFirst().getValue() + "-" + cnt;
 		CertificateInfo certificateInfo = new CertificateInfo(serial, CertStatus.GOOD, null, null,  Type.NationalBank, certificateName);
 		certificateInfo.setBank(bank);
-		certificateInfo.setKeyStorName(keystoreSession.getName());
+		certificateInfo.setKeyAlias("KEY-"+cnt);
+		certificateInfo.setKeyStorName(filePathString);
+		System.out.println("Setovani password "+keystoreSession.getPassword());
 		certificateInfo.advancedSetKeyStorePassword(keystoreSession.getPassword());
-		certificateInfo.setCaKeyStoreName(keystoreSession.getName());
+		certificateInfo.setCaKeyStoreName(filePathString);
 		certificateInfo.advancedSetCaKeyStorePassword(keystoreSession.getPassword());
+		certificateInfo.setCertAlias(dto.getAlias());
 		try{
 		certificateInfoService.create(certificateInfo);
 		}catch(Exception e){
@@ -555,8 +562,9 @@ public class CertificatesController {
 		
 		String certificateName=uid.getFirst().getValue() + "-" + cnt;
 		certificateInfo.setCertificateName(certificateName);
-		certificateInfo.setCaKeyStoreName(keystoreSession.getName());
+		certificateInfo.setCaKeyStoreName(filePathString);
 		certificateInfo.advancedSetCaKeyStorePassword(keystoreSession.getPassword());
+		certificateInfo.setCertAlias("CERT-" + IETFUtils.valueToString(csr.getSubject().getRDNs(BCStyle.UID)[0].getFirst().getValue()) + "-" + cnt);
 		try{
 		certificateInfoService.create(certificateInfo);
 		}catch (Exception e) {
@@ -601,34 +609,11 @@ public class CertificatesController {
 		
 		Certificate certificate = certConverter.getCertificate(certificateHolder);
 		CertificateDTO certificateDTO = getDataFromCertificate(certificate);
+		certificateDTO.setCertificateName(certInfo.getCertificateName());
+		certificateDTO.setSerialNumber(certInfo.getSerialNumber());
 		if(certificateDTO!=null){
 			return new ResponseEntity<CertificateDTO>(certificateDTO, HttpStatus.OK);
 		}
-//		User user=(User)request.getSession().getAttribute("user");
-//		Bank bank=user.getBank();
-//		if (ks == null) {
-//			
-//			ks = KeyStore.getInstance("BKS", "BC");
-//			System.out.println("Nije prethodno instanciran");
-//		}
-//		try {
-//			
-//			String newFilePath = "./files/KEYSTORE-" + bank.getSwiftCode() + ".jks";
-//			ks.load(new FileInputStream(newFilePath), "test".toCharArray());
-//			System.out.println("USpijesno je uctan ks");
-//		} catch (NoSuchAlgorithmException | CertificateException | IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		alias="CERT-"+alias;
-//		Certificate foundCertificate = ks.getCertificate(alias);
-//
-//		if (foundCertificate != null) {
-//
-//
-//			CertificateDTO certificateDTO = getDataFromCertificate(foundCertificate);
-//			return new ResponseEntity<CertificateDTO>(certificateDTO, HttpStatus.OK);
-//		}
 
 		return new ResponseEntity<CertificateDTO>(HttpStatus.NOT_FOUND);
 	}
@@ -644,7 +629,7 @@ public class CertificatesController {
 			RDN givenName = x500name.getRDNs(BCStyle.GIVENNAME)[0];
 			RDN organization = x500name.getRDNs(BCStyle.O)[0];
 			RDN organizationUnit = x500name.getRDNs(BCStyle.OU)[0];
-
+			BigInteger serialNumber=((X509Certificate) certificat).getSerialNumber();
 			PublicKey publicKey = certificat.getPublicKey();
 			RDN email = x500name.getRDNs(BCStyle.E)[0];
 			RDN country = x500name.getRDNs(BCStyle.C)[0];
@@ -661,6 +646,7 @@ public class CertificatesController {
 			certificateDTO.setOrganizationUnit(IETFUtils.valueToString(organizationUnit.getFirst().getValue()));
 			certificateDTO.setValidTo(validFrom);
 			certificateDTO.setValidFrom(validFrom);
+			certificateDTO.setSerialNumber(serialNumber);
 			certificateDTO.setPublicKey(Base64Utility.encode(publicKey.getEncoded()));
 			return certificateDTO;
 		} catch (CertificateEncodingException e) {
@@ -1022,10 +1008,12 @@ public class CertificatesController {
 				X509Certificate x509Cert = (X509Certificate) certificate;
 				 serialNumber = x509Cert.getSerialNumber();
 			}
+			String path="./files/" + keystoreSession.getName() + ".jks";
 		if(serialNumber!=null){
 		CertificateInfo certificateInfo=certificateInfoService.findBySerialNumber(serialNumber);
 		certificateInfo.advancedSetKeyStorePassword(keystoreSession.getPassword());
-		certificateInfo.setKeyStorName(keystoreSession.getName());
+		certificateInfo.setKeyStorName(path);
+		certificateInfo.setKeyAlias("KEY-1");
 		try{
 			certificateInfoService.create(certificateInfo);
 		}catch (Exception e) {
@@ -1047,6 +1035,7 @@ public class CertificatesController {
 	//pomocna metoda za generisanje keystore-ova, potencijalno izbrisati pred rok
 	@RequestMapping(value = "/generateKeystores", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN)
 	public ResponseEntity<String> generateKeystores(@Context HttpServletRequest request) throws KeyStoreException, NoSuchProviderException, NoSuchAlgorithmException, CertificateException, IOException {
+	
 		
 		
 		if (ks == null) {
@@ -1063,6 +1052,19 @@ public class CertificatesController {
 		ks.store(new FileOutputStream("./files/treci.jks"), "treci".toCharArray());
 		
 		return new ResponseEntity<String>("ok", HttpStatus.OK);
+	}
+	
+	@CustomAnnotation(value = "DOWNLOAD_CERTIFICATE")
+	@RequestMapping(value = "/download/{certificateName}", method = RequestMethod.GET)
+	public void downloadFile(@PathVariable String certificateName, HttpServletResponse response) throws IOException {
+
+		response.setContentType("application/x-x509-ca-cert");
+	//	String fileName=
+		File file = new File("./files/certificates/"+certificateName + ".cer");
+
+		InputStream inputStream = new FileInputStream(file);
+		IOUtils.copy(inputStream, response.getOutputStream());
+
 	}
 
 }

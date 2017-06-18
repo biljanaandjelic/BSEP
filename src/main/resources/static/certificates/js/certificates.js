@@ -207,6 +207,23 @@ certificateModule.controller("CertificateController", function($http,$scope, $lo
 		});
 
 	}
+	this.downloadCertificate = function(){
+		$log.log("DOWNLOAD "+ $scope.certificateDTO.serialNumber);
+			//findCertificateService.findCertificate($scope.findSerialNumber)
+			$http({
+				 method: 'GET',
+				 url: '/certificates/download/'+$scope.certificateDTO.certificateName,
+			})
+			.then(function(response){
+		        var blob = new Blob([response.data], {type: 'application/x-x509-ca-cert'});
+		        saveAs(blob,$scope.certificateDTO.serialNumber+'.cer');
+		        $scope.findSerialNumber = "";
+			},
+			function(response){
+				alert("NOT FOUND");
+			})
+	}
+		
 	
 });
 

@@ -23,61 +23,68 @@ import korenski.util.CustomSecureRandom;
 import korenski.util.Decryption;
 import korenski.util.Encryption;
 
-
-
 @Entity
-@Table(name="certificateID", uniqueConstraints={@UniqueConstraint(columnNames={"serialNumber","bank"})})
+@Table(name = "certificateID", uniqueConstraints = { @UniqueConstraint(columnNames = { "serialNumber", "bank" }) })
 public class CertificateInfo {
-	public enum Type{
+	public enum Type {
 		NationalBank, Bank, Company
 	}
-	public enum CertStatus { GOOD,REVOKED, UNKNOWN };  
+
+	public enum CertStatus {
+		GOOD, REVOKED, UNKNOWN
+	};
+
 	@Id
 	@GeneratedValue
 	private Long id;
-	
-	@Column(name="serialNumber", unique=true)
+
+	@Column(name = "serialNumber", unique = true)
 	private BigInteger serialNumber;
-	
-	@Column(nullable=false)
+
+	@Column(nullable = false)
 	private CertStatus status;
-	
+
 	private Date dateOfRevocation;
-	
-	@JoinColumn(name="ca")
-	@ManyToOne(optional=true, fetch=FetchType.LAZY)
+
+	@JoinColumn(name = "ca")
+	@ManyToOne(optional = true, fetch = FetchType.LAZY)
 	private CertificateInfo ca;
-	@Column(nullable=false)
+	@Column(nullable = false)
 	private Type type;
 
-	@JoinColumn(name="bank")
-	@ManyToOne(optional=false, fetch=FetchType.LAZY)
+	@JoinColumn(name = "bank")
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private Bank bank;
-	
-	@Column(nullable=false)
+
+	@Column(nullable = false)
 	private String certificateName;
-	
+
 	private String caKeyStoreName;
-	
+
 	private byte[] caKeyStorePassword;
-	
+
+	private String certAlias;
+
 	private String keyStorName;
-	
+
 	private byte[] keyStorePassword;
-	
-	public CertificateInfo(){
-		
+
+	private String keyAlias;
+
+	public CertificateInfo() {
+
 	}
 
-	public CertificateInfo( BigInteger serialNumber, CertStatus status, Date dateOfRevocation, CertificateInfo idOfCA,  Type type, String certificateName) {
+	public CertificateInfo(BigInteger serialNumber, CertStatus status, Date dateOfRevocation, CertificateInfo idOfCA,
+			Type type, String certificateName) {
 		super();
-		
+
 		this.serialNumber = serialNumber;
 		this.status = status;
 		this.dateOfRevocation = dateOfRevocation;
 		this.ca = idOfCA;
-		this.type=type;
-		this.certificateName=certificateName;
+		this.type = type;
+		this.certificateName = certificateName;
 	}
 
 	public Long getId() {
@@ -127,8 +134,6 @@ public class CertificateInfo {
 	public void setCa(CertificateInfo ca) {
 		this.ca = ca;
 	}
-
-
 
 	public Type getType() {
 		return type;
@@ -185,94 +190,89 @@ public class CertificateInfo {
 	public void setKeyStorePassword(byte[] keyStorePassword) {
 		this.keyStorePassword = keyStorePassword;
 	}
-	
-	public void advancedSetCaKeyStorePassword(String password){
-		// SecureRandom random=CustomSecureRandom.getInstance().getSecureRadnom();
-		 SecretKey secretKey=CustomSecureRandom.getInstance().getSecretKey();
-		 // KeyGenerator keygen;
-	//	try {
+
+	public void advancedSetCaKeyStorePassword(String password) {
+
+		SecretKey secretKey = CustomSecureRandom.getInstance().getSecretKey();
+
 		
-			 System.out.println("_______________________________________________");
-			 System.out.println("Plain password "+password);
-			byte[] cipeherText=Encryption.encrypt(password, secretKey);
-			System.out.println("Kriptovan password  "+Base64Utility.encode(cipeherText));
-			 System.out.println("_______________________________________________");
-			setCaKeyStorePassword(cipeherText);
-	//	} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-		//	e.printStackTrace();
-		//}
+		byte[] cipeherText = Encryption.encrypt(password, secretKey);
 		
+		setCaKeyStorePassword(cipeherText);
+
 	}
+
 	/**
-	 * Kriptovanje passworda za keystore u kom se nalazi 
+	 * Kriptovanje passworda za keystore u kom se nalazi
+	 * privatni kljuc
+	 * 
 	 * @param password
 	 */
-	public void advancedSetKeyStorePassword(String password){
-		// SecureRandom random=CustomSecureRandom.getInstance().getSecureRadnom();
-		 SecretKey secretKey=CustomSecureRandom.getInstance().getSecretKey();
-//		try {
-//			keygen = KeyGenerator.getInstance("AES");
-//			 keygen.init(128, random);
-//			 SecretKey secretKey = keygen.generateKey();
-			 System.out.println("_______________________________________________");
-			 System.out.println("Plain password "+password);
-			byte[] cipeherText=Encryption.encrypt(password, secretKey);
-			System.out.println("Kriptovan password  "+Base64Utility.encode(cipeherText));
-			 System.out.println("_______________________________________________");
-			setKeyStorePassword(cipeherText);
-//		} catch (NoSuchAlgorithmException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+	public void advancedSetKeyStorePassword(String password) {
+
+		SecretKey secretKey = CustomSecureRandom.getInstance().getSecretKey();
+
 		
-	}
-	
-	public String advancedGetCaKeyStorePassword(){
-		// SecureRandom random=CustomSecureRandom.getInstance().getSecureRadnom();
-		 SecretKey secretKey=CustomSecureRandom.getInstance().getSecretKey();
-	//	try {
-			// keygen = KeyGenerator.getInstance("AES");
-			// keygen.init(128, random);
-			// SecretKey secretKey = keygen.generateKey();
-			 System.out.println("_______________________________________________");
-			
-			 byte[] cipherPassword=getCaKeyStorePassword();
-			 System.out.println("Plain password "+Base64Utility.encode(cipherPassword));
-			//byte[] cipeherText=Encryption.encrypt(password, secretKey);
-			 byte[] plainPassword=Decryption.decrypt(cipherPassword, secretKey); 
-			 String password=Base64Utility.encode(plainPassword);
-			System.out.println("Kriptovan password  "+password);
-			 System.out.println("_______________________________________________");
-			 return password;
-		//}catch(Exception e){
-		//	e.printStackTrace();
-		///	return "";
-		//}
+		byte[] cipeherText = Encryption.encrypt(password, secretKey);
 		
+		setKeyStorePassword(cipeherText);
+
 	}
-	
-	public String advancedGetKeyStorePassword(){
-		// SecureRandom random=CustomSecureRandom.getInstance().getSecureRadnom();
-		 SecretKey secretKey=CustomSecureRandom.getInstance().getSecretKey();
-	//	try {
-		//	keygen = KeyGenerator.getInstance("AES");
-		//	 keygen.init(128, random);
-			 //secretKey = keygen.generateKey();
-			 System.out.println("_______________________________________________");
-			
-			 byte[] cipherPassword=getKeyStorePassword();
-			 System.out.println("Cipher  password "+Base64Utility.encode(cipherPassword));
-			//byte[] cipeherText=Encryption.encrypt(password, secretKey);
-			 byte[] plainPassword=Decryption.decrypt(cipherPassword, secretKey); 
-			 String password=Base64Utility.encode(plainPassword);
-			System.out.println("Plain password  "+password);
-			 System.out.println("_______________________________________________");
-			 return password;
-		//}catch(Exception e){
-		//	e.printStackTrace();
-		//	return "";
-		//}
+	/**
+	* Preuzimanje passworda iz baze koji je byte[], da bi se mogao iskoristiti
+	 * za otvaranje keystore-a neophodno je dekriptovati i dobiti string
+	 * 
+	 * @return
+	 */
+	public String advancedGetCaKeyStorePassword() {
+
+		SecretKey secretKey = CustomSecureRandom.getInstance().getSecretKey();
+
+		byte[] cipherPassword = getCaKeyStorePassword();
+		
+
+		byte[] plainPassword = Decryption.decrypt(cipherPassword, secretKey);
+		
+		String password = new String(plainPassword);
+		
+		return password;
+
+	}
+
+	/**
+	 * Preuzimanje passworda iz baze koji je byte[], da bi se mogao iskoristiti
+	 * za otvaranje keystore-a neophodno je dekriptovati i dobiti string
+	 * 
+	 * @return
+	 */
+	public String advancedGetKeyStorePassword() {
+
+		SecretKey secretKey = CustomSecureRandom.getInstance().getSecretKey();
+
+		byte[] cipherPassword = getKeyStorePassword();
+
+		byte[] plainPassword = Decryption.decrypt(cipherPassword, secretKey);
+
+		String password = new String(plainPassword);
+
+		return password;
+
+	}
+
+	public String getCertAlias() {
+		return certAlias;
+	}
+
+	public void setCertAlias(String certAlias) {
+		this.certAlias = certAlias;
+	}
+
+	public String getKeyAlias() {
+		return keyAlias;
+	}
+
+	public void setKeyAlias(String keyAlias) {
+		this.keyAlias = keyAlias;
 	}
 
 }

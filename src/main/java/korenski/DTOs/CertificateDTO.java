@@ -23,6 +23,7 @@ public class CertificateDTO {
 	public Date validTo; 
 	public String publicKey;
 	public BigInteger serialNumber;
+	private String certificateName;
 	public CertificateDTO() {
 		// TODO Auto-generated constructor stub
 	}
@@ -169,6 +170,22 @@ public class CertificateDTO {
 
 	public void setPublicKey(String publicKey) {
 		this.publicKey = publicKey;
+	}
+
+	public BigInteger getSerialNumber() {
+		return serialNumber;
+	}
+
+	public void setSerialNumber(BigInteger serialNumber) {
+		this.serialNumber = serialNumber;
+	}
+
+	public String getCertificateName() {
+		return certificateName;
+	}
+
+	public void setCertificateName(String certificateName) {
+		this.certificateName = certificateName;
 	}
 	
 }

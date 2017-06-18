@@ -24,7 +24,7 @@ import korenski.util.CustomSecureRandom;
 @EnableAutoConfiguration
 @Configuration
 public class MtbApplication extends WebMvcConfigurerAdapter {
-	
+	/*
 	@Bean
 	public AuthorizationInterceptor authorizationInterceptor() {
 	    return new AuthorizationInterceptor();
@@ -34,9 +34,9 @@ public class MtbApplication extends WebMvcConfigurerAdapter {
         registry.addInterceptor(authorizationInterceptor()).excludePathPatterns("/special/*");
         registry.addInterceptor(new SpecialInterceptor()).addPathPatterns("/special/*");
     }
-    
+    */
 	public static void main(String[] args) {
-		//CustomSecureRandom.getInstance();
+		CustomSecureRandom.getInstance();
 		SpringApplication.run(MtbApplication.class, args);
 	}
 	

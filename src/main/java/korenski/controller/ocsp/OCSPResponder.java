@@ -63,6 +63,7 @@ import korenski.ocsp.TBSRequest;
 import korenski.ocsp.TBSRequest.Version;
 import korenski.repository.institutions.BankRepository;
 import korenski.service.dtos.CertificateInfoService;
+import korenski.util.Base64Utility;
 
 /**
  * Klasa koja simulira OCSPResponder koji prima podatke od klijenta na osnovu
@@ -159,16 +160,16 @@ public class OCSPResponder {
 								HttpStatus.OK);
 					}
 				}
-				CAData caData = getCA(bank,
-						ocspReq.getTbsRequest().getRequestList().get(0).getReqCert().getSeriaNumber());
+				CAData caData=null;
+			//	CAData caData = getCA(bank,
+			//			ocspReq.getTbsRequest().getRequestList().get(0).getReqCert().getSeriaNumber());
 				if (caData != null && caData.getCertificate() != null) {
 					byte[] signature = sign(ocspResp.getRespnseBytes().toString().getBytes(), caData.getPrivateKey());
 					if (verify(ocspResp.getRespnseBytes().toString().getBytes(), signature,
 							caData.getCertificate().getPublicKey())) {
 						return new ResponseEntity<OCSPResponse>(ocspResp, HttpStatus.OK);
 					} else {
-						return new ResponseEntity<OCSPResponse>(new OCSPResponse(OCSPResponseStatus.UNAUTHORIZED),
-								HttpStatus.OK);
+						return new ResponseEntity<OCSPResponse>(ocspResp, HttpStatus.OK);
 					}
 
 				} else {
@@ -199,9 +200,10 @@ public class OCSPResponder {
 	 * @throws IOException
 	 * @author Biljana
 	 */
-	private KeyStore getKeyStore(String filePathString) throws KeyStoreException, NoSuchProviderException,
+	private KeyStore getKeyStore(String filePathString,String password) throws KeyStoreException, NoSuchProviderException,
 			NoSuchAlgorithmException, CertificateException, FileNotFoundException, IOException {
 		// KeyStore ks=null;
+		System.out.println("FilePath "+filePathString);
 		if (ks == null) {
 			ks = KeyStore.getInstance("BKS", "BC");
 		}
@@ -209,11 +211,15 @@ public class OCSPResponder {
 		try {
 			File f = new File(filePathString);
 			if (f.exists() && !f.isDirectory()) {
-				ks.load(new FileInputStream(filePathString), "test".toCharArray());
+				System.out.println("Password "+password);
+				ks.load(new FileInputStream(filePathString), password.toCharArray());
+				System.out.println("Pronadjen jks");
 			} else {
-				 ks.load(null, "test".toCharArray());
+				
+				 ks.load(null, password.toCharArray());
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.out.println("Nesto je krenulo lose sa ucitavanjem keystore");
 		}
 		return ks;
@@ -285,17 +291,29 @@ public class OCSPResponder {
 		if (certificateInfo != null && certificateInfo.getCa() != null) {
 			CertificateInfo ca = certificateInfo.getCa();
 			String pathForPrivateKey=ca.getKeyStorName();
-			String aliasForPrivateKey=certificateInfo.advancedGetKeyStorePassword();
+			String passwordForPrivateKey=ca.advancedGetKeyStorePassword();
 			String pathForCert=ca.getCaKeyStoreName();
-			String aliasForCert=ca.advancedGetCaKeyStorePassword();
+			String passwordForCert=ca.advancedGetCaKeyStorePassword();
+			String aliasKey=ca.getKeyAlias();
+			String aliasCert=ca.getCertAlias();
 			
 			try {
-				KeyStore ks = getKeyStore(pathForPrivateKey);
-				KeyStore certKs=getKeyStore(pathForCert);
+				KeyStore ks = getKeyStore(pathForPrivateKey,passwordForPrivateKey);
+				KeyStore certKs=getKeyStore(pathForCert,passwordForCert);
 				if (ks != null) {
 
-					PrivateKey key = (PrivateKey) ks.getKey(aliasForPrivateKey, "test".toCharArray());
-					Certificate cert=certKs.getCertificate(aliasForCert);
+					PrivateKey key = (PrivateKey) ks.getKey(aliasKey, passwordForPrivateKey.toCharArray());
+					if(key!=null){
+						System.out.println("Privatni kjuc je pronadjen");
+					}else{
+						System.out.println("Privatni kljuc nije pronadjen");
+					}
+					Certificate cert=certKs.getCertificate(aliasCert);
+					if(cert!=null){
+						System.out.println("Cert je prnadjen");
+					}else{
+						System.out.println("CERT nije pronadjen");
+					}
 					System.out.println("__________________________________");
 					System.out.println("GET__CA___DATA");
 					System.out.println("__________________________________");
@@ -324,6 +342,8 @@ public class OCSPResponder {
 	 */
 	private byte[] sign(byte[] data, PrivateKey privateKey) {
 		try {
+			System.out.println("Private Key(str): "+new String(privateKey.getEncoded()));
+			System.out.println("Private Key(enc): "+ Base64Utility.encode(privateKey.getEncoded()));
 			System.out.println("POTPISIVANJE");
 			// Kreiranje objekta koji nudi funkcionalnost digitalnog
 			// potpisivanja
@@ -362,6 +382,8 @@ public class OCSPResponder {
 	 */
 	private boolean verify(byte[] data, byte[] signature, PublicKey publicKey) {
 		try {
+			System.out.println("Private Key(str): "+new String(publicKey.getEncoded()));
+			System.out.println("Private Key(enc): "+ Base64Utility.encode(publicKey.getEncoded()));
 			System.out.println("PROVJERA");
 			// Kreiranje objekta koji nudi funkcionalnost digitalnog
 			// potpisivanja
