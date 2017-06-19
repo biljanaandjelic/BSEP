@@ -96,6 +96,7 @@ public class OCSPResponder {
 		String swiftCode = bank.getSwiftCode();
 		CertificateInfo certInfo = certificateInfoService.findBySerialNumber(serialNumber);
 		// certInfo.advancedGetCaKeyStorePassword();
+		if(certInfo!=null){
 		certInfo.advancedGetKeyStorePassword();
 		System.out.println("---------------------------------------------");
 		System.out.println("Keystore name " + certInfo.getKeyStorName());
@@ -108,6 +109,9 @@ public class OCSPResponder {
 		OCSPRequest ocspReq = new OCSPRequest(tbsReq);
 
 		return ocspReq;
+		}else{
+			return null;
+		}
 
 	}
 
@@ -160,9 +164,9 @@ public class OCSPResponder {
 								HttpStatus.OK);
 					}
 				}
-				CAData caData=null;
-			//	CAData caData = getCA(bank,
-			//			ocspReq.getTbsRequest().getRequestList().get(0).getReqCert().getSeriaNumber());
+				//CAData caData=null;
+				CAData caData = getCA(bank,
+						ocspReq.getTbsRequest().getRequestList().get(0).getReqCert().getSeriaNumber());
 				if (caData != null && caData.getCertificate() != null) {
 					byte[] signature = sign(ocspResp.getRespnseBytes().toString().getBytes(), caData.getPrivateKey());
 					if (verify(ocspResp.getRespnseBytes().toString().getBytes(), signature,
@@ -219,7 +223,7 @@ public class OCSPResponder {
 				 ks.load(null, password.toCharArray());
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			System.out.println("Nesto je krenulo lose sa ucitavanjem keystore");
 		}
 		return ks;
@@ -301,7 +305,7 @@ public class OCSPResponder {
 				KeyStore ks = getKeyStore(pathForPrivateKey,passwordForPrivateKey);
 				KeyStore certKs=getKeyStore(pathForCert,passwordForCert);
 				if (ks != null) {
-
+					
 					PrivateKey key = (PrivateKey) ks.getKey(aliasKey, passwordForPrivateKey.toCharArray());
 					if(key!=null){
 						System.out.println("Privatni kjuc je pronadjen");
@@ -322,10 +326,10 @@ public class OCSPResponder {
 			} catch (KeyStoreException | NoSuchProviderException | NoSuchAlgorithmException | CertificateException
 					| IOException e) {
 				
-				e.printStackTrace();
+				//e.printStackTrace();
 			} catch (UnrecoverableKeyException e) {
 
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 		return null;

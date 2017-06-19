@@ -627,8 +627,12 @@ public class UserController {
 				
 				user = userService.handleThePassword(user, pass);
 				
-				
-				user.setBank(bank);
+				if(user.getRole().getName().equals("ADMINISTRATOR_CENTRAL")){
+					Bank b = bankRepository.findOne(new Long(2));
+					user.setBank(b);
+				}else{
+					user.setBank(bank);
+				}
 				Employee employee;
 				PravnoLice pl;
 				if(i!=4){

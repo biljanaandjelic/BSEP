@@ -46,7 +46,7 @@ administratorBanke.controller('RukovanjeRolama', function($scope, $http, $compil
         	
         });
 		
-		$http.get('/svePermisije').
+		$http.get('/allPermissions').
         then(function(response) {
         	$scope.svePermisije = response.data;
         	
