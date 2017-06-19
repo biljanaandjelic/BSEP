@@ -19,3 +19,7 @@
 [WARN ]2017-06-19 22:21:18 k.c.a.AuthenticationController - twenty-one%0a%0aINFO:+User+logged+out%3dbadguy
 [WARN ]2017-06-19 22:45:28 k.c.a.AuthenticationController - WARN pouka
 [WARN ]2017-06-19 22:45:28 k.c.a.AuthenticationController - twenty-one%0a%0aINFO:+User+logged+out%3dbadguy
+[WARN ]2017-06-19 22:55:28 k.c.a.AuthenticationController - WARN pouka
+[WARN ]2017-06-19 22:55:28 k.c.a.AuthenticationController - twenty-one%0a%0aINFO:+User+logged+out%3dbadguy
+[WARN ]2017-06-19 22:56:37 k.c.a.AuthenticationController - Neuspijesno logovanje
+[WARN ]2017-06-19 22:56:44 k.c.a.AuthenticationController - Neuspijesno logovanje
