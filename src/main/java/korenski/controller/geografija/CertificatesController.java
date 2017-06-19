@@ -290,7 +290,7 @@ public class CertificatesController {
 		User u = (User)httpRequest.getSession().getAttribute("user");
 		String bankSwiftCode;
 		if(u.getRole().getName().equals("ADMINISTRATOR_BANK")){
-			Bank bank = bankRepository.findOne(new Long(1));
+			Bank bank = bankRepository.findOne(new Long(2));
 			bankSwiftCode = bank.getSwiftCode();
 		}else if(u.getRole().getName().equals("LEGAL")){
 			bankSwiftCode = ((User)httpRequest.getSession().getAttribute("user")).getBank().getSwiftCode();
@@ -373,7 +373,7 @@ public class CertificatesController {
 		User u = (User)httpRequest.getSession().getAttribute("user");
 		String bankSwiftCode;
 		if(u.getRole().getName().equals("ADMINISTRATOR_CENTRAL")){
-			Bank bank = bankRepository.findOne(new Long(1));
+			Bank bank = bankRepository.findOne(new Long(2));
 			bankSwiftCode = bank.getSwiftCode();
 		}else if(u.getRole().getName().equals("ADMINISTRATOR_BANK")){
 			bankSwiftCode = ((User)httpRequest.getSession().getAttribute("user")).getBank().getSwiftCode();
@@ -431,7 +431,7 @@ public class CertificatesController {
 		
 		//na osnovu swift koda ulogovanog korisnika se pretrazuju csrovi
 		if(u.getRole().getName().equals("ADMINISTRATOR_CENTRAL")){
-			Bank bank = bankRepository.findOne(new Long(1));
+			Bank bank = bankRepository.findOne(new Long(2));
 			bankSwiftCode = bank.getSwiftCode();
 		}else if(u.getRole().getName().equals("ADMINISTRATOR_BANK")){
 			bankSwiftCode = ((User)httpRequest.getSession().getAttribute("user")).getBank().getSwiftCode();
@@ -942,6 +942,7 @@ public class CertificatesController {
 		
 		//inicijalizacija
 		KeystoreDTO keystoreSession = (KeystoreDTO)request.getSession().getAttribute("keystore");
+		User u = (User)request.getSession().getAttribute("user");
 		
 		if (ks == null) {
 			ks = KeyStore.getInstance("BKS", "BC");
@@ -955,7 +956,12 @@ public class CertificatesController {
 		String scheme = request.getScheme();
 		String host = request.getServerName();
 		int port = request.getServerPort();
-		url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/certificates/openkeystore.html");
+		
+		if(u.getRole().getName().equals("ADMINISTRATOR_BANK")){
+			url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/certificates/openkeystoreAdmin.html");
+		}else{
+			url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/certificates/openkeystore.html");
+		}
 		
 		keystoreSession.setUrl(url);
 		

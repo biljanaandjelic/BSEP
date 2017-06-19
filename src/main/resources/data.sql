@@ -118,6 +118,7 @@ insert into permission values ('90', 'FIND_ALL_BANK');
 insert into permission values ('91', 'OPEN_KEYSTORE');
 insert into permission values ('92', 'CLOSE_KEYSTORE');
 insert into permission values ('93', 'IMPORT_CERTIFICATE');
+insert into permission values ('94', 'DOWNLOAD_CERTIFICATE');
 
 insert into role values (1, 'ADMINISTRATOR_BANK');
 insert into role values (2, 'MANAGER');
@@ -158,6 +159,8 @@ insert into role_permissions values (1, 89);
 insert into role_permissions values (1, 91);
 insert into role_permissions values (1, 92);
 insert into role_permissions values (1, 93);
+
+insert into role_permissions values (1, 94);
 
 insert into role_permissions values (2, 13);
 
@@ -322,6 +325,7 @@ insert into role_permissions values (4, 89);
 insert into role_permissions values (4, 91);
 insert into role_permissions values (4, 92);
 insert into role_permissions values (4, 93);
+insert into role_permissions values (4, 94);
 
 
 insert into role_permissions values (5, 13);
@@ -342,7 +346,7 @@ insert into role_permissions values (5, 89);
 insert into role_permissions values (5, 91);
 insert into role_permissions values (5, 92);
 insert into role_permissions values (5, 93);
-
+insert into role_permissions values (5, 94);
 
 
 

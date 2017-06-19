@@ -101,8 +101,12 @@ public class OCSPResponder {
 		System.out.println("---------------------------------------------");
 		System.out.println("Keystore name " + certInfo.getKeyStorName());
 		System.out.println("---------------------------------------------");
-
-		CertID certID = new CertID(HashAlgorithm.SHA1withRSA, "nestoI", "nestoK", serialNumber);
+		CertID certID;
+		if(certInfo.getCa()!=null){
+			certID = new CertID(HashAlgorithm.SHA1withRSA, certInfo.getCa().getBank().getSwiftCode(), "nestoK", serialNumber);
+		}else{
+			certID = new CertID(HashAlgorithm.SHA1withRSA, certInfo.getBank().getSwiftCode(), "nestoK", serialNumber);
+		}
 		Request req = new Request(certID);
 		TBSRequest tbsReq = new TBSRequest(Version.V1, requestorName);
 		tbsReq.add(req);
@@ -168,9 +172,10 @@ public class OCSPResponder {
 				CAData caData = getCA(bank,
 						ocspReq.getTbsRequest().getRequestList().get(0).getReqCert().getSeriaNumber());
 				if (caData != null && caData.getCertificate() != null) {
-					byte[] signature = sign(ocspResp.getRespnseBytes().toString().getBytes(), caData.getPrivateKey());
+					HashAlgorithm algorithm=ocspReq.getTbsRequest().getRequestList().get(0).getReqCert().getHashAlgorithm();
+					byte[] signature = sign(ocspResp.getRespnseBytes().toString().getBytes(), caData.getPrivateKey(),algorithm);
 					if (verify(ocspResp.getRespnseBytes().toString().getBytes(), signature,
-							caData.getCertificate().getPublicKey())) {
+							caData.getCertificate().getPublicKey(),algorithm)) {
 						return new ResponseEntity<OCSPResponse>(ocspResp, HttpStatus.OK);
 					} else {
 						return new ResponseEntity<OCSPResponse>(ocspResp, HttpStatus.OK);
@@ -344,7 +349,7 @@ public class OCSPResponder {
 	 *            kljuc kojim se potpisuju
 	 * @return niz bajtova koji predstavljaju potpis
 	 */
-	private byte[] sign(byte[] data, PrivateKey privateKey) {
+	private byte[] sign(byte[] data, PrivateKey privateKey,HashAlgorithm hashAlgotirhm) {
 		try {
 			System.out.println("Private Key(str): "+new String(privateKey.getEncoded()));
 			System.out.println("Private Key(enc): "+ Base64Utility.encode(privateKey.getEncoded()));
@@ -355,7 +360,12 @@ public class OCSPResponder {
 			// koristiti
 			// U ovom slucaju cemo generisati SHA-1 hes kod koji cemo potpisati
 			// upotrebom RSA asimetricne sifre
-			Signature sig = Signature.getInstance("SHA1withRSA");
+			Signature sig;
+			if(hashAlgotirhm==HashAlgorithm.SHA256WithRSA){
+				sig=Signature.getInstance("SHA256WithRSA");
+			}else{
+			 sig= Signature.getInstance("SHA1withRSA");
+			}
 			// Navodimo kljuc kojim potpisujemo
 			sig.initSign(privateKey);
 			// Postavljamo podatke koje potpisujemo
@@ -384,7 +394,7 @@ public class OCSPResponder {
 	 *            janvi kljuc kojim se vrsi provjera potpisa
 	 * @return
 	 */
-	private boolean verify(byte[] data, byte[] signature, PublicKey publicKey) {
+	private boolean verify(byte[] data, byte[] signature, PublicKey publicKey,HashAlgorithm hashAlgorithm) {
 		try {
 			System.out.println("Private Key(str): "+new String(publicKey.getEncoded()));
 			System.out.println("Private Key(enc): "+ Base64Utility.encode(publicKey.getEncoded()));
@@ -395,7 +405,12 @@ public class OCSPResponder {
 			// koristiti
 			// U ovom slucaju cemo generisati SHA-1 hes kod koji cemo potpisati
 			// upotrebom RSA asimetricne sifre
-			Signature sig = Signature.getInstance("SHA1withRSA");
+			Signature sig;
+			if(hashAlgorithm==HashAlgorithm.SHA256WithRSA){
+				sig=Signature.getInstance("SHA256WithRSA");
+			}else{
+			sig = Signature.getInstance("SHA1withRSA");
+			}
 			// Navodimo kljuc sa kojim proveravamo potpis
 			sig.initVerify(publicKey);
 			// Postavljamo podatke koje potpisujemo

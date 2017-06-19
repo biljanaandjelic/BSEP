@@ -38,6 +38,7 @@ keystoreModule.config(function ($httpProvider) {
 
 keystoreModule.controller("KeystoreController",['$http', '$scope', '$log', '$window', 'tokenService', function($http,$scope, $log, $window, tokenService){
 	var control = this;
+	
 	control.keystore = {};
 	
 	this.goBack = function(){
@@ -95,5 +96,8 @@ keystoreModule.controller("KeystoreController",['$http', '$scope', '$log', '$win
 			
 			tokenService.setToken(response.data.value);
 		});
+		
+		
+		
     };
 }]);

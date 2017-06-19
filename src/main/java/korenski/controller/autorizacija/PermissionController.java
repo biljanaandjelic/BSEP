@@ -128,8 +128,11 @@ public class PermissionController {
 				return new ResponseEntity<LoggedAndRole>(new LoggedAndRole(false, null), HttpStatus.OK);
 			}
 			
-			
-			return new ResponseEntity<LoggedAndRole>( new LoggedAndRole(true, user.getRole().getName().substring(0, 3)), HttpStatus.OK);
+			if(user.getRole().getName().equals("ADMINISTRATOR_BANK")){
+				return new ResponseEntity<LoggedAndRole>( new LoggedAndRole(true, "POS"), HttpStatus.OK);
+			}else{
+				return new ResponseEntity<LoggedAndRole>( new LoggedAndRole(true, user.getRole().getName().substring(0, 3)), HttpStatus.OK);
+			}
 		}
 		
 		return new ResponseEntity<LoggedAndRole>( new LoggedAndRole(false, null), HttpStatus.OK);
@@ -146,7 +149,7 @@ public class PermissionController {
 		String scheme = request.getScheme();
 		String host = request.getServerName();
 		int port = request.getServerPort();
-		url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/certificates/openkeystore.html");
+		url = url.concat(scheme).concat("://").concat(host).concat(":"+Integer.toString(port)).concat("/certificates/openkeystoreAdmin.html");
 		User user = new User();
 		user.setUsername(url);
 		

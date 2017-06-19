@@ -64,9 +64,12 @@ certificateModule.controller("CertificateRevokeAndGetStatus", function($http,$sc
 		}).then(
 			function successCallback(response){
 				$log.log(response.data);
+				$scope.revokeRequest=[];
+				toastr.success("Zahtjev je poslan.");
 			}, 
 			function errorCallback(response){
-				
+				$scope.revokeRequest=[];
+				toastr.error("Zahtjev nije poslan.");
 			}
 		);
 	}
